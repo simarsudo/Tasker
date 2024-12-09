@@ -1,4 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
+import { PriorityBadgeMap } from "~/common/common";
+import { Badge } from "../ui/badge";
 import {
   Card,
   CardTitle,
@@ -6,8 +8,7 @@ import {
   CardContent,
   CardFooter,
 } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { PriorityBadgeMap } from "~/common/common";
+import { TaskCardDropDownMenu } from "../DropDownMenu/TaskCardDropDownMenu";
 
 type Props = {
   heading: string;
@@ -43,7 +44,7 @@ function TaskCard({ heading, description, id, priority, assignedTo }: Props) {
     >
       <CardHeader className="space-y-2">
         <div className="flex items-center justify-between">
-          <CardTitle>{heading}</CardTitle>
+          <CardTitle className="line-clamp-1">{heading}</CardTitle>
           {PriorityBadge && PriorityBadge}
         </div>
       </CardHeader>
@@ -52,6 +53,7 @@ function TaskCard({ heading, description, id, priority, assignedTo }: Props) {
       </CardContent>
       <CardFooter className="flex items-center justify-between">
         <Badge className="bg-violet-700">Assigned To: {assignedTo}</Badge>
+        <TaskCardDropDownMenu />
       </CardFooter>
     </Card>
   );

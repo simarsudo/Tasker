@@ -18,7 +18,8 @@ const FakeData = [
     statusName: "Backlog",
     priority: 1,
     assignedTo: "Alice",
-    heading: "Research Competitors",
+    heading:
+      "Research Competitors Research Competitors Research Competitors Research Competitors",
     description:
       "Analyze competitors' features and design to identify gaps and opportunities.",
   },
