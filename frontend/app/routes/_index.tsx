@@ -1,7 +1,9 @@
-import type { MetaFunction } from "@remix-run/node";
 import { useEffect, useState } from "react";
+import type { MetaFunction } from "@remix-run/node";
+import { columnType } from "~/common/types";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import DroppableColumns from "~/components/wrappers/DroppableColumns";
+import { TeamMemberId } from "~/common/common";
 
 export const meta: MetaFunction = () => {
     return [
@@ -10,14 +12,22 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-const FakeData = [
+const FakeData: {
+    id: number;
+    statusId: number;
+    statusName: string;
+    priority: number;
+    assignedTo: TeamMemberId;
+    heading: string;
+    description: string;
+}[] = [
     // Column 1: "Backlog"
     {
         id: 1,
         statusId: 0,
         statusName: "Backlog",
         priority: 1,
-        assignedTo: "Alice",
+        assignedTo: 0,
         heading:
             "Research Competitors Research Competitors Research Competitors Research Competitors",
         description:
@@ -28,7 +38,7 @@ const FakeData = [
         statusId: 0,
         statusName: "Backlog",
         priority: 2,
-        assignedTo: "Bob",
+        assignedTo: 1,
         heading: "Gather Requirements",
         description:
             "Collaborate with stakeholders to document detailed project requirements.",
@@ -38,7 +48,7 @@ const FakeData = [
         statusId: 0,
         statusName: "Backlog",
         priority: 0,
-        assignedTo: "Charlie",
+        assignedTo: 2,
         heading: "Plan Sprint Goals",
         description:
             "Create a plan for the first sprint and identify high-priority tasks.",
@@ -50,7 +60,7 @@ const FakeData = [
         statusId: 1,
         statusName: "In Progress",
         priority: 1,
-        assignedTo: "Alice",
+        assignedTo: 3,
         heading: "Develop Login Feature",
         description:
             "Implement and test the login functionality with form validation.",
@@ -60,7 +70,7 @@ const FakeData = [
         statusId: 1,
         statusName: "In Progress",
         priority: 2,
-        assignedTo: "Bob",
+        assignedTo: 1,
         heading: "Build User Dashboard",
         description:
             "Design and code the main user dashboard with responsive layout.",
@@ -70,7 +80,7 @@ const FakeData = [
         statusId: 1,
         statusName: "In Progress",
         priority: 0,
-        assignedTo: "Charlie",
+        assignedTo: 3,
         heading: "Setup DevOps Pipeline",
         description:
             "Configure CI/CD pipelines for automated builds and deployments.",
@@ -82,7 +92,7 @@ const FakeData = [
         statusId: 2,
         statusName: "Testing",
         priority: 1,
-        assignedTo: "Alice",
+        assignedTo: 2,
         heading: "Unit Test Login",
         description:
             "Write unit tests for login feature to ensure correct functionality.",
@@ -92,7 +102,7 @@ const FakeData = [
         statusId: 2,
         statusName: "Testing",
         priority: 2,
-        assignedTo: "Bob",
+        assignedTo: 1,
         heading: "Verify Dashboard Design",
         description:
             "Perform cross-browser and device testing for the dashboard UI.",
@@ -104,7 +114,7 @@ const FakeData = [
         statusId: 3,
         statusName: "Completed",
         priority: 1,
-        assignedTo: "Charlie",
+        assignedTo: 3,
         heading: "Create Wireframes",
         description:
             "Designed wireframes for the app's key features and navigation flow.",
@@ -113,8 +123,8 @@ const FakeData = [
         id: 10,
         statusId: 3,
         statusName: "Completed",
-        priority: 2,
-        assignedTo: "Alice",
+        priority: 0,
+        assignedTo: 1,
         heading: "Setup Project Repository",
         description:
             "Initialized the Git repository and setup branch structure for the team.",
@@ -124,14 +134,12 @@ const FakeData = [
         statusId: 3,
         statusName: "Completed",
         priority: 0,
-        assignedTo: "Bob",
+        assignedTo: 2,
         heading: "Optimize Database Queries",
         description:
             "Improved the performance of key database queries for faster response times.",
     },
 ];
-
-type columnType = { columnId: number; columnName: string }[];
 
 export default function Index() {
     const [tasks, setTasks] = useState(FakeData);
@@ -161,6 +169,7 @@ export default function Index() {
                             tasks={tasks.filter(
                                 (task) => task.statusId === column.columnId,
                             )}
+                            columnData={columns}
                         ></DroppableColumns>
                     ))}
                 </div>

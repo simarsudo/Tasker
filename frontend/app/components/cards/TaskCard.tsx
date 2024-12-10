@@ -1,3 +1,4 @@
+import { columnType } from "~/common/types";
 import { useDraggable } from "@dnd-kit/core";
 import { PriorityBadgeMap } from "~/common/common";
 import { Badge } from "../ui/badge";
@@ -9,17 +10,27 @@ import {
     CardFooter,
 } from "../ui/card";
 import { TaskCardDropDownMenu } from "../DropDownMenu/TaskCardDropDownMenu";
+import { TeamData, TeamMemberId } from "~/common/common";
 
 type Props = {
+    id: number;
     heading: string;
-    status: number;
+    statusId: number;
     description: string;
     priority: number;
-    id: number;
-    assignedTo: string;
+    assignedTo: TeamMemberId;
+    columnData: columnType;
 };
 
-function TaskCard({ heading, description, id, priority, assignedTo }: Props) {
+function TaskCard({
+    id,
+    heading,
+    description,
+    priority,
+    assignedTo,
+    columnData,
+    statusId,
+}: Props) {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: id,
     });
@@ -53,9 +64,13 @@ function TaskCard({ heading, description, id, priority, assignedTo }: Props) {
             </CardContent>
             <CardFooter className="flex items-center justify-between">
                 <Badge className="bg-violet-700">
-                    Assigned To: {assignedTo}
+                    Assigned To: {TeamData[assignedTo]}
                 </Badge>
-                <TaskCardDropDownMenu />
+                <TaskCardDropDownMenu
+                    statusId={statusId}
+                    taskId={id}
+                    columnData={columnData}
+                />
             </CardFooter>
         </Card>
     );

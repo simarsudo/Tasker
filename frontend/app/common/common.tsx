@@ -14,3 +14,15 @@ export const PriorityBadgeMap: { [key: number]: JSX.Element } = {
     1: <Badge className="bg-orange-500">Normal</Badge>,
     2: <Badge className="bg-neutral-500">Low</Badge>,
 };
+
+// TODO: Remove
+export const TeamData = {
+    0: "Jack The Ripper",
+    1: "Jack The Begger",
+    2: "Jack the Nigger",
+    3: "Jack the Cotton Picker",
+};
+
+export type TeamMemberId = keyof typeof TeamData;
+
+export const currentUserId: TeamMemberId = 2;

@@ -1,6 +1,8 @@
+import { columnType } from "~/common/types";
 import { useDroppable } from "@dnd-kit/core";
 import { Card, CardTitle } from "../ui/card";
 import TaskCard from "../cards/TaskCard";
+import { TeamData, TeamMemberId } from "~/common/common";
 
 type Props = {
     statusId: number;
@@ -10,13 +12,14 @@ type Props = {
         statusId: number;
         statusName: string;
         priority: number;
-        assignedTo: string;
+        assignedTo: TeamMemberId;
         heading: string;
         description: string;
     }[];
+    columnData: columnType;
 };
 
-function DroppableColumns({ statusId, name, tasks }: Props) {
+function DroppableColumns({ statusId, name, tasks, columnData }: Props) {
     const { isOver, setNodeRef } = useDroppable({
         id: statusId,
     });
@@ -41,8 +44,9 @@ function DroppableColumns({ statusId, name, tasks }: Props) {
                         priority={task.priority}
                         heading={task.heading}
                         description={task.description}
-                        status={task.statusId}
+                        statusId={task.statusId}
                         assignedTo={task.assignedTo}
+                        columnData={columnData}
                     />
                 ))
             ) : (
