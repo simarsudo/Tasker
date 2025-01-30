@@ -1,19 +1,15 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/simarsudo/tasker/db"
+	"github.com/simarsudo/tasker/routes"
 )
 
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 
-	// Ping test
-	r.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
-	})
+	routes.RegisterRoutes(r)
 
 	return r
 }

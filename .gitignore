@@ -3,7 +3,7 @@ node_modules
 /.cache
 /build
 .env
-.venv/
-__pycache__/
-/backend/database.db
+
+
 */tmp
+build-errors.log
