@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/simarsudo/tasker/models"
+	"github.com/simarsudo/tasker/utils"
 )
 
 func RegisterRoutes(server *gin.Engine) {
@@ -18,7 +19,9 @@ func login(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&user)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		validationErrors := utils.GenerateValidationErros(err)
+
+		ctx.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
 		return
 	}
 

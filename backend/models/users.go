@@ -8,8 +8,8 @@ import (
 
 type User struct {
 	ID        int64     `db:"id"`
-	Email     string    `db:"email" json:"email" binding:"required"`
-	Password  string    `db:"password" json:"password" binding:"required"`
+	Email     string    `db:"email" json:"email" binding:"required,email"`
+	Password  string    `db:"password" json:"password" binding:"required,min=8,max=32,alphanum"`
 	CreatedAt time.Time `db:"created_at"`
 }
 
