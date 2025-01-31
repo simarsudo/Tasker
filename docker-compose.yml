@@ -1,9 +1,10 @@
-version: '3.8'
+version: "3.8"
+
 services:
   backend:
-    build: 
-     context: ./backend
-     dockerfile: Dockerfile
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     volumes:
       - ./backend:/app
     ports:
@@ -17,8 +18,22 @@ services:
       DB_NAME: tasker
       POSTGRES_CONN_STR: postgres://postgres:postgres@db:5432/tasker?sslmode=disable
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      BACKEND_URL: http://localhost:8080
+
   db:
-    image: postgres:14
+    image: postgres:17
     container_name: postgres
     restart: always
     environment:

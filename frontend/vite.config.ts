@@ -21,4 +21,11 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
+  server: {
+    host: '0.0.0.0',
+    port: 3000, // Specify the port for the Vite development server
+    watch: {
+      usePolling: true, // Enable polling for file changes
+    },
+  },
 });
