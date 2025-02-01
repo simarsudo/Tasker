@@ -41,7 +41,9 @@ func register(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&user)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		validationErrors := utils.GenerateValidationErros(err)
+
+		ctx.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
 		return
 	}
 
