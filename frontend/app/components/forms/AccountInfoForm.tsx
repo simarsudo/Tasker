@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,28 +9,17 @@ import {
     CardContent,
     CardDescription,
 } from "app/components/ui/card";
+import { Link } from "@remix-run/react";
 
-function LoginForm() {
-    const emailRef = useRef<HTMLInputElement>(null);
-    const passwordRef = useRef<HTMLInputElement>(null);
+interface Props {
+    emailRef: React.RefObject<HTMLInputElement>;
+    passwordRef: React.RefObject<HTMLInputElement>;
+    confirmPasswordRef: React.RefObject<HTMLInputElement>;
+}
 
-    const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+function AccountInfoForm({ emailRef, passwordRef, confirmPasswordRef }: Props) {
+    const nextTab = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const email = emailRef.current?.value;
-        const password = passwordRef.current?.value;
-        console.log(email, password);
-
-        fetch("http://127.0.0.1:8080/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                console.log(data);
-            });
     };
 
     return (
@@ -38,13 +27,13 @@ function LoginForm() {
             <div className="flex flex-col gap-6">
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-2xl">Login</CardTitle>
+                        <CardTitle className="text-2xl">Sign up</CardTitle>
                         <CardDescription>
-                            Enter your email below to login to your account
+                            Please enter your email and password
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleLoginSubmit}>
+                        <form onSubmit={nextTab}>
                             <div className="flex flex-col gap-6">
                                 <div className="grid gap-2">
                                     <Label htmlFor="email">Email</Label>
@@ -65,18 +54,26 @@ function LoginForm() {
                                         ref={passwordRef}
                                     />
                                 </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="confirmPassword">
+                                        Confirm Password
+                                    </Label>
+                                    <Input
+                                        id="confirmPassword"
+                                        type="confirmPassword"
+                                        required
+                                        ref={confirmPasswordRef}
+                                    />
+                                </div>
                                 <Button type="submit" className="w-full">
-                                    Login
+                                    Next
                                 </Button>
                             </div>
                             <div className="mt-4 text-center text-sm">
-                                Don't have an account?{" "}
-                                <a
-                                    href="#"
-                                    className="underline underline-offset-4"
-                                >
-                                    Sign up
-                                </a>
+                                Already have an account?{" "}
+                                <Link to="/login" className="underline">
+                                    Login
+                                </Link>
                             </div>
                         </form>
                     </CardContent>
@@ -86,4 +83,4 @@ function LoginForm() {
     );
 }
 
-export default LoginForm;
+export default AccountInfoForm;
