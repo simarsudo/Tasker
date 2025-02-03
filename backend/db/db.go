@@ -1,52 +1,36 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
 
-	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-var DB *sql.DB
+var DB *gorm.DB
 
-func InitDB() {
-	connStr, ok := os.LookupEnv("POSTGRES_CONN_STR")
-
+func InitDB() error {
+	dsn, ok := os.LookupEnv("POSTGRES_CONN_STR")
 	if !ok {
-		panic("POSTGRES_CONN_STR environment variable not set.")
+		return fmt.Errorf("environment variable POSTGRES_CONN_STR is required")
 	}
 
-	fmt.Println("connStr: &s\n", connStr)
-
-	var err error
-	DB, err = sql.Open("postgres", connStr)
-
+	gormDB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("Could not connect to database.")
+		return fmt.Errorf("could not connect to database: %v", err)
 	}
 
-	DB.SetMaxOpenConns(10)
-	DB.SetMaxIdleConns(5)
-
-	CreateDB()
-}
-
-func CreateDB() {
-	createUserTable := `
-		CREATE TABLE IF NOT EXISTS users (
-			id SERIAL PRIMARY KEY,
-			email TEXT NOT NULL,
-			password TEXT NOT NULL,
-			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-		);
-	`
-
-	_, err := DB.Exec(createUserTable)
-
+	sqlDB, err := gormDB.DB()
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("could not get database instance: %v", err)
 	}
 
-	fmt.Println("Sucessfully created tables")
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetConnMaxLifetime(0)
+
+	DB = gormDB
+
+	return nil
 }
