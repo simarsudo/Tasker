@@ -1,11 +1,14 @@
 package routes
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/simarsudo/tasker/db"
 	"github.com/simarsudo/tasker/models"
 	"github.com/simarsudo/tasker/utils"
+	"gorm.io/gorm"
 )
 
 func RegisterRoutes(server *gin.Engine) {
@@ -22,7 +25,7 @@ func login(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&user)
 
 	if err != nil {
-		validationErrors := utils.GenerateValidationErros(err)
+		validationErrors := utils.GenerateValidationErrors(err)
 
 		ctx.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
 		return
@@ -47,21 +50,39 @@ func login(ctx *gin.Context) {
 }
 
 func register(ctx *gin.Context) {
-	var user models.User
+	// FIXME: Integrate frontend and check for any missing case
+	var userRegistration models.UserRegistration
 
-	err := ctx.ShouldBindJSON(&user)
+	err := ctx.ShouldBindJSON(&userRegistration)
 
 	if err != nil {
-		validationErrors := utils.GenerateValidationErros(err)
+		validationErrors := utils.GenerateValidationErrors(err)
+
+		// Check for confirm password field error and change the message
+		if _, ok := validationErrors["confirmpassword"]; ok {
+			validationErrors["confirmpassword"] = "Passwords do not match"
+		}
 
 		ctx.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
 		return
 	}
 
-	err = user.Register()
+	// Map the validated data to the User model
+	user := models.User{
+		Email:    userRegistration.Email,
+		Password: userRegistration.Password,
+		Name:     userRegistration.Name,
+	}
 
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save user"})
+	result := db.DB.Create(&user)
+
+	if result.Error != nil {
+		// Check if the error is due to a duplicate key (user already exists)
+		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
+			ctx.JSON(http.StatusConflict, gin.H{"error": "User already exists"})
+		} else {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": utils.UnknownError})
+		}
 		return
 	}
 

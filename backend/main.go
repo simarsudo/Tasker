@@ -29,6 +29,7 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
+	// TODO: Add loggin in file
 	// Initialize the database
 	err := db.InitDB()
 
