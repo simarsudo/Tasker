@@ -6,3 +6,12 @@ export type lucidIconType = ForwardRefExoticComponent<
 >;
 
 export type columnType = { columnId: number; columnName: string }[];
+
+export type SignupData = {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    firstName: string;
+    lastName: string;
+    contactNumber: string;
+};

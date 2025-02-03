@@ -1,38 +1,41 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useRef } from "react";
-import AccountInforForm from "~/components/forms/AccountInfoForm";
+import { useState } from "react";
+import AccountInfoForm from "~/components/forms/AccountInfoForm";
 import PersonalInfoForm from "~/components/forms/PersonalInfoForm";
+import { SignupData } from "@/common/types";
 
 export default function Signup() {
-    const emailRef = useRef<HTMLInputElement>(null);
-    const passwordRef = useRef<HTMLInputElement>(null);
-    const confirmPasswordRef = useRef<HTMLInputElement>(null);
-    const firstNameRef = useRef<HTMLInputElement>(null);
-    const lastNameRef = useRef<HTMLInputElement>(null);
-    const phoneNumberRef = useRef<HTMLInputElement>(null);
+    const [currentTab, setCurrentTab] = useState<
+        "account-info" | "personal-info"
+    >("account-info");
+
+    const [signupData, setSignupData] = useState<SignupData>({
+        email: "",
+        password: "",
+        confirmPassword: "",
+        firstName: "",
+        lastName: "",
+        contactNumber: "",
+    });
+
+    const handleInputChange = (
+        inputRef: React.RefObject<HTMLInputElement>,
+        name: string,
+    ) => {
+        setSignupData((prev) => ({
+            ...prev,
+            [name]: inputRef.current?.value || "",
+        }));
+    };
 
     const handleSignupSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const email = emailRef.current?.value;
-        const password = passwordRef.current?.value;
-        console.log(email, password);
-
-        fetch("http://127.0.0.1:8080/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                console.log(data);
-            });
     };
 
+    // TODO: implement the forms with zod validation
     return (
         <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-            <Tabs defaultValue="account-info" className="w-96">
+            <Tabs value={currentTab} className="w-96">
                 <div className="flex justify-center">
                     <TabsList>
                         <TabsTrigger value="account-info">
@@ -44,17 +47,19 @@ export default function Signup() {
                     </TabsList>
                 </div>
                 <TabsContent value="account-info">
-                    <AccountInforForm
-                        emailRef={emailRef}
-                        passwordRef={passwordRef}
-                        confirmPasswordRef={confirmPasswordRef}
+                    <AccountInfoForm
+                        handleInputChange={handleInputChange}
+                        signupData={signupData}
+                        setSignupData={setSignupData}
+                        setCurrentTab={setCurrentTab}
                     />
                 </TabsContent>
                 <TabsContent value="personal-info">
                     <PersonalInfoForm
-                        firstNameRef={firstNameRef}
-                        lastNameRef={lastNameRef}
-                        phoneNumberRef={phoneNumberRef}
+                        handleInputChange={handleInputChange}
+                        setCurrentTab={setCurrentTab}
+                        signupData={signupData}
+                        setSignupData={setSignupData}
                         handleSignupSubmit={handleSignupSubmit}
                     />
                 </TabsContent>

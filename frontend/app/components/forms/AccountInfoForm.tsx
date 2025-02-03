@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,16 +10,33 @@ import {
     CardDescription,
 } from "app/components/ui/card";
 import { Link } from "@remix-run/react";
+import { SignupData } from "@/common/types";
 
 interface Props {
-    emailRef: React.RefObject<HTMLInputElement>;
-    passwordRef: React.RefObject<HTMLInputElement>;
-    confirmPasswordRef: React.RefObject<HTMLInputElement>;
+    setCurrentTab: React.Dispatch<
+        React.SetStateAction<"account-info" | "personal-info">
+    >;
+    signupData: SignupData;
+    setSignupData: React.Dispatch<React.SetStateAction<SignupData>>;
+    handleInputChange: (
+        ref: React.RefObject<HTMLInputElement>,
+        name: string,
+    ) => void;
 }
 
-function AccountInfoForm({ emailRef, passwordRef, confirmPasswordRef }: Props) {
+function AccountInfoForm({
+    setCurrentTab,
+    signupData,
+    handleInputChange,
+}: Props) {
+    const emailRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+    const confirmPasswordRef = useRef<HTMLInputElement>(null);
+
     const nextTab = (e: React.FormEvent<HTMLFormElement>) => {
+        // TODO: Handle confirmPassword false state
         e.preventDefault();
+        setCurrentTab("personal-info");
     };
 
     return (
@@ -43,6 +60,10 @@ function AccountInfoForm({ emailRef, passwordRef, confirmPasswordRef }: Props) {
                                         placeholder="m@example.com"
                                         required
                                         ref={emailRef}
+                                        value={signupData.email}
+                                        onChange={() =>
+                                            handleInputChange(emailRef, "email")
+                                        }
                                     />
                                 </div>
                                 <div className="grid gap-2">
@@ -52,6 +73,13 @@ function AccountInfoForm({ emailRef, passwordRef, confirmPasswordRef }: Props) {
                                         type="password"
                                         required
                                         ref={passwordRef}
+                                        value={signupData.password}
+                                        onChange={() =>
+                                            handleInputChange(
+                                                passwordRef,
+                                                "password",
+                                            )
+                                        }
                                     />
                                 </div>
                                 <div className="grid gap-2">
@@ -60,9 +88,16 @@ function AccountInfoForm({ emailRef, passwordRef, confirmPasswordRef }: Props) {
                                     </Label>
                                     <Input
                                         id="confirmPassword"
-                                        type="confirmPassword"
+                                        type="password"
                                         required
                                         ref={confirmPasswordRef}
+                                        value={signupData.confirmPassword}
+                                        onChange={() =>
+                                            handleInputChange(
+                                                confirmPasswordRef,
+                                                "confirmPassword",
+                                            )
+                                        }
                                     />
                                 </div>
                                 <Button type="submit" className="w-full">

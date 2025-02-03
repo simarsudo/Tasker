@@ -8,20 +8,33 @@ import {
     CardContent,
     CardDescription,
 } from "app/components/ui/card";
+import { ChevronLeft } from "lucide-react";
+import { useRef } from "react";
+import { SignupData } from "@/common/types";
 
 type Props = {
-    firstNameRef: React.RefObject<HTMLInputElement>;
-    lastNameRef: React.RefObject<HTMLInputElement>;
-    phoneNumberRef: React.RefObject<HTMLInputElement>;
+    setCurrentTab: React.Dispatch<
+        React.SetStateAction<"account-info" | "personal-info">
+    >;
+    signupData: SignupData;
+    setSignupData: React.Dispatch<React.SetStateAction<SignupData>>;
     handleSignupSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+    handleInputChange: (
+        ref: React.RefObject<HTMLInputElement>,
+        name: string,
+    ) => void;
 };
 
 function PersonalInfoForm({
-    firstNameRef,
-    lastNameRef,
-    phoneNumberRef,
     handleSignupSubmit,
+    setCurrentTab,
+    signupData,
+    handleInputChange,
 }: Props) {
+    const firstNameRef = useRef<HTMLInputElement>(null);
+    const lastNameRef = useRef<HTMLInputElement>(null);
+    const contactNumberRef = useRef<HTMLInputElement>(null);
+
     return (
         <div className="w-full max-w-sm">
             <div className="flex flex-col gap-6">
@@ -41,39 +54,72 @@ function PersonalInfoForm({
                                     </Label>
                                     <Input
                                         id="firstname"
-                                        type="firstname"
+                                        type="text"
                                         placeholder="John"
                                         required
                                         ref={firstNameRef}
+                                        value={signupData.firstName}
+                                        onChange={() =>
+                                            handleInputChange(
+                                                firstNameRef,
+                                                "firstName",
+                                            )
+                                        }
                                     />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="LastName">Last Name</Label>
+                                    <Label htmlFor="lastname">Last Name</Label>
                                     <Input
-                                        id="LastName"
-                                        type="LastName"
+                                        id="lastname"
+                                        type="text"
                                         placeholder="Doe"
                                         required
                                         ref={lastNameRef}
+                                        value={signupData.lastName}
+                                        onChange={() =>
+                                            handleInputChange(
+                                                lastNameRef,
+                                                "lastName",
+                                            )
+                                        }
                                     />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="contact">
+                                    <Label htmlFor="contactNumber">
                                         Contact Number
                                     </Label>
                                     <Input
                                         id="contact"
-                                        type="contact"
+                                        type="tel"
                                         required
-                                        ref={phoneNumberRef}
+                                        ref={contactNumberRef}
+                                        value={signupData.contactNumber}
+                                        onChange={() =>
+                                            handleInputChange(
+                                                contactNumberRef,
+                                                "contactNumber",
+                                            )
+                                        }
                                     />
                                 </div>
-                                <Button type="submit" className="w-full">
-                                    Sign up
-                                </Button>
+                                <div className="flex gap-2">
+                                    <Button
+                                        onClick={() =>
+                                            setCurrentTab("account-info")
+                                        }
+                                        type="button"
+                                        className="w-1/4"
+                                    >
+                                        <ChevronLeft />
+                                        <span>Back</span>
+                                    </Button>
+                                    <Button type="submit" className="w-3/4">
+                                        Sign up
+                                    </Button>
+                                </div>
                             </div>
                             <div className="mt-4 text-center text-sm">
-                                By Signing up you agree to our Terms of Service
+                                By signing up you agree to our Terms of Service
                                 and Privacy Policy.
                             </div>
                         </form>
