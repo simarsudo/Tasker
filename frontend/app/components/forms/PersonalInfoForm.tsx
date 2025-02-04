@@ -1,11 +1,16 @@
+import { useState } from "react";
+
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { ChevronLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { AlertCircle, ChevronLeft, Loader } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CurrentTab, SignupData } from "@/common/types";
+import { UNEXPECTED_ERROR_MESSAGE } from "@/common/ErrorMsgs";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
     Card,
     CardContent,
@@ -55,16 +60,52 @@ const formSchema = z.object({
 });
 
 function PersonalInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
+    const [signupError, setSignupError] = useState({
+        hasError: false,
+        message: "",
+    });
+    const [loading, setLoading] = useState(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: signupData,
     });
+    const navigate = useNavigate();
 
-    // TODO: Add signup logic
-    const handleSignupSubmit = (values: z.infer<typeof formSchema>) => {
-        setSignupData((prev) => {
-            return { ...prev, ...values };
-        });
+    const handleSignupSubmit = async (values: z.infer<typeof formSchema>) => {
+        setLoading(true);
+        const payloadData = {
+            ...signupData,
+            ...values,
+        };
+
+        setSignupData(payloadData);
+
+        try {
+            // TODO: Replace hard coded links
+            const response = await fetch("http://127.0.0.1:8080/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payloadData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                navigate("/dashboard");
+            } else {
+                // TODO: Handle multiple errors returned by server edge case
+                setSignupError({ hasError: true, message: data.error });
+            }
+        } catch (error) {
+            setSignupError({
+                hasError: true,
+                message: UNEXPECTED_ERROR_MESSAGE,
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -149,11 +190,37 @@ function PersonalInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
                                             <ChevronLeft />
                                             <span>Back</span>
                                         </Button>
-                                        <Button type="submit" className="w-3/4">
-                                            Sign up
+                                        <Button
+                                            type="submit"
+                                            className="w-3/4"
+                                            disabled={loading}
+                                        >
+                                            {loading ? (
+                                                <>
+                                                    <span>Signing up...</span>
+                                                    <Loader className="ml-2 h-5 w-5 animate-spin" />
+                                                </>
+                                            ) : (
+                                                <span>Sign up</span>
+                                            )}
                                         </Button>
                                     </div>
                                 </div>
+                                {signupError.hasError ? (
+                                    <Alert
+                                        variant="destructive"
+                                        className="mt-4"
+                                    >
+                                        <div className="grid grid-cols-[auto,1fr] items-start gap-2">
+                                            <AlertCircle className="mt-1 h-5 w-5" />
+                                            <AlertDescription>
+                                                {signupError.message}
+                                            </AlertDescription>
+                                        </div>
+                                    </Alert>
+                                ) : (
+                                    ""
+                                )}
                                 <div className="mt-4 text-center text-sm">
                                     {/* TODO: Add link to terms and service */}
                                     By signing up you agree to our Terms of

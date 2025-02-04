@@ -13,7 +13,7 @@ import (
 
 func RegisterRoutes(server *gin.Engine) {
 	server.POST("/login", login)
-	server.POST("/register", register)
+	server.POST("/signup", signup)
 
 	// TODO: Look for token invalidation logic for protected routes
 }
@@ -49,7 +49,7 @@ func login(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "User logged in", "token": token})
 }
 
-func register(ctx *gin.Context) {
+func signup(ctx *gin.Context) {
 	// FIXME: Integrate frontend and check for any missing case
 	var userRegistration models.UserRegistration
 
@@ -69,9 +69,11 @@ func register(ctx *gin.Context) {
 
 	// Map the validated data to the User model
 	user := models.User{
-		Email:    userRegistration.Email,
-		Password: userRegistration.Password,
-		Name:     userRegistration.Name,
+		Email:         userRegistration.Email,
+		Password:      userRegistration.Password,
+		FirstName:     userRegistration.FirstName,
+		LastName:      userRegistration.LastName,
+		ContactNumber: userRegistration.ContactNumber,
 	}
 
 	result := db.DB.Create(&user)
@@ -79,7 +81,7 @@ func register(ctx *gin.Context) {
 	if result.Error != nil {
 		// Check if the error is due to a duplicate key (user already exists)
 		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
-			ctx.JSON(http.StatusConflict, gin.H{"error": "User already exists"})
+			ctx.JSON(http.StatusConflict, gin.H{"error": "An account with this email already exists. Please log in."})
 		} else {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": utils.UnknownError})
 		}

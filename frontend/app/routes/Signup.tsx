@@ -23,10 +23,16 @@ export default function Signup() {
             <Tabs value={currentTab} className="w-96">
                 <div className="flex justify-center">
                     <TabsList>
-                        <TabsTrigger value="account-info">
+                        <TabsTrigger
+                            className="cursor-default"
+                            value="account-info"
+                        >
                             Account Information
                         </TabsTrigger>
-                        <TabsTrigger value="personal-info">
+                        <TabsTrigger
+                            className="cursor-default"
+                            value="personal-info"
+                        >
                             Personal Information
                         </TabsTrigger>
                     </TabsList>

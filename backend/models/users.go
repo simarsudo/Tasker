@@ -7,9 +7,11 @@ import (
 
 type User struct {
 	gorm.Model
-	Name     string `gorm:"not null" binding:"required"`
-	Email    string `gorm:"unique;not null" binding:"required,email"`
-	Password string `gorm:"not null" binding:"required"`
+	FirstName     string `gorm:"not null" binding:"required"`
+	LastName      string `gorm:"not null" binding:"required"`
+	Email         string `gorm:"unique;not null" binding:"required,email"`
+	Password      string `gorm:"not null" binding:"required"`
+	ContactNumber string `gorm:"not null" binding:"required"`
 }
 
 func (u *User) GetUser() error {
@@ -20,5 +22,7 @@ type UserRegistration struct {
 	Email           string `json:"email" binding:"required,email"`
 	Password        string `json:"password" binding:"required"`
 	ConfirmPassword string `json:"confirmPassword" binding:"required,eqfield=Password"`
-	Name            string `json:"name" binding:"required"`
+	FirstName       string `json:"firstName" binding:"required"`
+	LastName        string `json:"lastName" binding:"required"`
+	ContactNumber   string `json:"contactNumber" binding:"required"`
 }
