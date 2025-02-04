@@ -1,38 +1,22 @@
+import { SignupData, CurrentTab } from "@/common/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import AccountInfoForm from "~/components/forms/AccountInfoForm";
 import PersonalInfoForm from "~/components/forms/PersonalInfoForm";
-import { SignupData } from "@/common/types";
+
+const initialSignupData = (): SignupData => ({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    firstName: "",
+    lastName: "",
+    contactNumber: "",
+});
 
 export default function Signup() {
-    const [currentTab, setCurrentTab] = useState<
-        "account-info" | "personal-info"
-    >("account-info");
+    const [currentTab, setCurrentTab] = useState<CurrentTab>("account-info");
+    const [signupData, setSignupData] = useState<SignupData>(initialSignupData);
 
-    const [signupData, setSignupData] = useState<SignupData>({
-        email: "",
-        password: "",
-        confirmPassword: "",
-        firstName: "",
-        lastName: "",
-        contactNumber: "",
-    });
-
-    const handleInputChange = (
-        inputRef: React.RefObject<HTMLInputElement>,
-        name: string,
-    ) => {
-        setSignupData((prev) => ({
-            ...prev,
-            [name]: inputRef.current?.value || "",
-        }));
-    };
-
-    const handleSignupSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-    };
-
-    // TODO: implement the forms with zod validation
     return (
         <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
             <Tabs value={currentTab} className="w-96">
@@ -48,7 +32,6 @@ export default function Signup() {
                 </div>
                 <TabsContent value="account-info">
                     <AccountInfoForm
-                        handleInputChange={handleInputChange}
                         signupData={signupData}
                         setSignupData={setSignupData}
                         setCurrentTab={setCurrentTab}
@@ -56,11 +39,9 @@ export default function Signup() {
                 </TabsContent>
                 <TabsContent value="personal-info">
                     <PersonalInfoForm
-                        handleInputChange={handleInputChange}
                         setCurrentTab={setCurrentTab}
                         signupData={signupData}
                         setSignupData={setSignupData}
-                        handleSignupSubmit={handleSignupSubmit}
                     />
                 </TabsContent>
             </Tabs>

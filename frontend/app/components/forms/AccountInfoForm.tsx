@@ -1,41 +1,58 @@
-import React, { useRef } from "react";
+import { SignupData, CurrentTab } from "@/common/types";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
 import {
     Card,
     CardTitle,
     CardHeader,
     CardContent,
     CardDescription,
-} from "app/components/ui/card";
+} from "@/components/ui/card";
 import { Link } from "@remix-run/react";
-import { SignupData } from "@/common/types";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 interface Props {
-    setCurrentTab: React.Dispatch<
-        React.SetStateAction<"account-info" | "personal-info">
-    >;
     signupData: SignupData;
+    setCurrentTab: React.Dispatch<React.SetStateAction<CurrentTab>>;
     setSignupData: React.Dispatch<React.SetStateAction<SignupData>>;
-    handleInputChange: (
-        ref: React.RefObject<HTMLInputElement>,
-        name: string,
-    ) => void;
 }
 
-function AccountInfoForm({
-    setCurrentTab,
-    signupData,
-    handleInputChange,
-}: Props) {
-    const emailRef = useRef<HTMLInputElement>(null);
-    const passwordRef = useRef<HTMLInputElement>(null);
-    const confirmPasswordRef = useRef<HTMLInputElement>(null);
+const formSchema = z
+    .object({
+        email: z.string().email({ message: "Invalid email address" }),
+        password: z.string().min(8, {
+            message: "Password should be at least 8 characters.",
+        }),
+        confirmPassword: z.string().min(8, {
+            message: "Password should be at least 8 characters.",
+        }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Passwords don't match",
+        path: ["confirmPassword"],
+    });
 
-    const nextTab = (e: React.FormEvent<HTMLFormElement>) => {
-        // TODO: Handle confirmPassword false state
-        e.preventDefault();
+function AccountInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: signupData,
+    });
+
+    const nextTab = (values: z.infer<typeof formSchema>) => {
+        setSignupData((prev) => {
+            return { ...prev, ...values };
+        });
         setCurrentTab("personal-info");
     };
 
@@ -50,67 +67,71 @@ function AccountInfoForm({
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={nextTab}>
-                            <div className="flex flex-col gap-6">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        placeholder="m@example.com"
-                                        required
-                                        ref={emailRef}
-                                        value={signupData.email}
-                                        onChange={() =>
-                                            handleInputChange(emailRef, "email")
-                                        }
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(nextTab)}>
+                                <div className="flex flex-col gap-6">
+                                    <FormField
+                                        control={form.control}
+                                        name="email"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Email</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder="john@Doe.com"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
                                     />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="password">Password</Label>
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        required
-                                        ref={passwordRef}
-                                        value={signupData.password}
-                                        onChange={() =>
-                                            handleInputChange(
-                                                passwordRef,
-                                                "password",
-                                            )
-                                        }
+                                    <FormField
+                                        control={form.control}
+                                        name="password"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Password</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        type="password"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
                                     />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="confirmPassword">
-                                        Confirm Password
-                                    </Label>
-                                    <Input
-                                        id="confirmPassword"
-                                        type="password"
-                                        required
-                                        ref={confirmPasswordRef}
-                                        value={signupData.confirmPassword}
-                                        onChange={() =>
-                                            handleInputChange(
-                                                confirmPasswordRef,
-                                                "confirmPassword",
-                                            )
-                                        }
+                                    <FormField
+                                        control={form.control}
+                                        name="confirmPassword"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
+                                                    Confirm Password
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        type="password"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
                                     />
+                                    <Button type="submit" className="w-full">
+                                        Next
+                                    </Button>
                                 </div>
-                                <Button type="submit" className="w-full">
-                                    Next
-                                </Button>
-                            </div>
-                            <div className="mt-4 text-center text-sm">
-                                Already have an account?{" "}
-                                <Link to="/login" className="underline">
-                                    Login
-                                </Link>
-                            </div>
-                        </form>
+                                <div className="mt-4 text-center text-sm">
+                                    Already have an account?{" "}
+                                    <Link to="/login" className="underline">
+                                        Login
+                                    </Link>
+                                </div>
+                            </form>
+                        </Form>
                     </CardContent>
                 </Card>
             </div>

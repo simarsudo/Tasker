@@ -7,6 +7,7 @@ export type lucidIconType = ForwardRefExoticComponent<
 
 export type columnType = { columnId: number; columnName: string }[];
 
+// Signup page
 export type SignupData = {
     email: string;
     password: string;
@@ -15,3 +16,5 @@ export type SignupData = {
     lastName: string;
     contactNumber: string;
 };
+
+export type CurrentTab = "account-info" | "personal-info";
