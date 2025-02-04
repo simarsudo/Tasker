@@ -1,8 +1,9 @@
-import { SignupData, CurrentTab } from "@/common/types";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
+
+import { CurrentTab, SignupData } from "@/common/types";
 import AccountInfoForm from "~/components/forms/AccountInfoForm";
 import PersonalInfoForm from "~/components/forms/PersonalInfoForm";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const initialSignupData = (): SignupData => ({
     email: "",

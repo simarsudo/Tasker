@@ -1,6 +1,18 @@
-import { SignupData, CurrentTab } from "@/common/types";
-import { Button } from "@/components/ui/button";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { ChevronLeft } from "lucide-react";
+
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CurrentTab, SignupData } from "@/common/types";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import {
     Form,
     FormControl,
@@ -9,17 +21,6 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import {
-    Card,
-    CardTitle,
-    CardHeader,
-    CardContent,
-    CardDescription,
-} from "@/components/ui/card";
-import { ChevronLeft } from "lucide-react";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 
 type Props = {
     signupData: SignupData;
@@ -59,6 +60,7 @@ function PersonalInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
         defaultValues: signupData,
     });
 
+    // TODO: Add signup logic
     const handleSignupSubmit = (values: z.infer<typeof formSchema>) => {
         setSignupData((prev) => {
             return { ...prev, ...values };

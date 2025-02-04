@@ -1,7 +1,20 @@
-import { SignupData, CurrentTab } from "@/common/types";
-import React, { useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import React from "react";
+
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+
+import { Link } from "@remix-run/react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CurrentTab, SignupData } from "@/common/types";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import {
     Form,
     FormControl,
@@ -10,17 +23,6 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import {
-    Card,
-    CardTitle,
-    CardHeader,
-    CardContent,
-    CardDescription,
-} from "@/components/ui/card";
-import { Link } from "@remix-run/react";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 
 interface Props {
     signupData: SignupData;
