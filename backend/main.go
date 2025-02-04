@@ -38,6 +38,7 @@ func main() {
 	}
 
 	// Auto migrate the User model
+	// NOTE: During auto migrations columns are not deleted automatically to preserve data
 	err = db.DB.AutoMigrate(&models.User{})
 
 	if err != nil {

@@ -93,6 +93,7 @@ function PersonalInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
             const data = await response.json();
 
             if (response.ok) {
+                // FIXME: Handle token from the server and save it
                 navigate("/dashboard");
             } else {
                 // TODO: Handle multiple errors returned by server edge case

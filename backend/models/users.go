@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/simarsudo/tasker/db"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -14,8 +15,33 @@ type User struct {
 	ContactNumber string `gorm:"not null" binding:"required"`
 }
 
-func (u *User) GetUser() error {
-	return db.DB.Where("email = ? AND password = ?", u.Email, u.Password).First(u).Error
+func (u *User) HashPassword() error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	u.Password = string(hashedPassword)
+	return nil
+}
+
+// VerifyPassword checks if provided password matches
+func (u *User) VerifyPassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+	return err == nil
+}
+
+type LoginRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
+// GetUserByEmail fetches user from database by email
+func GetUserByEmail(email string) (*User, error) {
+	var user User
+	if err := db.DB.Where("email = ?", email).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
 type UserRegistration struct {
