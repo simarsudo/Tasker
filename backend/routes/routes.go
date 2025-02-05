@@ -28,12 +28,12 @@ func login(ctx *gin.Context) {
 
 	user, err := models.GetUserByEmail(loginReq.Email)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": utils.InvalidCredentials})
 		return
 	}
 
 	if !user.VerifyPassword(loginReq.Password) {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": utils.InvalidCredentials})
 		return
 	}
 

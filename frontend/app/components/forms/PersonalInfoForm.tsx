@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CurrentTab, SignupData } from "@/common/types";
 import { UNEXPECTED_ERROR_MESSAGE } from "@/common/ErrorMsgs";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
     Card,
     CardContent,
@@ -93,7 +93,6 @@ function PersonalInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
             const data = await response.json();
 
             if (response.ok) {
-                // FIXME: Handle token from the server and save it
                 navigate("/dashboard");
             } else {
                 // TODO: Handle multiple errors returned by server edge case

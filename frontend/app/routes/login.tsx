@@ -1,37 +1,82 @@
-import React, { useRef } from "react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { AlertCircle, Loader } from "lucide-react";
+
+import { Link } from "@remix-run/react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useNavigate } from "@remix-run/react";
+import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { UNEXPECTED_ERROR_MESSAGE } from "@/common/ErrorMsgs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
     Card,
-    CardTitle,
-    CardHeader,
     CardContent,
     CardDescription,
+    CardHeader,
+    CardTitle,
 } from "app/components/ui/card";
-import { Link } from "@remix-run/react";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+
+const loginSchema = z.object({
+    email: z.string().email().nonempty(),
+    password: z.string().nonempty(),
+});
 
 export default function Page() {
-    const emailRef = useRef<HTMLInputElement>(null);
-    const passwordRef = useRef<HTMLInputElement>(null);
+    const [loading, setLoading] = useState(false);
+    const [loginError, setLoginError] = useState({
+        hasError: false,
+        message: "",
+    });
+    const navigate = useNavigate();
+    const form = useForm<z.infer<typeof loginSchema>>({
+        resolver: zodResolver(loginSchema),
+    });
 
-    const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const email = emailRef.current?.value;
-        const password = passwordRef.current?.value;
-        console.log(email, password);
+    const handleLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
+        setLoading(true);
 
-        fetch("http://127.0.0.1:8080/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                console.log(data);
+        // FIXME: Replace with actual login logic
+        try {
+            const response = await fetch("http://127.0.0.1:8080/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: values.email,
+                    password: values.password,
+                }),
             });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                navigate("/dashboard");
+            } else {
+                setLoginError({
+                    hasError: true,
+                    message: data.error,
+                });
+            }
+        } catch (e) {
+            setLoginError({
+                hasError: true,
+                message: UNEXPECTED_ERROR_MESSAGE,
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -46,40 +91,86 @@ export default function Page() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={handleLoginSubmit}>
-                                <div className="flex flex-col gap-6">
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="email">Email</Label>
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            placeholder="m@example.com"
-                                            required
-                                            ref={emailRef}
+                            <Form {...form}>
+                                <form
+                                    onSubmit={form.handleSubmit(
+                                        handleLoginSubmit,
+                                    )}
+                                >
+                                    <div className="flex flex-col gap-6">
+                                        <FormField
+                                            control={form.control}
+                                            name="email"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Email</FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            type="email"
+                                                            placeholder="John@Doe.com"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
                                         />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="password">
-                                            Password
-                                        </Label>
-                                        <Input
-                                            id="password"
-                                            type="password"
-                                            required
-                                            ref={passwordRef}
+                                        <FormField
+                                            control={form.control}
+                                            name="password"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>
+                                                        Password
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            type="password"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
                                         />
+                                        <Button
+                                            disabled={loading}
+                                            type="submit"
+                                            className="w-full"
+                                        >
+                                            {loading ? (
+                                                <Loader className="ml-2 h-5 w-5 animate-spin" />
+                                            ) : (
+                                                <span>Login</span>
+                                            )}
+                                        </Button>
                                     </div>
-                                    <Button type="submit" className="w-full">
-                                        Login
-                                    </Button>
-                                </div>
-                                <div className="mt-4 text-center text-sm">
-                                    Don't have an account?{" "}
-                                    <Link to="/signup" className="underline">
-                                        Signup
-                                    </Link>
-                                </div>
-                            </form>
+                                    {loginError.hasError ? (
+                                        <Alert
+                                            variant="destructive"
+                                            className="mt-4"
+                                        >
+                                            <div className="grid grid-cols-[auto,1fr] items-start gap-2">
+                                                <AlertCircle className="h-5 w-5" />
+                                                <AlertDescription>
+                                                    {loginError.message}
+                                                </AlertDescription>
+                                            </div>
+                                        </Alert>
+                                    ) : (
+                                        ""
+                                    )}
+                                    <div className="mt-4 text-center text-sm">
+                                        Don't have an account?{" "}
+                                        <Link
+                                            to="/signup"
+                                            className="underline"
+                                        >
+                                            Signup
+                                        </Link>
+                                    </div>
+                                </form>
+                            </Form>
                         </CardContent>
                     </Card>
                 </div>
