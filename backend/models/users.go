@@ -1,6 +1,8 @@
 package models
 
 import (
+	"strings"
+
 	"github.com/simarsudo/tasker/db"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -13,6 +15,12 @@ type User struct {
 	Email         string `gorm:"unique;not null" binding:"required,email"`
 	Password      string `gorm:"not null" binding:"required"`
 	ContactNumber string `gorm:"not null" binding:"required"`
+}
+
+// Before user is created this function will be called to normalize email to lowercase
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+	u.Email = strings.ToLower(u.Email)
+	return nil
 }
 
 func (u *User) HashPassword() error {
@@ -38,7 +46,8 @@ type LoginRequest struct {
 // GetUserByEmail fetches user from database by email
 func GetUserByEmail(email string) (*User, error) {
 	var user User
-	if err := db.DB.Where("email = ?", email).First(&user).Error; err != nil {
+
+	if err := db.DB.Where("email = ?", strings.ToLower(email)).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
