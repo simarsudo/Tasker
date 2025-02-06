@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { AlertCircle, Loader } from "lucide-react";
 
 import { Link } from "@remix-run/react";
+import { makeRequest } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "@remix-run/react";
 import { Button } from "@/components/ui/button";
@@ -47,20 +48,13 @@ export default function Page() {
         setLoading(true);
 
         try {
-            const response = await fetch(
-                "http://127.0.0.1:8000/api/v1/auth/login",
-                {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        email: values.email,
-                        password: values.password,
-                    }),
-                },
-            );
+            const response = await makeRequest("/auth/login", {
+                method: "POST",
+                body: JSON.stringify({
+                    email: values.email,
+                    password: values.password,
+                }),
+            });
 
             const data = await response.json();
 

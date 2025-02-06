@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
 
+import { makeRequest } from "~/lib/utils";
+
+// TODO: Remove this route
+
 const TestRoute: React.FC = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/v1/test", {
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
+        makeRequest("/test")
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
@@ -33,7 +32,7 @@ const TestRoute: React.FC = () => {
     }
 
     if (error) {
-        return <div>Error: {error.message}</div>;
+        return <div>Error: {error}</div>;
     }
 
     return (

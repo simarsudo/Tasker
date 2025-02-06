@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { AlertCircle, ChevronLeft, Loader } from "lucide-react";
 
+import { makeRequest } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -81,18 +82,10 @@ function PersonalInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
         setSignupData(payloadData);
 
         try {
-            // TODO: Replace hard coded links
-            const response = await fetch(
-                "http://127.0.0.1:8000/api/v1/auth/signup",
-                {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(payloadData),
-                },
-            );
+            const response = await makeRequest("/auth/signup", {
+                method: "POST",
+                body: JSON.stringify(payloadData),
+            });
 
             const data = await response.json();
 

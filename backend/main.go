@@ -10,6 +10,8 @@ import (
 	"github.com/simarsudo/tasker/routes"
 )
 
+// TODO: Maybe move jwt, cors related settings in config file and also load all env variables there
+
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 
