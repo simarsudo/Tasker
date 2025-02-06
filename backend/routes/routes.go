@@ -6,16 +6,35 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/simarsudo/tasker/db"
+	"github.com/simarsudo/tasker/middleware"
 	"github.com/simarsudo/tasker/models"
 	"github.com/simarsudo/tasker/utils"
 	"gorm.io/gorm"
 )
 
 func RegisterRoutes(server *gin.Engine) {
-	server.POST("/login", login)
-	server.POST("/signup", signup)
+	v1 := server.Group("/api/v1")
 
-	// TODO: Look for token invalidation logic for protected routes
+	// Public routes
+	auth := v1.Group("/auth")
+	{
+		auth.POST("/login", login)
+		auth.POST("/signup", signup)
+		// auth.POST("/logout", logout)
+	}
+
+	// Protected routes
+	protected := v1.Group("")
+	protected.Use(middleware.AuthMiddleware())
+	{
+		protected.GET("/test", test)
+		// protected.GET("/dashboard", getDashboard)
+		// protected.PUT("/settings", updateSettings)
+	}
+}
+
+func test(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "You are authorized"})
 }
 
 func login(ctx *gin.Context) {

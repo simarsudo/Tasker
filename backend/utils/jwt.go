@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"net/http"
 	"os"
 	"time"
 
@@ -48,6 +49,9 @@ func SetCookie(ctx *gin.Context, name, value string) {
 		Secure:   CookieSecure,
 		HTTPOnly: CookieHTTPOnly,
 	}
+
+	// Set SameSite attribute before setting cookie
+	ctx.SetSameSite(http.SameSiteLaxMode)
 
 	ctx.SetCookie(
 		config.Name,

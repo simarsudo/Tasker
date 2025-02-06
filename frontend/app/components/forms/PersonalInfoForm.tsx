@@ -82,13 +82,17 @@ function PersonalInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
 
         try {
             // TODO: Replace hard coded links
-            const response = await fetch("http://127.0.0.1:8080/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            const response = await fetch(
+                "http://127.0.0.1:8000/api/v1/auth/signup",
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payloadData),
                 },
-                body: JSON.stringify(payloadData),
-            });
+            );
 
             const data = await response.json();
 
