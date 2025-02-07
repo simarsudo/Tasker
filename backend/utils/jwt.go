@@ -64,6 +64,10 @@ func SetCookie(ctx *gin.Context, name, value string) {
 	)
 }
 
+func DeleteCookie(ctx *gin.Context, name string) {
+	ctx.SetCookie(name, "", -1., CookiePath, CookieDomain, CookieSecure, CookieHTTPOnly)
+}
+
 func GenerateToken(email string, userID int64) (string, error) {
 	now := time.Now()
 	tokenExpirationTime := now.Add(TokenExpiration).Unix()

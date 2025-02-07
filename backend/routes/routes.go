@@ -20,16 +20,15 @@ func RegisterRoutes(server *gin.Engine) {
 	{
 		auth.POST("/login", login)
 		auth.POST("/signup", signup)
-		// auth.POST("/logout", logout)
 	}
 
 	// Protected routes
 	protected := v1.Group("")
 	protected.Use(middleware.AuthMiddleware())
 	{
+		protected.POST("/auth/logout", logout)
+
 		protected.GET("/test", test)
-		// protected.GET("/dashboard", getDashboard)
-		// protected.PUT("/settings", updateSettings)
 	}
 }
 
@@ -64,6 +63,12 @@ func login(ctx *gin.Context) {
 
 	utils.SetCookie(ctx, "token", token)
 	ctx.JSON(http.StatusOK, gin.H{"message": "Login successful"})
+}
+
+func logout(ctx *gin.Context) {
+	utils.DeleteCookie(ctx, "token")
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
 }
 
 func signup(ctx *gin.Context) {

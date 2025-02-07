@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 
 import { makeRequest } from "~/lib/utils";
 
-// TODO: Remove this route
-
-const TestRoute: React.FC = () => {
+const Logout: React.FC = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
-        makeRequest("/test")
+        makeRequest("/auth/logout", {
+            method: "POST",
+        })
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
@@ -37,10 +37,10 @@ const TestRoute: React.FC = () => {
 
     return (
         <div>
-            <h1>Test Route Data</h1>
+            <h1>Logout</h1>
             <pre>{JSON.stringify(data, null, 2)}</pre>
         </div>
     );
 };
 
-export default TestRoute;
+export default Logout;
