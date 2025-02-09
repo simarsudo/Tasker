@@ -6,7 +6,7 @@ import {
     ScrollRestoration,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
-
+import { AuthProvider } from "@/context/auth";
 import styles from "./tailwind.css?url";
 
 export const links: LinksFunction = () => [
@@ -36,9 +36,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <Links />
             </head>
             <body>
-                {children}
-                <ScrollRestoration />
-                <Scripts />
+                <AuthProvider>
+                    {children}
+                    <ScrollRestoration />
+                    <Scripts />
+                </AuthProvider>
             </body>
         </html>
     );

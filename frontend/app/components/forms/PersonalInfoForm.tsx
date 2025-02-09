@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { AlertCircle, ChevronLeft, Loader } from "lucide-react";
 
+import { useAuth } from "@/context/auth";
 import { makeRequest } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -61,6 +62,7 @@ const formSchema = z.object({
 });
 
 function PersonalInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
+    const { setIsAuthenticated } = useAuth();
     const [signupError, setSignupError] = useState({
         hasError: false,
         message: "",
@@ -90,6 +92,8 @@ function PersonalInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
             const data = await response.json();
 
             if (response.ok) {
+                // TODO: Handle successful signup
+                setIsAuthenticated(true);
                 navigate("/dashboard");
             } else {
                 // TODO: Handle multiple errors returned by server edge case

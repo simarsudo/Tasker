@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { AlertCircle, Loader } from "lucide-react";
 
 import { Link } from "@remix-run/react";
+import { useAuth } from "@/context/auth";
 import { makeRequest } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "@remix-run/react";
@@ -34,6 +35,7 @@ const loginSchema = z.object({
 });
 
 export default function Page() {
+    const { isAuthenticated, setIsAuthenticated } = useAuth();
     const [loading, setLoading] = useState(false);
     const [loginError, setLoginError] = useState({
         hasError: false,
@@ -43,6 +45,12 @@ export default function Page() {
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
     });
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate("/dashboard");
+        }
+    }, [isAuthenticated, navigate]);
 
     const handleLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
         setLoading(true);
@@ -59,6 +67,7 @@ export default function Page() {
             const data = await response.json();
 
             if (response.ok) {
+                setIsAuthenticated(true);
                 navigate("/dashboard");
             } else {
                 setLoginError({

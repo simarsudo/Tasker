@@ -1,6 +1,9 @@
-import { CircleGauge, CircleCheckBig, Shapes } from "lucide-react";
-import { lucidIconType } from "./types";
+import { CircleCheckBig, CircleGauge, Shapes } from "lucide-react";
+
 import { Badge } from "~/components/ui/badge";
+import { createCookie, redirect } from "@remix-run/node";
+
+import { lucidIconType } from "./types";
 
 export const StatusIconMap: { [key: number]: lucidIconType } = {
     0: Shapes,
