@@ -1,9 +1,9 @@
-import { Outlet, useLoaderData } from "@remix-run/react";
 import { LoaderFunction } from "@remix-run/node";
-import { DashboardSidebar } from "~/components/common/DashboardSidebar";
+import { Separator } from "@/components/ui/separator";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useRequireAuthentication } from "~/hooks/useRequireAuthentication";
-import { Separator } from "@/components/ui/separator";
+import { DashboardSidebar } from "~/components/common/sidebar/DashboardSidebar";
 
 export const loader: LoaderFunction = async ({ request }) => {
     const cookieHeader = request.headers.get("Cookie");
