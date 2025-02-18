@@ -2,13 +2,8 @@ import { useState } from "react";
 
 import { ChevronsUpDown, Plus } from "lucide-react";
 
-import { DropdownMenuShortcut } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-} from "@/components/ui/sidebar";
+import { DropdownMenuShortcut } from "@/components/ui/dropdown-menu";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -17,6 +12,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+} from "@/components/ui/sidebar";
 
 // 32px and 24px
 type Team = {

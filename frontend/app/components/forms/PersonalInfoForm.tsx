@@ -1,18 +1,9 @@
 import { useState } from "react";
 
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { AlertCircle, ChevronLeft, Loader } from "lucide-react";
 
-import { useAuth } from "@/context/auth";
-import { makeRequest } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CurrentTab, SignupData } from "@/common/types";
-import { UNEXPECTED_ERROR_MESSAGE } from "@/common/ErrorMsgs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -28,6 +19,16 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+import { UNEXPECTED_ERROR_MESSAGE } from "@/common/ErrorMsgs";
+import { CurrentTab, SignupData } from "@/common/types";
+import { useAuth } from "@/context/auth";
+import { makeRequest } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 
 type Props = {
     signupData: SignupData;

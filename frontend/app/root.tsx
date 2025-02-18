@@ -1,3 +1,7 @@
+import styles from "./tailwind.css?url";
+
+import { AuthProvider } from "@/context/auth";
+import type { LinksFunction } from "@remix-run/node";
 import {
     Links,
     Meta,
@@ -5,9 +9,6 @@ import {
     Scripts,
     ScrollRestoration,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
-import { AuthProvider } from "@/context/auth";
-import styles from "./tailwind.css?url";
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: styles },

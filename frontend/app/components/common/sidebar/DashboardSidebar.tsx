@@ -7,9 +7,9 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 
-import Menu from "./Menu";
-import Header from "./Header";
 import Footer from "./Footer";
+import Header from "./Header";
+import Menu from "./Menu";
 
 export function DashboardSidebar() {
     const { isMobile } = useSidebar();

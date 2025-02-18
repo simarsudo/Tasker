@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { columnType } from "~/common/types";
-import { TeamData, currentUserId, TeamMemberId } from "~/common/common";
+
 import {
     ArrowRightLeft,
     EllipsisVertical,
-    UserPen,
     Pencil,
+    UserPen,
 } from "lucide-react";
+
+import { DeleteTaskModal } from "../modals/DeleteTaskModal";
 import { Button } from "../ui/button";
 import {
     DropdownMenu,
@@ -21,7 +22,9 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { DeleteTaskModal } from "../modals/DeleteTaskModal";
+
+import { TeamData, TeamMemberId, currentUserId } from "~/common/common";
+import { columnType } from "~/common/types";
 
 type Props = {
     columnData: columnType;

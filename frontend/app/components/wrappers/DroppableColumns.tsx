@@ -1,8 +1,9 @@
-import { columnType } from "~/common/types";
-import { useDroppable } from "@dnd-kit/core";
-import { Card, CardTitle } from "../ui/card";
 import TaskCard from "../cards/TaskCard";
+import { Card, CardTitle } from "../ui/card";
+
+import { useDroppable } from "@dnd-kit/core";
 import { TeamData, TeamMemberId } from "~/common/common";
+import { columnType } from "~/common/types";
 
 type Props = {
     statusId: number;

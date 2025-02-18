@@ -1,3 +1,5 @@
+import { Trash2 } from "lucide-react";
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -9,7 +11,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "../ui/alert-dialog";
-import { Trash2 } from "lucide-react";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 
 type Props = {

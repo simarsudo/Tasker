@@ -1,13 +1,6 @@
 import React from "react";
 
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-
-import { Link } from "@remix-run/react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CurrentTab, SignupData } from "@/common/types";
 import {
     Card,
     CardContent,
@@ -23,6 +16,13 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+import { CurrentTab, SignupData } from "@/common/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "@remix-run/react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 interface Props {
     signupData: SignupData;

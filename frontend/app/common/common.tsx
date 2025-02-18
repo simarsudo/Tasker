@@ -1,7 +1,6 @@
 import { CircleCheckBig, CircleGauge, Shapes } from "lucide-react";
 
-import { Badge } from "~/components/ui/badge";
-import { createCookie, redirect } from "@remix-run/node";
+import { Badge } from "@/components/ui/badge";
 
 import { lucidIconType } from "./types";
 
