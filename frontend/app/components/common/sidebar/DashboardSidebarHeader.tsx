@@ -47,7 +47,9 @@ type SidebarHeaderProps = {
     isMobile?: boolean;
 };
 
-function Header({ isMobile }: SidebarHeaderProps) {
+export default function DashboardSidebarHeader({
+    isMobile,
+}: SidebarHeaderProps) {
     const [selectedTeam, setSelectedTeam] =
         useState<keyof typeof teams>("Low Elo Team");
 
@@ -134,5 +136,3 @@ function Header({ isMobile }: SidebarHeaderProps) {
         </SidebarMenu>
     );
 }
-
-export default Header;

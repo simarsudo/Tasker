@@ -37,7 +37,7 @@ const items = [
     // },
 ];
 
-export default function Menu() {
+export default function DashboardSidebarMenu() {
     return (
         <SidebarGroup>
             <SidebarGroupLabel>Menu</SidebarGroupLabel>

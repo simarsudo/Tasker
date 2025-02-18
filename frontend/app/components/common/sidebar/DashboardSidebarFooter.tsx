@@ -26,7 +26,7 @@ type Props = {
     isMobile?: boolean;
 };
 
-function Footer({ isMobile }: Props) {
+export default function DashboardSidebarFooter({ isMobile }: Props) {
     return (
         <SidebarMenu>
             <SidebarMenuItem>
@@ -109,5 +109,3 @@ function Footer({ isMobile }: Props) {
         </SidebarMenu>
     );
 }
-
-export default Footer;

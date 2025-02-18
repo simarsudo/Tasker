@@ -7,9 +7,9 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 
-import Footer from "./Footer";
-import Header from "./Header";
-import Menu from "./Menu";
+import DashboardSidebarFooter from "./DashboardSidebarFooter";
+import DashboardSidebarHeader from "./DashboardSidebarHeader";
+import DashboardSidebarMenu from "./DashboardSidebarMenu";
 
 export function DashboardSidebar() {
     const { isMobile } = useSidebar();
@@ -17,14 +17,14 @@ export function DashboardSidebar() {
     return (
         <Sidebar collapsible="icon">
             <SidebarHeader>
-                <Header isMobile={isMobile} />
+                <DashboardSidebarHeader isMobile={isMobile} />
             </SidebarHeader>
             <SidebarSeparator />
             <SidebarContent>
-                <Menu />
+                <DashboardSidebarMenu />
             </SidebarContent>
             <SidebarFooter>
-                <Footer isMobile={isMobile} />
+                <DashboardSidebarFooter isMobile={isMobile} />
             </SidebarFooter>
         </Sidebar>
     );
