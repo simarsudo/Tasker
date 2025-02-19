@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
     Bell,
     ChevronsUpDown,
@@ -22,12 +24,49 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "@remix-run/react";
+import { useAuth } from "~/context/auth";
+import { makeRequest } from "~/lib/utils";
+
 type Props = {
     isMobile?: boolean;
 };
 
 export default function DashboardSidebarFooter({ isMobile }: Props) {
-    // TODO: Add logout functionality
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+    const { setIsAuthenticated } = useAuth();
+    const { toast } = useToast();
+
+    const logout = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.stopPropagation();
+        setLoading(true);
+
+        makeRequest("/auth/logout", {
+            method: "POST",
+        })
+            .then((response) => {
+                if (response.ok || response.status === 401) {
+                    setIsAuthenticated(false);
+                    navigate("/login");
+                } else {
+                    toast({
+                        title: "Uh oh! Something went wrong.",
+                        description:
+                            "Please refresh the page or try again later.",
+                        variant: "destructive",
+                    });
+                }
+            })
+            .catch((error: any) => {
+                setError(error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
 
     return (
         <SidebarMenu>
@@ -101,7 +140,10 @@ export default function DashboardSidebarFooter({ isMobile }: Props) {
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                            disabled={loading}
+                            onClick={(e) => logout(e)}
+                        >
                             <LogOut />
                             Log out
                         </DropdownMenuItem>

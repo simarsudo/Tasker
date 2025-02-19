@@ -6,6 +6,7 @@ import {
     SidebarSeparator,
     useSidebar,
 } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/toaster";
 
 import DashboardSidebarFooter from "./DashboardSidebarFooter";
 import DashboardSidebarHeader from "./DashboardSidebarHeader";
@@ -26,6 +27,7 @@ export function DashboardSidebar() {
             <SidebarFooter>
                 <DashboardSidebarFooter isMobile={isMobile} />
             </SidebarFooter>
+            <Toaster />
         </Sidebar>
     );
 }
