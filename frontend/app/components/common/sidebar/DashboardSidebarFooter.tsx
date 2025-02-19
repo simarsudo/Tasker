@@ -27,6 +27,8 @@ type Props = {
 };
 
 export default function DashboardSidebarFooter({ isMobile }: Props) {
+    // TODO: Add logout functionality
+
     return (
         <SidebarMenu>
             <SidebarMenuItem>
@@ -47,10 +49,10 @@ export default function DashboardSidebarFooter({ isMobile }: Props) {
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-semibold">
-                                    "Elder"
+                                    Elder
                                 </span>
                                 <span className="truncate text-xs">
-                                    "Elder@scrolls.com"
+                                    Elder@scrolls.com
                                 </span>
                             </div>
                             <ChevronsUpDown className="ml-auto size-4" />
@@ -75,10 +77,10 @@ export default function DashboardSidebarFooter({ isMobile }: Props) {
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">
-                                        "Elder"
+                                        Elder
                                     </span>
                                     <span className="truncate text-xs">
-                                        "Elder@scrolls.com"
+                                        Elder@scrolls.com
                                     </span>
                                 </div>
                             </div>
