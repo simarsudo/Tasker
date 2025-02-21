@@ -37,19 +37,19 @@ export default function Register() {
                     <Tabs value={currentTab} defaultValue={currentTab}>
                         <TabsList className="w-full my-2">
                             <TabsTrigger
-                                className="w-1/3"
+                                className="w-1/3 cursor-default"
                                 value={TabValues.Register}
                             >
                                 {TabValues.Register}
                             </TabsTrigger>
                             <TabsTrigger
-                                className="w-1/3"
+                                className="w-1/3 cursor-default"
                                 value={TabValues.Address}
                             >
                                 {TabValues.Address}
                             </TabsTrigger>
                             <TabsTrigger
-                                className="w-1/3"
+                                className="w-1/3 cursor-default"
                                 value={TabValues.Details}
                             >
                                 {TabValues.Details}
