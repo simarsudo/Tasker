@@ -1,7 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
-
 import { TabValues } from "@/common/common";
-import { CompanyInfo, CompanyInfoDispatch } from "@/common/types";
+import { CompanyRegistrationFormProps } from "@/common/types";
 
 import { Info } from "lucide-react";
 
@@ -35,12 +33,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type Props = {
-    setCurrentTab: Dispatch<SetStateAction<TabValues>>;
-    companyInfo: CompanyInfo;
-    setCompanyInfo: CompanyInfoDispatch;
-};
-
 const COMPANYSIZE = ["1-10", "11-50", "51-200", "201-500", "501-1000", "1000+"];
 
 const formSchema = z.object({
@@ -59,7 +51,7 @@ export default function RegisterCompanyForm({
     setCurrentTab,
     companyInfo,
     setCompanyInfo,
-}: Props) {
+}: CompanyRegistrationFormProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {

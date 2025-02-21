@@ -5,6 +5,8 @@ import {
     SetStateAction,
 } from "react";
 
+import { TabValues } from "@/common/common";
+
 import { LucideProps } from "lucide-react";
 
 export type lucidIconType = ForwardRefExoticComponent<
@@ -25,6 +27,8 @@ export type SignupData = {
 
 export type CurrentTab = "account-info" | "personal-info";
 
+// Registration form URL -> /register
+
 export type CompanyInfo = {
     companyName: string;
     website: string;
@@ -41,3 +45,9 @@ export type CompanyInfo = {
 };
 
 export type CompanyInfoDispatch = Dispatch<SetStateAction<CompanyInfo>>;
+
+export type CompanyRegistrationFormProps = {
+    setCurrentTab: Dispatch<SetStateAction<TabValues>>;
+    companyInfo: CompanyInfo;
+    setCompanyInfo: CompanyInfoDispatch;
+};

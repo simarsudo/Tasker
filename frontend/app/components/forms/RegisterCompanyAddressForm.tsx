@@ -1,7 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
-
 import { TabValues } from "@/common/common";
-import { CompanyInfo, CompanyInfoDispatch } from "@/common/types";
+import { CompanyRegistrationFormProps } from "@/common/types";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,12 +23,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type Props = {
-    setCurrentTab: Dispatch<SetStateAction<TabValues>>;
-    companyInfo: CompanyInfo;
-    setCompanyInfo: CompanyInfoDispatch;
-};
-
 const formSchema = z.object({
     address: z.string().nonempty({ message: "Address is required" }),
     city: z.string().nonempty({ message: "City is required" }),
@@ -42,7 +34,7 @@ export default function RegisterCompanyAddressForm({
     setCurrentTab,
     companyInfo,
     setCompanyInfo,
-}: Props) {
+}: CompanyRegistrationFormProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
