@@ -29,8 +29,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import useFormValidation from "@/hooks/use-form-validation";
 import { z } from "zod";
 
 const COMPANYSIZE = ["1-10", "11-50", "51-200", "201-500", "501-1000", "1000+"];
@@ -52,14 +51,11 @@ export default function RegisterCompanyForm({
     companyInfo,
     setCompanyInfo,
 }: CompanyRegistrationFormProps) {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            companyName: companyInfo.companyName,
-            website: companyInfo.website,
-            emailDomain: companyInfo.emailDomain,
-            companySize: companyInfo.companySize,
-        },
+    const form = useFormValidation(formSchema, {
+        companyName: companyInfo.companyName,
+        website: companyInfo.website,
+        emailDomain: companyInfo.emailDomain,
+        companySize: companyInfo.companySize,
     });
 
     function handleSubmit(values: z.infer<typeof formSchema>) {

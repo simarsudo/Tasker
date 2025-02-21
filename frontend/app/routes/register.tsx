@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { TabValues } from "@/common/common";
+import { CompanyInfo } from "@/common/types";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -8,7 +9,6 @@ import Navbar from "@/components/common/Navbar";
 import RegisterCompanyAddressForm from "@/components/forms/RegisterCompanyAddressForm";
 import RegisterCompanyDetailsForm from "@/components/forms/RegisterCompanyDetailsForm";
 import RegisterCompanyForm from "@/components/forms/RegisterCompanyForm";
-import { CompanyInfo } from "~/common/types";
 
 export default function Register() {
     const [currentTab, setCurrentTab] = useState<TabValues>(TabValues.Register);

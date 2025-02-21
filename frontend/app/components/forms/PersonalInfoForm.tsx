@@ -27,10 +27,9 @@ import { Input } from "@/components/ui/input";
 
 import { useAuth } from "@/context/auth";
 import { makeRequest } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import useFormValidation from "~/hooks/use-form-validation";
 
 const formSchema = z.object({
     firstName: z
@@ -69,10 +68,7 @@ function PersonalInfoForm({
         message: "",
     });
     const [loading, setLoading] = useState(false);
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: signupData,
-    });
+    const form = useFormValidation(formSchema, signupData);
     const navigate = useNavigate();
 
     const handleSignupSubmit = async (values: z.infer<typeof formSchema>) => {

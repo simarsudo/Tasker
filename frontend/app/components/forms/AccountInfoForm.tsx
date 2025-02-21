@@ -19,9 +19,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import useFormValidation from "@/hooks/use-form-validation";
 import { Link } from "@remix-run/react";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z
@@ -44,10 +43,7 @@ function AccountInfoForm({
     signupData,
     setSignupData,
 }: SignupFormProps) {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: signupData,
-    });
+    const form = useFormValidation(formSchema, signupData);
 
     const nextTab = (values: z.infer<typeof formSchema>) => {
         setSignupData((prev) => {

@@ -19,8 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import useFormValidation from "@/hooks/use-form-validation";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -40,14 +39,11 @@ export default function RegisterCompanyDetailsForm({
     companyInfo,
     setCompanyInfo,
 }: CompanyRegistrationFormProps) {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            contactPersonName: companyInfo.contactPersonName,
-            contactPersonRole: companyInfo.contactPersonRole,
-            contactPersonEmail: companyInfo.contactPersonEmail,
-            contactPersonPhone: companyInfo.contactPersonPhone,
-        },
+    const form = useFormValidation(formSchema, {
+        contactPersonName: companyInfo.contactPersonName,
+        contactPersonRole: companyInfo.contactPersonRole,
+        contactPersonEmail: companyInfo.contactPersonEmail,
+        contactPersonPhone: companyInfo.contactPersonPhone,
     });
 
     function handleSubmit(values: z.infer<typeof formSchema>) {
