@@ -1,4 +1,5 @@
-import React from "react";
+import { SignupTabValues } from "@/common/common";
+import { SignupFormProps } from "@/common/types";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,17 +19,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { CurrentTab, SignupData } from "@/common/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "@remix-run/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-interface Props {
-    signupData: SignupData;
-    setCurrentTab: React.Dispatch<React.SetStateAction<CurrentTab>>;
-    setSignupData: React.Dispatch<React.SetStateAction<SignupData>>;
-}
 
 const formSchema = z
     .object({
@@ -45,7 +39,11 @@ const formSchema = z
         path: ["confirmPassword"],
     });
 
-function AccountInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
+function AccountInfoForm({
+    setCurrentTab,
+    signupData,
+    setSignupData,
+}: SignupFormProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: signupData,
@@ -55,7 +53,7 @@ function AccountInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
         setSignupData((prev) => {
             return { ...prev, ...values };
         });
-        setCurrentTab("personal-info");
+        setCurrentTab(SignupTabValues.PersonalInfo);
     };
 
     return (

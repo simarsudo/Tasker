@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 
+import { SignupTabValues } from "@/common/common";
+import { SignupData } from "@/common/types";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { useAuth } from "@/context/auth";
-import { CurrentTab, SignupData } from "@/common/types";
+import { useNavigate } from "@remix-run/react";
 import AccountInfoForm from "~/components/forms/AccountInfoForm";
 import PersonalInfoForm from "~/components/forms/PersonalInfoForm";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useNavigate } from "@remix-run/react";
 
 const initialSignupData = (): SignupData => ({
     email: "",
@@ -18,7 +21,9 @@ const initialSignupData = (): SignupData => ({
 
 export default function Signup() {
     const { isAuthenticated } = useAuth();
-    const [currentTab, setCurrentTab] = useState<CurrentTab>("account-info");
+    const [currentTab, setCurrentTab] = useState<SignupTabValues>(
+        SignupTabValues.AccountInfo,
+    );
     const [signupData, setSignupData] = useState<SignupData>(initialSignupData);
     const navigate = useNavigate();
 
@@ -35,26 +40,26 @@ export default function Signup() {
                     <TabsList>
                         <TabsTrigger
                             className="cursor-default"
-                            value="account-info"
+                            value={SignupTabValues.AccountInfo}
                         >
                             Account Information
                         </TabsTrigger>
                         <TabsTrigger
                             className="cursor-default"
-                            value="personal-info"
+                            value={SignupTabValues.PersonalInfo}
                         >
                             Personal Information
                         </TabsTrigger>
                     </TabsList>
                 </div>
-                <TabsContent value="account-info">
+                <TabsContent value={SignupTabValues.AccountInfo}>
                     <AccountInfoForm
                         signupData={signupData}
                         setSignupData={setSignupData}
                         setCurrentTab={setCurrentTab}
                     />
                 </TabsContent>
-                <TabsContent value="personal-info">
+                <TabsContent value={SignupTabValues.PersonalInfo}>
                     <PersonalInfoForm
                         setCurrentTab={setCurrentTab}
                         signupData={signupData}

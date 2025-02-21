@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+import { UNEXPECTED_ERROR_MESSAGE } from "@/common/ErrorMsgs";
+import { SignupTabValues } from "@/common/common";
+import { SignupFormProps } from "@/common/types";
+
 import { AlertCircle, ChevronLeft, Loader } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -21,20 +25,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { UNEXPECTED_ERROR_MESSAGE } from "@/common/ErrorMsgs";
-import { CurrentTab, SignupData } from "@/common/types";
 import { useAuth } from "@/context/auth";
 import { makeRequest } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-
-type Props = {
-    signupData: SignupData;
-    setCurrentTab: React.Dispatch<React.SetStateAction<CurrentTab>>;
-    setSignupData: React.Dispatch<React.SetStateAction<SignupData>>;
-};
 
 const formSchema = z.object({
     firstName: z
@@ -62,7 +58,11 @@ const formSchema = z.object({
         }),
 });
 
-function PersonalInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
+function PersonalInfoForm({
+    setCurrentTab,
+    signupData,
+    setSignupData,
+}: SignupFormProps) {
     const { setIsAuthenticated } = useAuth();
     const [signupError, setSignupError] = useState({
         hasError: false,
@@ -184,7 +184,9 @@ function PersonalInfoForm({ setCurrentTab, signupData, setSignupData }: Props) {
                                                         ...form.getValues(),
                                                     };
                                                 });
-                                                setCurrentTab("account-info");
+                                                setCurrentTab(
+                                                    SignupTabValues.AccountInfo,
+                                                );
                                             }}
                                             type="button"
                                             className="w-1/4"

@@ -5,7 +5,7 @@ import {
     SetStateAction,
 } from "react";
 
-import { TabValues } from "@/common/common";
+import { SignupTabValues, TabValues } from "@/common/common";
 
 import { LucideProps } from "lucide-react";
 
@@ -15,7 +15,7 @@ export type lucidIconType = ForwardRefExoticComponent<
 
 export type columnType = { columnId: number; columnName: string }[];
 
-// Signup page
+// Signup page URL-> /signup
 export type SignupData = {
     email: string;
     password: string;
@@ -25,10 +25,13 @@ export type SignupData = {
     contactNumber: string;
 };
 
-export type CurrentTab = "account-info" | "personal-info";
+export type SignupFormProps = {
+    signupData: SignupData;
+    setCurrentTab: Dispatch<SetStateAction<SignupTabValues>>;
+    setSignupData: Dispatch<SetStateAction<SignupData>>;
+};
 
 // Registration form URL -> /register
-
 export type CompanyInfo = {
     companyName: string;
     website: string;

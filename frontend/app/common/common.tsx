@@ -27,6 +27,11 @@ export const TeamData = {
 
 export type TeamMemberId = keyof typeof TeamData;
 
+export enum SignupTabValues {
+    AccountInfo = "AccountInfo",
+    PersonalInfo = "PersonalInfo",
+}
+
 export enum TabValues {
     Register = "Register",
     Address = "Address",
