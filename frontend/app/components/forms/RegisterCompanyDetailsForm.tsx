@@ -1,9 +1,13 @@
+import { Dispatch, SetStateAction } from "react";
+
+import { TabValues } from "@/common/common";
+import { CompanyInfo, CompanyInfoDispatch } from "@/common/types";
+
 import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -21,7 +25,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type Props = {};
+type Props = {
+    setCurrentTab: Dispatch<SetStateAction<TabValues>>;
+    companyInfo: CompanyInfo;
+    setCompanyInfo: CompanyInfoDispatch;
+};
 
 const formSchema = z.object({
     contactPersonName: z.string().nonempty({ message: "Name is required" }),
@@ -35,19 +43,24 @@ const formSchema = z.object({
         .nonempty({ message: "Phone number is required" }),
 });
 
-export default function RegisterCompanyDetailsForm({}: Props) {
+export default function RegisterCompanyDetailsForm({
+    setCurrentTab,
+    companyInfo,
+    setCompanyInfo,
+}: Props) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            contactPersonName: "",
-            contactPersonRole: "",
-            contactPersonEmail: "",
-            contactPersonPhone: "",
+            contactPersonName: companyInfo.contactPersonName,
+            contactPersonRole: companyInfo.contactPersonRole,
+            contactPersonEmail: companyInfo.contactPersonEmail,
+            contactPersonPhone: companyInfo.contactPersonPhone,
         },
     });
 
     function handleSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+        console.log({ ...companyInfo, ...values });
+        setCompanyInfo({ ...companyInfo, ...values });
     }
 
     return (
@@ -117,9 +130,23 @@ export default function RegisterCompanyDetailsForm({}: Props) {
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" className="w-full mt-2">
-                                Submit
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button
+                                    className="mt-2 w-1/2"
+                                    onClick={() => {
+                                        setCompanyInfo({
+                                            ...companyInfo,
+                                            ...form.getValues(),
+                                        });
+                                        setCurrentTab(TabValues.Address);
+                                    }}
+                                >
+                                    Back
+                                </Button>
+                                <Button type="submit" className="w-1/2 mt-2">
+                                    Submit
+                                </Button>
+                            </div>
                         </div>
                     </form>
                 </Form>

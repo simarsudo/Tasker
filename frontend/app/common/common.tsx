@@ -27,4 +27,10 @@ export const TeamData = {
 
 export type TeamMemberId = keyof typeof TeamData;
 
+export enum TabValues {
+    Register = "Register",
+    Address = "Address",
+    Details = "Details",
+}
+
 export const currentUserId: TeamMemberId = 2;

@@ -1,23 +1,39 @@
+import { useState } from "react";
+
+import { TabValues } from "@/common/common";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import Navbar from "@/components/common/Navbar";
 import RegisterCompanyAddressForm from "@/components/forms/RegisterCompanyAddressForm";
 import RegisterCompanyDetailsForm from "@/components/forms/RegisterCompanyDetailsForm";
 import RegisterCompanyForm from "@/components/forms/RegisterCompanyForm";
-
-enum TabValues {
-    Register = "Register",
-    Address = "Address",
-    Details = "Details",
-}
+import { CompanyInfo } from "~/common/types";
 
 export default function Register() {
+    const [currentTab, setCurrentTab] = useState<TabValues>(TabValues.Register);
+    const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({
+        companyName: "",
+        website: "",
+        // TODO: Fix email domain
+        emailDomain: "@google.com",
+        companySize: "",
+        address: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        contactPersonName: "",
+        contactPersonRole: "",
+        contactPersonEmail: "",
+        contactPersonPhone: "",
+    });
+
     return (
         <div className="flex flex-col min-h-screen">
             <Navbar />
             <div className="grid h-full m-4 place-content-center">
-                <div className="max-w-md w-96">
-                    <Tabs defaultValue={TabValues.Address}>
+                <div className="max-w-md w-80 sm:w-96 m-2">
+                    <Tabs value={currentTab} defaultValue={currentTab}>
                         <TabsList className="w-full my-2">
                             <TabsTrigger
                                 className="w-1/3"
@@ -39,13 +55,25 @@ export default function Register() {
                             </TabsTrigger>
                         </TabsList>
                         <TabsContent value={TabValues.Register}>
-                            <RegisterCompanyForm />
+                            <RegisterCompanyForm
+                                setCurrentTab={setCurrentTab}
+                                companyInfo={companyInfo}
+                                setCompanyInfo={setCompanyInfo}
+                            />
                         </TabsContent>
                         <TabsContent value={TabValues.Address}>
-                            <RegisterCompanyAddressForm />
+                            <RegisterCompanyAddressForm
+                                setCurrentTab={setCurrentTab}
+                                companyInfo={companyInfo}
+                                setCompanyInfo={setCompanyInfo}
+                            />
                         </TabsContent>
                         <TabsContent value={TabValues.Details}>
-                            <RegisterCompanyDetailsForm />
+                            <RegisterCompanyDetailsForm
+                                setCurrentTab={setCurrentTab}
+                                companyInfo={companyInfo}
+                                setCompanyInfo={setCompanyInfo}
+                            />
                         </TabsContent>
                     </Tabs>
                 </div>

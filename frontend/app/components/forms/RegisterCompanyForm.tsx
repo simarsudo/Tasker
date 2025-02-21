@@ -1,3 +1,8 @@
+import { Dispatch, SetStateAction } from "react";
+
+import { TabValues } from "@/common/common";
+import { CompanyInfo, CompanyInfoDispatch } from "@/common/types";
+
 import { Info } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -30,7 +35,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type Props = {};
+type Props = {
+    setCurrentTab: Dispatch<SetStateAction<TabValues>>;
+    companyInfo: CompanyInfo;
+    setCompanyInfo: CompanyInfoDispatch;
+};
 
 const COMPANYSIZE = ["1-10", "11-50", "51-200", "201-500", "501-1000", "1000+"];
 
@@ -46,19 +55,25 @@ const formSchema = z.object({
     }),
 });
 
-export default function RegisterCompanyForm({}: Props) {
+export default function RegisterCompanyForm({
+    setCurrentTab,
+    companyInfo,
+    setCompanyInfo,
+}: Props) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            companyName: "",
-            website: "",
-            emailDomain: "@google.com",
-            companySize: "",
+            companyName: companyInfo.companyName,
+            website: companyInfo.website,
+            emailDomain: companyInfo.emailDomain,
+            companySize: companyInfo.companySize,
         },
     });
 
     function handleSubmit(values: z.infer<typeof formSchema>) {
         console.log(values);
+        setCurrentTab(TabValues.Address);
+        setCompanyInfo({ ...companyInfo, ...values });
     }
 
     return (
@@ -80,7 +95,10 @@ export default function RegisterCompanyForm({}: Props) {
                                     <FormItem>
                                         <FormLabel>Company Name</FormLabel>
                                         <FormControl>
-                                            <Input {...field} />
+                                            <Input
+                                                placeholder="Tasker Corp. Private Ltd."
+                                                {...field}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -93,7 +111,10 @@ export default function RegisterCompanyForm({}: Props) {
                                     <FormItem>
                                         <FormLabel>Website Link</FormLabel>
                                         <FormControl>
-                                            <Input {...field} />
+                                            <Input
+                                                placeholder="https://tasker.com"
+                                                {...field}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -133,7 +154,7 @@ export default function RegisterCompanyForm({}: Props) {
                                                         key={size}
                                                         value={size}
                                                     >
-                                                        {size}
+                                                        {size} employees
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>

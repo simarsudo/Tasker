@@ -1,9 +1,13 @@
+import { Dispatch, SetStateAction } from "react";
+
+import { TabValues } from "@/common/common";
+import { CompanyInfo, CompanyInfoDispatch } from "@/common/types";
+
 import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -21,7 +25,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type Props = {};
+type Props = {
+    setCurrentTab: Dispatch<SetStateAction<TabValues>>;
+    companyInfo: CompanyInfo;
+    setCompanyInfo: CompanyInfoDispatch;
+};
 
 const formSchema = z.object({
     address: z.string().nonempty({ message: "Address is required" }),
@@ -30,19 +38,25 @@ const formSchema = z.object({
     zipCode: z.string().nonempty({ message: "Zip code is required" }),
 });
 
-export default function RegisterCompanyAddressForm({}: Props) {
+export default function RegisterCompanyAddressForm({
+    setCurrentTab,
+    companyInfo,
+    setCompanyInfo,
+}: Props) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            address: "",
-            city: "",
-            state: "",
-            zipCode: "",
+            address: companyInfo.address,
+            city: companyInfo.city,
+            state: companyInfo.state,
+            zipCode: companyInfo.zipCode,
         },
     });
 
     function handleSubmit(values: z.infer<typeof formSchema>) {
         console.log(values);
+        setCurrentTab(TabValues.Details);
+        setCompanyInfo({ ...companyInfo, ...values });
     }
 
     return (
@@ -109,9 +123,23 @@ export default function RegisterCompanyAddressForm({}: Props) {
                                     </FormItem>
                                 )}
                             />
-                            <Button className="mt-2" type="submit">
-                                Next
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button
+                                    className="mt-2 w-1/2"
+                                    onClick={() => {
+                                        setCompanyInfo({
+                                            ...companyInfo,
+                                            ...form.getValues(),
+                                        });
+                                        setCurrentTab(TabValues.Register);
+                                    }}
+                                >
+                                    Back
+                                </Button>
+                                <Button className="mt-2 w-1/2" type="submit">
+                                    Next
+                                </Button>
+                            </div>
                         </div>
                     </form>
                 </Form>
