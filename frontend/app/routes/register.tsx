@@ -10,23 +10,24 @@ import RegisterCompanyAddressForm from "@/components/forms/RegisterCompanyAddres
 import RegisterCompanyDetailsForm from "@/components/forms/RegisterCompanyDetailsForm";
 import RegisterCompanyForm from "@/components/forms/RegisterCompanyForm";
 
+const initialCompanyInfo = (): CompanyInfo => ({
+    companyName: "",
+    website: "",
+    emailDomain: "",
+    companySize: "",
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    contactPersonName: "",
+    contactPersonRole: "",
+    contactPersonEmail: "",
+    contactPersonPhone: "",
+});
+
 export default function Register() {
-    const [currentTab, setCurrentTab] = useState<TabValues>(TabValues.Register);
-    const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({
-        companyName: "",
-        website: "",
-        // TODO: Fix email domain
-        emailDomain: "@google.com",
-        companySize: "",
-        address: "",
-        city: "",
-        state: "",
-        zipCode: "",
-        contactPersonName: "",
-        contactPersonRole: "",
-        contactPersonEmail: "",
-        contactPersonPhone: "",
-    });
+    const [currentTab, setCurrentTab] = useState(TabValues.Register);
+    const [companyInfo, setCompanyInfo] = useState(initialCompanyInfo());
 
     return (
         <div className="flex flex-col min-h-screen">

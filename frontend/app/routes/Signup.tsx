@@ -21,10 +21,8 @@ const initialSignupData = (): SignupData => ({
 
 export default function Signup() {
     const { isAuthenticated } = useAuth();
-    const [currentTab, setCurrentTab] = useState<SignupTabValues>(
-        SignupTabValues.AccountInfo,
-    );
-    const [signupData, setSignupData] = useState<SignupData>(initialSignupData);
+    const [currentTab, setCurrentTab] = useState(SignupTabValues.AccountInfo);
+    const [signupData, setSignupData] = useState(initialSignupData);
     const navigate = useNavigate();
 
     useEffect(() => {
