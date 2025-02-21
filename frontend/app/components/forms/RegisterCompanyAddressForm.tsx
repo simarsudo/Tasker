@@ -29,17 +29,19 @@ const formSchema = z.object({
     zipCode: z.string().nonempty({ message: "Zip code is required" }),
 });
 
+const formDefaultValues = {
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
+};
+
 export default function RegisterCompanyAddressForm({
     setCurrentTab,
     companyInfo,
     setCompanyInfo,
 }: CompanyRegistrationFormProps) {
-    const form = useFormValidation(formSchema, {
-        address: companyInfo.address,
-        city: companyInfo.city,
-        state: companyInfo.state,
-        zipCode: companyInfo.zipCode,
-    });
+    const form = useFormValidation(formSchema, formDefaultValues);
 
     function handleSubmit(values: z.infer<typeof formSchema>) {
         console.log(values);
