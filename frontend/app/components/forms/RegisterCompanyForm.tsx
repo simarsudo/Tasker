@@ -46,19 +46,12 @@ const formSchema = z.object({
     }),
 });
 
-const formDefaultValues = {
-    companyName: "",
-    website: "",
-    emailDomain: "",
-    companySize: "",
-};
-
 export default function RegisterCompanyForm({
     setCurrentTab,
     companyInfo,
     setCompanyInfo,
 }: CompanyRegistrationFormProps) {
-    const form = useFormValidation(formSchema, formDefaultValues);
+    const form = useFormValidation(formSchema, companyInfo);
 
     function handleSubmit(values: z.infer<typeof formSchema>) {
         console.log(values);

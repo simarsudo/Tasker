@@ -13,7 +13,8 @@ import RegisterCompanyForm from "@/components/forms/RegisterCompanyForm";
 const initialCompanyInfo = (): CompanyInfo => ({
     companyName: "",
     website: "",
-    emailDomain: "",
+    // TODO: Fix it
+    emailDomain: "@google.com",
     companySize: "",
     address: "",
     city: "",

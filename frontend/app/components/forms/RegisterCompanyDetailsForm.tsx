@@ -34,19 +34,12 @@ const formSchema = z.object({
         .nonempty({ message: "Phone number is required" }),
 });
 
-const formDefaultValues = {
-    contactPersonName: "",
-    contactPersonRole: "",
-    contactPersonEmail: "",
-    contactPersonPhone: "",
-};
-
 export default function RegisterCompanyDetailsForm({
     setCurrentTab,
     companyInfo,
     setCompanyInfo,
 }: CompanyRegistrationFormProps) {
-    const form = useFormValidation(formSchema, formDefaultValues);
+    const form = useFormValidation(formSchema, companyInfo);
 
     function handleSubmit(values: z.infer<typeof formSchema>) {
         console.log({ ...companyInfo, ...values });
