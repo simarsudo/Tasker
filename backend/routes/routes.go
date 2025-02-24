@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/simarsudo/tasker/middleware"
 )
@@ -22,12 +20,6 @@ func RegisterRoutes(server *gin.Engine) {
 	protected.Use(middleware.AuthMiddleware())
 	{
 		protected.POST("/auth/logout", Logout)
-
-		protected.GET("/test", test)
+		protected.POST("/register-company", RegisterCompany)
 	}
-}
-
-// TODO: Remove this route
-func test(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "You are authorized"})
 }

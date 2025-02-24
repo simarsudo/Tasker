@@ -15,6 +15,9 @@ type User struct {
 	Email         string `gorm:"unique;not null" binding:"required,email"`
 	Password      string `gorm:"not null" binding:"required"`
 	ContactNumber string `gorm:"not null" binding:"required"`
+
+	CompanyID uint
+	Company   Company `gorm:"foreignKey:CompanyID"`
 }
 
 // Before user is created this function will be called to normalize email to lowercase
