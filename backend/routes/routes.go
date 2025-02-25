@@ -18,8 +18,9 @@ func RegisterRoutes(server *gin.Engine) {
 	// Protected routes
 	protected := v1.Group("")
 	protected.Use(middleware.AuthMiddleware())
-	{
-		protected.POST("/auth/logout", Logout)
-		protected.POST("/register-company", RegisterCompany)
-	}
+
+	protected.POST("/auth/logout", Logout)
+	protected.POST("/register-company", RegisterCompany)
+	protected.POST("/create-project", CreateProject)
+	protected.POST("/invite-team-member", InviteTeamMember)
 }

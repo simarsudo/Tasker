@@ -41,7 +41,14 @@ func main() {
 
 	// Auto migrate the User model
 	// NOTE: During auto migrations columns are not deleted automatically to preserve data
-	err = db.DB.AutoMigrate(&models.User{}, &models.Company{}, &models.CompanyAddress{}, &models.CompanyContactDetails{})
+	err = db.DB.AutoMigrate(
+		&models.User{},
+		&models.Company{},
+		&models.CompanyAddress{},
+		&models.CompanyContactDetails{},
+		&models.CompanyProject{},
+		&models.UserInvite{},
+	)
 
 	if err != nil {
 		panic(fmt.Sprintf("Could not auto migrate database: %v", err))

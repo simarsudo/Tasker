@@ -12,8 +12,11 @@ type Company struct {
 	CompanySize string `gorm:"not null" binding:"required" json:"companySize"`
 
 	// Foreign keys
-	CompanyAddress CompanyAddress        `gorm:"foreignKey:CompanyID"`
-	ContactDetails CompanyContactDetails `gorm:"foreignKey:CompanyID"`
+	CompanyAddress CompanyAddress
+	ContactDetails CompanyContactDetails
+
+	// One-to-many relationship
+	Projects []CompanyProject
 }
 
 type CompanyAddress struct {
@@ -51,4 +54,23 @@ type CompanyRegistrationForm struct {
 	ContactPersonRole  string `json:"contactPersonRole" binding:"required"`
 	ContactPersonEmail string `json:"contactPersonEmail" binding:"required"`
 	ContactPersonPhone string `json:"contactPersonPhone" binding:"required"`
+}
+
+type CompanyProject struct {
+	gorm.Model
+	ProjectName        string `gorm:"not null" binding:"required" json:"projectName"`
+	ProjectDescription string `gorm:"not null" binding:"required" json:"projectDescription"`
+
+	// Foreign Keys
+	CompanyID   uint `gorm:"not null"`
+	CreatedByID uint `gorm:"not null"`
+	CreatedBy   User `gorm:"foreignKey:CreatedByID"`
+
+	// one to many relation
+	TeamMembers []User `gorm:"many2many:project_team_members;"`
+}
+
+type NewProjectForm struct {
+	ProjectName        string `json:"projectName" binding:"required"`
+	ProjectDescription string `json:"projectDescription" binding:"required"`
 }

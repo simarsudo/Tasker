@@ -16,7 +16,7 @@ type User struct {
 	Password      string `gorm:"not null" binding:"required"`
 	ContactNumber string `gorm:"not null" binding:"required"`
 
-	CompanyID uint
+	CompanyID *uint
 	Company   Company `gorm:"foreignKey:CompanyID"`
 }
 
@@ -63,4 +63,20 @@ type UserRegistration struct {
 	FirstName       string `json:"firstName" binding:"required"`
 	LastName        string `json:"lastName" binding:"required"`
 	ContactNumber   string `json:"contactNumber" binding:"required"`
+}
+
+type UserInvite struct {
+	gorm.Model
+	Token string `json:"token" binding:"required"`
+	Email string `json:"email" binding:"required,email"`
+
+	// Foreign Keys
+	SendByID uint
+	SendBy   User
+
+	CompanyID uint
+	Company   Company
+
+	ProjectID uint
+	Project   CompanyProject
 }
