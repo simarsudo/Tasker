@@ -1,25 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { UNEXPECTED_ERROR_MESSAGE } from "@/common/ErrorMsgs";
+
 import { AlertCircle, Loader } from "lucide-react";
 
-import { Link } from "@remix-run/react";
-import { useAuth } from "@/context/auth";
-import { makeRequest } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
-import { useNavigate } from "@remix-run/react";
-import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { UNEXPECTED_ERROR_MESSAGE } from "@/common/ErrorMsgs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "app/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
@@ -28,6 +14,22 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+import { useAuth } from "@/context/auth";
+import { makeRequest } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "@remix-run/react";
+import { useNavigate } from "@remix-run/react";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "app/components/ui/card";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const loginSchema = z.object({
     email: z.string().email().nonempty(),

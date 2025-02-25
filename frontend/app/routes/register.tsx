@@ -31,12 +31,12 @@ export default function Register() {
     const [companyInfo, setCompanyInfo] = useState(initialCompanyInfo());
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex min-h-screen flex-col">
             <Navbar />
-            <div className="grid h-full m-4 place-content-center">
-                <div className="max-w-md w-80 sm:w-96 m-2">
+            <div className="m-4 grid h-full place-content-center">
+                <div className="m-2 w-80 max-w-md sm:w-96">
                     <Tabs value={currentTab} defaultValue={currentTab}>
-                        <TabsList className="w-full my-2">
+                        <TabsList className="my-2 w-full">
                             <TabsTrigger
                                 className="w-1/3 cursor-default"
                                 value={TabValues.Register}

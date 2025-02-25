@@ -150,7 +150,7 @@ export default function RegisterCompanyDetailsForm({
                                     </Button>
                                     <Button
                                         type="submit"
-                                        className="w-1/2 mt-2"
+                                        className="mt-2 w-1/2"
                                     >
                                         Submit
                                     </Button>

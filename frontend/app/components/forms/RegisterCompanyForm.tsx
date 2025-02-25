@@ -146,7 +146,7 @@ export default function RegisterCompanyForm({
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" className="w-full mt-2">
+                            <Button type="submit" className="mt-2 w-full">
                                 Next
                             </Button>
                         </div>
@@ -154,7 +154,7 @@ export default function RegisterCompanyForm({
                 </Form>
             </CardContent>
             <CardFooter className="flex items-center gap-3">
-                <span className="flex-shrink-0 self-baseline mt-1">
+                <span className="mt-1 flex-shrink-0 self-baseline">
                     <Info className="h-4 w-4 text-destructive" />
                 </span>
                 <CardDescription>
