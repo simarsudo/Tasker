@@ -1,6 +1,8 @@
 package models
 
 import (
+	"strings"
+
 	"gorm.io/gorm"
 )
 
@@ -54,6 +56,11 @@ type CompanyRegistrationForm struct {
 	ContactPersonRole  string `json:"contactPersonRole" binding:"required"`
 	ContactPersonEmail string `json:"contactPersonEmail" binding:"required"`
 	ContactPersonPhone string `json:"contactPersonPhone" binding:"required"`
+}
+
+func (c *Company) BeforeCreate(*gorm.DB) error {
+	c.EmailDomain = strings.ToLower(c.EmailDomain)
+	return nil
 }
 
 type CompanyProject struct {

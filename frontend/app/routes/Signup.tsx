@@ -29,7 +29,7 @@ export default function Signup() {
         if (isAuthenticated) {
             navigate("/dashboard");
         }
-    }, [isAuthenticated, navigate]);
+    }, []);
 
     return (
         <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">

@@ -3,6 +3,7 @@ package routes
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/simarsudo/tasker/db"
@@ -99,5 +100,17 @@ func Signup(ctx *gin.Context) {
 
 	utils.SetCookie(ctx, "token", token)
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "User signed up"})
+	emailParts := strings.Split(strings.ToLower(user.Email), "@")
+
+	emailDomain := emailParts[len(emailParts)-1]
+
+	var company models.Company
+
+	result2 := db.DB.First(&company, &models.Company{EmailDomain: emailDomain})
+
+	if errors.Is(result2.Error, gorm.ErrRecordNotFound) {
+		ctx.JSON(http.StatusOK, gin.H{"redirectLink": "register"})
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{"redirectLink": "dashboard"})
+	}
 }

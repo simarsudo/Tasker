@@ -91,7 +91,10 @@ function PersonalInfoForm({
             if (response.ok) {
                 // TODO: Handle successful signup
                 setIsAuthenticated(true);
-                navigate("/dashboard");
+                console.log(data.redirectLink);
+                navigate("/" + data.redirectLink, {
+                    replace: true,
+                });
             } else {
                 // TODO: Handle multiple errors returned by server edge case
                 setSignupError({ hasError: true, message: data.error });
