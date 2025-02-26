@@ -89,6 +89,7 @@ function PersonalInfoForm({
             const data = await response.json();
 
             if (response.ok) {
+                // TODO: Add check if user is trying to go back or is closing the tab
                 // TODO: Handle successful signup
                 setIsAuthenticated(true);
                 console.log(data.redirectLink);

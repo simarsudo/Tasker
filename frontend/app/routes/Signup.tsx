@@ -25,6 +25,7 @@ export default function Signup() {
     const [signupData, setSignupData] = useState(initialSignupData);
     const navigate = useNavigate();
 
+    // TODO: Handle case if user has not finished comnpany registration - maybe ask user
     useEffect(() => {
         if (isAuthenticated) {
             navigate("/dashboard");

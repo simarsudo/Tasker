@@ -3,12 +3,35 @@ package routes
 import (
 	_ "errors"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/simarsudo/tasker/db"
 	"github.com/simarsudo/tasker/models"
 	"github.com/simarsudo/tasker/utils"
 )
+
+func RegisterCompanyEmailDomain(c *gin.Context) {
+	userID, exist := c.Get("userID")
+	if !exist {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+
+	var user models.User
+	if result2 := db.DB.First(&user, userID.(int64)); result2.Error != nil {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+
+	emailDomainParts := strings.Split(user.Email, "@")
+
+	emailDomain := emailDomainParts[len(emailDomainParts)-1]
+
+	c.JSON(http.StatusOK, gin.H{
+		"emailDomain": emailDomain,
+	})
+}
 
 func RegisterCompany(c *gin.Context) {
 	var companyInfo models.CompanyRegistrationForm
@@ -22,12 +45,27 @@ func RegisterCompany(c *gin.Context) {
 		return
 	}
 
+	userID, exist := c.Get("userID")
+	if !exist {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+
+	var user models.User
+	if result2 := db.DB.First(&user, userID.(int64)); result2.Error != nil {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+
+	emailDomainParts := strings.Split(user.Email, "@")
+
+	emailDomain := emailDomainParts[len(emailDomainParts)-1]
+
 	company := models.Company{
 		Name:        companyInfo.CompanyName,
 		WebsiteLink: companyInfo.Website,
 		CompanySize: companyInfo.CompanySize,
-		// TODO: Handle email domain
-		EmailDomain: "",
+		EmailDomain: emailDomain,
 		CompanyAddress: models.CompanyAddress{
 			Address: companyInfo.Address,
 			City:    companyInfo.City,
@@ -45,18 +83,6 @@ func RegisterCompany(c *gin.Context) {
 	result := db.DB.Create(&company)
 	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
-		return
-	}
-
-	userID, exist := c.Get("userID")
-	if !exist {
-		c.Status(http.StatusUnauthorized)
-		return
-	}
-
-	var user models.User
-	if result2 := db.DB.First(&user, userID.(int64)); result2.Error != nil {
-		c.Status(http.StatusUnauthorized)
 		return
 	}
 

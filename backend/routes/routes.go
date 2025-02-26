@@ -20,6 +20,7 @@ func RegisterRoutes(server *gin.Engine) {
 	protected.Use(middleware.AuthMiddleware())
 
 	protected.POST("/auth/logout", Logout)
+	protected.GET("/register-company", RegisterCompanyEmailDomain)
 	protected.POST("/register-company", RegisterCompany)
 	protected.POST("/create-project", CreateProject)
 	protected.POST("/invite-team-member", InviteTeamMember)
