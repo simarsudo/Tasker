@@ -24,10 +24,10 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
+import { useAuth } from "@/context/auth";
 import { useToast } from "@/hooks/use-toast";
+import { makeRequest } from "@/lib/utils";
 import { useNavigate } from "@remix-run/react";
-import { useAuth } from "~/context/auth";
-import { makeRequest } from "~/lib/utils";
 
 type Props = {
     isMobile?: boolean;

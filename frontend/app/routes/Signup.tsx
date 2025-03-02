@@ -5,10 +5,10 @@ import { SignupData } from "@/common/types";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import AccountInfoForm from "@/components/forms/AccountInfoForm";
+import PersonalInfoForm from "@/components/forms/PersonalInfoForm";
 import { useAuth } from "@/context/auth";
 import { useNavigate } from "@remix-run/react";
-import AccountInfoForm from "~/components/forms/AccountInfoForm";
-import PersonalInfoForm from "~/components/forms/PersonalInfoForm";
 
 const initialSignupData = (): SignupData => ({
     email: "",

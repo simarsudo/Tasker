@@ -37,7 +37,7 @@ const items = [
     // },
     {
         title: "Team",
-        url: "#",
+        url: "/dashboard/team",
         icon: Users,
     },
     // {
@@ -72,7 +72,7 @@ export default function DashboardSidebarMenu() {
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>
-            <SidebarGroup className="group-data-[collapsible=icon]:opacity-0 transition-opacity duration-400">
+            <SidebarGroup className="duration-400 transition-opacity group-data-[collapsible=icon]:opacity-0">
                 <SidebarGroupLabel>Documentation</SidebarGroupLabel>
                 {/* TODO: Make submenu collapsable */}
                 <SidebarMenu>

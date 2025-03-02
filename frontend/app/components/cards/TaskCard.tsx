@@ -1,16 +1,18 @@
-import { columnType } from "~/common/types";
-import { useDraggable } from "@dnd-kit/core";
-import { PriorityBadgeMap } from "~/common/common";
+import { PriorityBadgeMap } from "@/common/common";
+import { TeamData, TeamMemberId } from "@/common/common";
+import { columnType } from "@/common/types";
+
+import { TaskCardDropDownMenu } from "../DropDownMenu/TaskCardDropDownMenu";
 import { Badge } from "../ui/badge";
 import {
     Card,
-    CardTitle,
-    CardHeader,
     CardContent,
     CardFooter,
+    CardHeader,
+    CardTitle,
 } from "../ui/card";
-import { TaskCardDropDownMenu } from "../DropDownMenu/TaskCardDropDownMenu";
-import { TeamData, TeamMemberId } from "~/common/common";
+
+import { useDraggable } from "@dnd-kit/core";
 
 type Props = {
     id: number;

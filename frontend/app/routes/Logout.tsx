@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { makeRequest } from "~/lib/utils";
+import { makeRequest } from "@/lib/utils";
 
 const Logout: React.FC = () => {
     const [data, setData] = useState(null);

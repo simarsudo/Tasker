@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import type { MetaFunction } from "@remix-run/node";
-import { columnType } from "~/common/types";
+
+import { TeamMemberId } from "@/common/common";
+import { columnType } from "@/common/types";
+
+import DroppableColumns from "@/components/wrappers/DroppableColumns";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
-import DroppableColumns from "~/components/wrappers/DroppableColumns";
-import { TeamMemberId } from "~/common/common";
+import type { MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = () => {
     return [

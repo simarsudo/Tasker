@@ -2,10 +2,10 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 import Navbar from "@/components/common/Navbar";
+import { DashboardSidebar } from "@/components/common/sidebar/DashboardSidebar";
+import { useRequireAuthentication } from "@/hooks/useRequireAuthentication";
 import { LoaderFunction } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
-import { DashboardSidebar } from "~/components/common/sidebar/DashboardSidebar";
-import { useRequireAuthentication } from "~/hooks/useRequireAuthentication";
 
 export const loader: LoaderFunction = async ({ request }) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -29,7 +29,9 @@ export default function DashboardLayout() {
                     <Separator orientation="vertical" className="h-5" />
                     {/* TODO: Add breadcrumbs */}
                 </div>
-                <Outlet />
+                <div className="px-4">
+                    <Outlet />
+                </div>
             </main>
         </SidebarProvider>
     );
