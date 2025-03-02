@@ -48,6 +48,7 @@ func main() {
 		&models.CompanyContactDetails{},
 		&models.CompanyProject{},
 		&models.UserInvite{},
+		&models.TeamMember{},
 	)
 
 	if err != nil {

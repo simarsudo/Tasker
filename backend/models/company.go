@@ -72,12 +72,27 @@ type CompanyProject struct {
 	CompanyID   uint `gorm:"not null"`
 	CreatedByID uint `gorm:"not null"`
 	CreatedBy   User `gorm:"foreignKey:CreatedByID"`
-
-	// one to many relation
-	TeamMembers []User `gorm:"many2many:project_team_members;"`
 }
 
 type NewProjectForm struct {
 	ProjectName        string `json:"projectName" binding:"required"`
 	ProjectDescription string `json:"projectDescription" binding:"required"`
+}
+
+type Role string
+
+const (
+	OwnerRole  Role = "owner"
+	AdminRole  Role = "admin"
+	MemberRole Role = "member"
+)
+
+type TeamMember struct {
+	gorm.Model
+	UserID    uint
+	ProjectID uint
+	Role      Role `gorm:"not null" binding:"required" json:"role"`
+
+	User    User           `gorm:"foreignKey:UserID"`
+	Project CompanyProject `gorm:"foreignKey:ProjectID"`
 }

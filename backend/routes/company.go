@@ -117,15 +117,40 @@ func CreateProject(c *gin.Context) {
 		return
 	}
 
+	// Starting transaction
+	tx := db.DB.Begin()
+	if tx.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+		return
+	}
+
 	project := models.CompanyProject{
 		ProjectName:        newProject.ProjectName,
 		ProjectDescription: newProject.ProjectDescription,
 		CompanyID:          user.Company.ID,
 		CreatedByID:        user.ID,
-		TeamMembers:        []models.User{user},
 	}
 
-	if result := db.DB.Create(&project); result.Error != nil {
+	if result := tx.Create(&project); result.Error != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+		return
+	}
+
+	teamMembers := models.TeamMember{
+		UserID:    user.ID,
+		ProjectID: project.ID,
+		Role:      models.AdminRole,
+	}
+
+	if result := tx.Create(&teamMembers); result.Error != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
 		return
 	}
