@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
+import { useAuth } from "@/context/auth";
 import { useNavigate } from "@remix-run/react";
-import { useAuth } from "~/context/auth";
 
 export function useRequireAuthentication() {
     const navigate = useNavigate();

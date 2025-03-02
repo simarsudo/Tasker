@@ -21,10 +21,10 @@ import { Input } from "@/components/ui/input";
 import { Toaster } from "@/components/ui/toaster";
 
 import useFormValidation from "@/hooks/use-form-validation";
+import { useToast } from "@/hooks/use-toast";
+import { makeRequest } from "@/lib/utils";
 import { useNavigate } from "@remix-run/react";
 import { z } from "zod";
-import { useToast } from "~/hooks/use-toast";
-import { makeRequest } from "~/lib/utils";
 
 const formSchema = z.object({
     contactPersonName: z.string().nonempty({ message: "Name is required" }),

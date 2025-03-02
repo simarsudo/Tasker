@@ -1,5 +1,8 @@
 import { useState } from "react";
 
+import { TeamData, TeamMemberId, currentUserId } from "@/common/common";
+import { columnType } from "@/common/types";
+
 import {
     ArrowRightLeft,
     EllipsisVertical,
@@ -22,9 +25,6 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-
-import { TeamData, TeamMemberId, currentUserId } from "~/common/common";
-import { columnType } from "~/common/types";
 
 type Props = {
     columnData: columnType;

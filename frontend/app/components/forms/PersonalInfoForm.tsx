@@ -26,10 +26,10 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { useAuth } from "@/context/auth";
+import useFormValidation from "@/hooks/use-form-validation";
 import { makeRequest } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import useFormValidation from "~/hooks/use-form-validation";
 
 const formSchema = z.object({
     firstName: z
