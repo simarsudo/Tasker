@@ -3,11 +3,15 @@ package main
 import (
 	"fmt"
 
+	"github.com/go-playground/validator/v10"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/simarsudo/tasker/db"
 	"github.com/simarsudo/tasker/models"
 	"github.com/simarsudo/tasker/routes"
+	"github.com/simarsudo/tasker/utils"
 )
 
 // TODO: Maybe move jwt, cors related settings in config file and also load all env variables there
@@ -47,12 +51,17 @@ func main() {
 		&models.CompanyAddress{},
 		&models.CompanyContactDetails{},
 		&models.CompanyProject{},
-		&models.UserInvite{},
 		&models.TeamMember{},
+		&models.Invitation{},
 	)
 
 	if err != nil {
 		panic(fmt.Sprintf("Could not auto migrate database: %v", err))
+	}
+
+	// Register custom validations
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		utils.RegisterCustomValidations(v)
 	}
 
 	// Set up router

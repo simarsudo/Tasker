@@ -98,17 +98,12 @@ func RegisterCompany(c *gin.Context) {
 }
 
 func CreateProject(c *gin.Context) {
-	userID, userIDExist := c.Get("userID")
-
-	if !userIDExist {
-		c.JSON(http.StatusForbidden, gin.H{"unauthorized": "unauthorized"})
-		return
-	}
+	userID, _ := c.Get("userID")
 
 	userIDInt := userID.(int64)
 
 	var user models.User
-	db.DB.Debug().Preload("Company").First(&user, userIDInt)
+	db.DB.Preload("Company").First(&user, userIDInt)
 
 	var newProject models.NewProjectForm
 	if err := c.ShouldBindJSON(&newProject); err != nil {
@@ -159,5 +154,13 @@ func CreateProject(c *gin.Context) {
 }
 
 func InviteTeamMember(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"FOUND": "InviteTeamMember"})
+	// FIXME: IMPLEMENT it
+	var invitationDetails models.InvitationForm
+
+	if err := c.ShouldBindJSON(&invitationDetails); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, invitationDetails)
 }

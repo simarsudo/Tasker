@@ -64,19 +64,3 @@ type UserRegistration struct {
 	LastName        string `json:"lastName" binding:"required"`
 	ContactNumber   string `json:"contactNumber" binding:"required"`
 }
-
-type UserInvite struct {
-	gorm.Model
-	Token string `json:"token" binding:"required"`
-	Email string `json:"email" binding:"required,email"`
-
-	// Foreign Keys
-	SendByID uint
-	SendBy   User
-
-	CompanyID uint
-	Company   Company
-
-	ProjectID uint
-	Project   CompanyProject
-}

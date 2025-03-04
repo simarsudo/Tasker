@@ -6,6 +6,21 @@ import (
 	"gorm.io/gorm"
 )
 
+type Role string
+
+const (
+	OwnerRole  Role = "owner"
+	AdminRole  Role = "admin"
+	MemberRole Role = "member"
+)
+
+type InvitationStatus string
+
+const (
+	PendingStatus  InvitationStatus = "pending"
+	AcceptedStatus InvitationStatus = "accepted"
+)
+
 type Company struct {
 	gorm.Model
 	Name        string `gorm:"not null" binding:"required" json:"companyName"`
@@ -79,14 +94,6 @@ type NewProjectForm struct {
 	ProjectDescription string `json:"projectDescription" binding:"required"`
 }
 
-type Role string
-
-const (
-	OwnerRole  Role = "owner"
-	AdminRole  Role = "admin"
-	MemberRole Role = "member"
-)
-
 type TeamMember struct {
 	gorm.Model
 	UserID    uint
@@ -95,4 +102,21 @@ type TeamMember struct {
 
 	User    User           `gorm:"foreignKey:UserID"`
 	Project CompanyProject `gorm:"foreignKey:ProjectID"`
+}
+
+type Invitation struct {
+	gorm.Model
+	InviteeEmail string           `gorm:"not null" binding:"required" json:"inviteeEmail"`
+	Token        string           `gorm:"not null;unique" binding:"required" json:"token"`
+	Status       InvitationStatus `gorm:"not null" binding:"required" json:"status"`
+	Role         Role             `gorm:"not nll" binding:"required" json:"role"`
+
+	// Foreign keys
+	ProjectID uint           `gorm:"not null" binding:"required" json:"projectID"`
+	Project   CompanyProject `gorm:"foreignKey:ProjectID"`
+}
+
+type InvitationForm struct {
+	Email string `json:"email" binding:"required,email"`
+	Role  Role   `json:"role" binding:"required,validRole"`
 }

@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"strings"
 
@@ -55,4 +57,12 @@ func GenerateValidationErrors(err error, customMessages ...map[string]string) ma
 		validationErrors["error"] = err.Error()
 	}
 	return validationErrors
+}
+
+func GenerateInvitationToken() (string, error) {
+	bytes := make([]byte, 16)
+	if _, err := rand.Read(bytes); err != nil {
+		return "", fmt.Errorf("failed to generate token: %w", err)
+	}
+	return hex.EncodeToString(bytes), nil
 }
