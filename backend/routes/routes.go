@@ -23,5 +23,6 @@ func RegisterRoutes(server *gin.Engine) {
 	protected.GET("/register-company", RegisterCompanyEmailDomain)
 	protected.POST("/register-company", RegisterCompany)
 	protected.POST("/create-project", CreateProject)
+	protected.GET("/get-current-project", GetUserProjects)
 	protected.POST("/invite-team-member", InviteTeamMember)
 }

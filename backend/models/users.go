@@ -16,6 +16,10 @@ type User struct {
 	Password      string `gorm:"not null" binding:"required"`
 	ContactNumber string `gorm:"not null" binding:"required"`
 
+	// Foreign Keys
+	DefaultProjectID *uint
+	DefaultProject   *CompanyProject `gorm:"foreignKey:DefaultProjectID"`
+
 	CompanyID *uint
 	Company   Company `gorm:"foreignKey:CompanyID"`
 }
@@ -53,6 +57,17 @@ func GetUserByEmail(email string) (*User, error) {
 	if err := db.DB.Where("email = ?", strings.ToLower(email)).First(&user).Error; err != nil {
 		return nil, err
 	}
+	return &user, nil
+}
+
+// GetUserByEmail fetches user from database by id
+func GetUserByID(id uint) (*User, error) {
+	var user User
+	user.ID = id
+	if err := db.DB.Debug().First(&user).Error; err != nil {
+		return nil, err
+	}
+
 	return &user, nil
 }
 

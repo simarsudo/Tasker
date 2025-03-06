@@ -4,9 +4,12 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"net/http"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/simarsudo/tasker/models"
 )
 
 var validationMessages = map[string]string{
@@ -65,4 +68,20 @@ func GenerateInvitationToken() (string, error) {
 		return "", fmt.Errorf("failed to generate token: %w", err)
 	}
 	return hex.EncodeToString(bytes), nil
+}
+
+func GetUserFromContext(c *gin.Context) (*models.User, bool) {
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "User not found"})
+		return nil, false
+	}
+
+	user, err := models.GetUserByID(userID.(uint))
+	if err != nil {
+		c.Status(http.StatusUnauthorized)
+		return nil, false
+	}
+
+	return user, true
 }

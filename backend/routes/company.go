@@ -1,7 +1,6 @@
 package routes
 
 import (
-	_ "errors"
 	"net/http"
 	"strings"
 
@@ -100,7 +99,7 @@ func RegisterCompany(c *gin.Context) {
 func CreateProject(c *gin.Context) {
 	userID, _ := c.Get("userID")
 
-	userIDInt := userID.(int64)
+	userIDInt := userID.(uint)
 
 	var user models.User
 	db.DB.Preload("Company").First(&user, userIDInt)
@@ -132,6 +131,12 @@ func CreateProject(c *gin.Context) {
 		return
 	}
 
+	if err := tx.Model(&user).Updates(models.User{DefaultProjectID: &project.ID}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+		return
+	}
+
 	teamMembers := models.TeamMember{
 		UserID:    user.ID,
 		ProjectID: project.ID,
@@ -154,6 +159,12 @@ func CreateProject(c *gin.Context) {
 }
 
 func InviteTeamMember(c *gin.Context) {
+	// TODO: fix _
+	_, ok := utils.GetUserFromContext(c)
+	if !ok {
+		return
+	}
+
 	// FIXME: IMPLEMENT it
 	var invitationDetails models.InvitationForm
 
@@ -163,4 +174,42 @@ func InviteTeamMember(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, invitationDetails)
+}
+
+func GetUserProjects(c *gin.Context) {
+	user, ok := utils.GetUserFromContext(c)
+	if !ok {
+		return
+	}
+
+	// Create a struct to hold only the fields we want to return
+	type ProjectInfo struct {
+		ID          uint   `json:"id"`
+		ProjectName string `json:"projectName"`
+	}
+
+	var projects []ProjectInfo
+
+	// FIXME: check if better can be implemented
+	// Query only the specific fields we need
+	err := db.DB.Table("company_projects").
+		Select("company_projects.id, company_projects.project_name").
+		Joins("JOIN team_members ON team_members.project_id = company_projects.id").
+		Where("team_members.user_id = ?", user.ID).
+		Find(&projects).Error
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch projects"})
+		return
+	}
+
+	if len(projects) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "No projects found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"projects":         projects,
+		"currentProjectID": user.DefaultProjectID,
+	})
 }

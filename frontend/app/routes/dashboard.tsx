@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 import Navbar from "@/components/common/Navbar";
 import { DashboardSidebar } from "@/components/common/sidebar/DashboardSidebar";
@@ -11,18 +11,40 @@ export const loader: LoaderFunction = async ({ request }) => {
     const cookieHeader = request.headers.get("Cookie");
     const sidebarState = cookieHeader?.includes("sidebar_state=true") ?? false;
 
-    return new Response(JSON.stringify({ defaultOpen: sidebarState }), {
-        headers: { "Content-Type": "application/json" },
+    let projectData = null;
+
+    try {
+        const response = await fetch(
+            `${process.env.BACKEND_URL}/api/v1/get-current-project`,
+            {
+                headers: {
+                    Cookie: cookieHeader || "",
+                },
+            },
+        );
+
+        if (response.ok) {
+            projectData = await response.json();
+        } else {
+            console.log("Failed to fetch project data");
+        }
+    } catch (error) {
+        console.error("Error fetching project data:", error);
+    }
+
+    return Response.json({
+        defaultOpen: sidebarState,
+        projectData: projectData,
     });
 };
 
 export default function DashboardLayout() {
     useRequireAuthentication();
-    const { defaultOpen } = useLoaderData<typeof loader>();
+    const { defaultOpen, projectData } = useLoaderData<typeof loader>();
 
     return (
         <SidebarProvider defaultOpen={defaultOpen}>
-            <DashboardSidebar />
+            <DashboardSidebar SidebarHeaderData={projectData} />
             <main className="w-full">
                 <div>
                     <Navbar showSidebarTrigger={true} />

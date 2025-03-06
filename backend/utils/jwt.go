@@ -89,7 +89,7 @@ func GenerateToken(email string, userID int64) (string, error) {
 	return signedToken, nil
 }
 
-func VerifyToken(token string) (int64, error) {
+func VerifyToken(token string) (uint, error) {
 	parsedToken, _ := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 
@@ -119,7 +119,7 @@ func VerifyToken(token string) (int64, error) {
 		return 0, errors.New("userID is not a valid float64")
 	}
 
-	userId := int64(userIdFloat64)
+	userId := uint(userIdFloat64)
 
 	return userId, nil
 }

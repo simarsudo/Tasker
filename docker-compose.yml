@@ -7,6 +7,8 @@ services:
       - ./backend:/app
     ports:
       - "8000:8000"
+    networks:
+      - app-network
     depends_on:
       - db
     environment:
@@ -35,10 +37,14 @@ services:
           path: package.json
     ports:
       - "3000:3000"
+    networks:
+      - app-network
     depends_on:
       - backend
     environment:
-      BACKEND_URL: http://localhost:8000
+      BACKEND_URL: http://backend:8000
+    profiles:
+      - frontend
 
   db:
     image: postgres:17
@@ -50,6 +56,8 @@ services:
       POSTGRES_DB: tasker
     ports:
       - "5432:5432"
+    networks:
+      - app-network
     volumes:
       - postgres-data:/var/lib/postgresql/data
 

@@ -19,15 +19,19 @@ import {
     SidebarMenuAction,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarMenuSkeleton,
     SidebarMenuSub,
     SidebarMenuSubButton,
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
+
+import { Link } from "@remix-run/react";
 
 const items = [
     {
         title: "Dashboard",
-        url: "#",
+        url: "/dashboard",
         icon: Home,
     },
     // {
@@ -56,28 +60,38 @@ export default function DashboardSidebarMenu() {
     return (
         <>
             <SidebarGroup>
-                <SidebarGroupLabel>Navigation Menu</SidebarGroupLabel>
+                <SidebarGroupLabel>
+                    <p>Project Menu</p>
+                </SidebarGroupLabel>
                 <SidebarGroupContent>
                     <SidebarMenu>
                         {items.map((item) => (
                             <SidebarMenuItem key={item.title}>
                                 <SidebarMenuButton tooltip={item.title} asChild>
-                                    <a href={item.url}>
+                                    <Link to={item.url}>
                                         <item.icon />
                                         <span>{item.title}</span>
-                                    </a>
+                                    </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                         ))}
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>
-            <SidebarGroup className="duration-400 transition-opacity group-data-[collapsible=icon]:opacity-0">
-                <SidebarGroupLabel>Documentation</SidebarGroupLabel>
-                {/* TODO: Make submenu collapsable */}
+            {/* <SidebarGroup className="duration-400 transition-opacity group-data-[collapsible=icon]:opacity-0">
+                <SidebarGroupLabel>
+                    {isLoading ? (
+                        <Skeleton className="h-4 w-2/3" />
+                    ) : (
+                        <p>Documentation</p>
+                    )}
+                </SidebarGroupLabel>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <Collapsible defaultOpen className="group/collapsible">
+                        <Collapsible
+                            defaultOpen={false}
+                            className="group/collapsible"
+                        >
                             <CollapsibleTrigger asChild>
                                 <div>
                                     <SidebarMenuButton>
@@ -124,7 +138,10 @@ export default function DashboardSidebarMenu() {
                         </Collapsible>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                        <Collapsible defaultOpen className="group/collapsible">
+                        <Collapsible
+                            defaultOpen={false}
+                            className="group/collapsible"
+                        >
                             <CollapsibleTrigger asChild>
                                 <div>
                                     <SidebarMenuButton>
@@ -173,7 +190,7 @@ export default function DashboardSidebarMenu() {
                         </Collapsible>
                     </SidebarMenuItem>
                 </SidebarMenu>
-            </SidebarGroup>
+            </SidebarGroup> */}
         </>
     );
 }

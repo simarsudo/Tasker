@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { SidebarHeaderData } from "@/common/types";
 
 import { ChevronsUpDown, Plus } from "lucide-react";
 
@@ -18,71 +20,77 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-// 32px and 24px
-type Team = {
-    plan: string;
-    image: string;
-};
-
-const teams: Record<string, Team> = {
-    "Low Elo Team": {
-        plan: "Free",
-        image: "https://picsum.photos/32?random=1",
-    },
-    "High Elo Team": {
-        plan: "Pro",
-        image: "https://picsum.photos/32?random=2",
-    },
-    "Mid Elo Team": {
-        plan: "Standard",
-        image: "https://picsum.photos/32?random=3",
-    },
-    "Elite Team": {
-        plan: "Enterprise",
-        image: "https://picsum.photos/32?random=4",
-    },
-};
-
-type SidebarHeaderProps = {
+type Props = {
     isMobile?: boolean;
+    SidebarHeaderData: SidebarHeaderData;
 };
+
+function getSidebarProjectsData(data: SidebarHeaderData) {
+    const currentProject = data.projects.find((project) => {
+        if (data.currentProjectID === project.id) {
+            return true;
+        }
+    })!;
+    const projects = data.projects.filter((project) => {
+        if (data.currentProjectID !== project.id) {
+            return true;
+        }
+    });
+
+    return { currentProject, projects };
+}
 
 export default function DashboardSidebarHeader({
     isMobile,
-}: SidebarHeaderProps) {
-    const [selectedTeam, setSelectedTeam] =
-        useState<keyof typeof teams>("Low Elo Team");
+    SidebarHeaderData,
+}: Props) {
+    const [currentProject, setCurrentProject] = useState<{
+        id: number;
+        projectName: string;
+    }>({
+        id: 0,
+        projectName: "",
+    });
+    const [projects, setProjects] = useState<
+        { id: number; projectName: string }[]
+    >([]);
+
+    useEffect(() => {
+        if (SidebarHeaderData) {
+            const { currentProject, projects } =
+                getSidebarProjectsData(SidebarHeaderData);
+
+            setCurrentProject(currentProject);
+            setProjects(projects);
+        }
+    }, [SidebarHeaderData]);
 
     return (
         <SidebarMenu>
             <SidebarMenuItem>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton
-                                size="lg"
-                                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                            >
-                                <Avatar className="h-8 w-8 overflow-hidden rounded-lg">
-                                    <AvatarImage
-                                        src="https://picsum.photos/32?random=2"
-                                        alt="Elder"
-                                    />
-                                    <AvatarFallback className="rounded-lg">
-                                        CN
-                                    </AvatarFallback>
-                                </Avatar>
-                                <div className="grid flex-1 text-left text-sm leading-tight">
-                                    <span className="truncate font-semibold">
-                                        {selectedTeam}
-                                    </span>
-                                    <span className="truncate text-xs">
-                                        {teams[selectedTeam].plan}
-                                    </span>
-                                </div>
-                                <ChevronsUpDown className="ml-auto" />
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
+                        <SidebarMenuButton
+                            size="lg"
+                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                        >
+                            <Avatar className="h-8 w-8 overflow-hidden rounded-lg">
+                                <AvatarImage
+                                    src="https://picsum.photos/32?random=2"
+                                    alt="Elder"
+                                />
+                                <AvatarFallback className="rounded-lg">
+                                    CN
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className="grid flex-1 text-left text-sm leading-tight">
+                                <span className="truncate font-semibold">
+                                    {currentProject.projectName}
+                                </span>
+                                <span className="truncate text-xs">Pro</span>
+                            </div>
+                            <ChevronsUpDown className="ml-auto" />
+                        </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                         className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
@@ -94,34 +102,39 @@ export default function DashboardSidebarHeader({
                             Teams
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        {Object.entries(teams).map(
-                            ([teamName, { plan, image }]) => {
-                                if (teamName === selectedTeam) {
-                                    return null;
-                                }
-                                return (
-                                    <DropdownMenuItem
-                                        key={teamName}
-                                        className="gap-2 p-2"
-                                        onClick={() =>
-                                            setSelectedTeam(teamName)
-                                        }
-                                    >
-                                        <div className="flex size-6 items-center justify-center overflow-hidden rounded-sm border">
-                                            <img
-                                                src={image}
-                                                alt={teamName + " logo"}
-                                            />
-                                        </div>
-                                        {teamName}
-                                        <DropdownMenuShortcut>
-                                            {plan}
-                                        </DropdownMenuShortcut>
-                                    </DropdownMenuItem>
-                                );
-                            },
-                        )}
+
+                        {projects.map((project) => {
+                            return (
+                                <DropdownMenuItem
+                                    key={project.id}
+                                    className="gap-2 p-2"
+                                    onClick={() => {
+                                        const { currentProject, projects } =
+                                            getSidebarProjectsData({
+                                                currentProjectID: project.id,
+                                                projects:
+                                                    SidebarHeaderData.projects,
+                                            });
+
+                                        setCurrentProject(currentProject);
+                                        setProjects(projects);
+                                    }}
+                                >
+                                    <div className="flex size-6 items-center justify-center overflow-hidden rounded-sm border">
+                                        <img
+                                            src="https://picsum.photos/32?random=4"
+                                            alt={project.projectName + " logo"}
+                                        />
+                                    </div>
+                                    {project.projectName}
+                                    <DropdownMenuShortcut>
+                                        Pro
+                                    </DropdownMenuShortcut>
+                                </DropdownMenuItem>
+                            );
+                        })}
                         <DropdownMenuSeparator />
+
                         <DropdownMenuItem className="gap-2 p-2">
                             <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                                 <Plus className="size-4" />
