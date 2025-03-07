@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { SidebarHeaderData } from "@/common/types";
+import { UserProjects } from "@/common/types";
 
 import { ChevronsUpDown, Plus } from "lucide-react";
 
@@ -20,19 +20,23 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
+import { Link } from "@remix-run/react";
+
 type Props = {
     isMobile?: boolean;
-    SidebarHeaderData: SidebarHeaderData;
+    userProjectsData: UserProjects;
+    projectId: number;
 };
 
-function getSidebarProjectsData(data: SidebarHeaderData) {
-    const currentProject = data.projects.find((project) => {
-        if (data.currentProjectID === project.id) {
+function getSidebarProjectsData(projectId: number, projectsData: UserProjects) {
+    const currentProject = projectsData.find((project) => {
+        if (projectId === project.id) {
             return true;
         }
     })!;
-    const projects = data.projects.filter((project) => {
-        if (data.currentProjectID !== project.id) {
+
+    const projects = projectsData.filter((project) => {
+        if (projectId !== project.id) {
             return true;
         }
     });
@@ -42,7 +46,8 @@ function getSidebarProjectsData(data: SidebarHeaderData) {
 
 export default function DashboardSidebarHeader({
     isMobile,
-    SidebarHeaderData,
+    userProjectsData,
+    projectId,
 }: Props) {
     const [currentProject, setCurrentProject] = useState<{
         id: number;
@@ -56,14 +61,16 @@ export default function DashboardSidebarHeader({
     >([]);
 
     useEffect(() => {
-        if (SidebarHeaderData) {
-            const { currentProject, projects } =
-                getSidebarProjectsData(SidebarHeaderData);
+        if (userProjectsData) {
+            const { currentProject, projects } = getSidebarProjectsData(
+                projectId,
+                userProjectsData,
+            );
 
             setCurrentProject(currentProject);
             setProjects(projects);
         }
-    }, [SidebarHeaderData]);
+    }, [userProjectsData]);
 
     return (
         <SidebarMenu>
@@ -105,32 +112,26 @@ export default function DashboardSidebarHeader({
 
                         {projects.map((project) => {
                             return (
-                                <DropdownMenuItem
+                                <Link
                                     key={project.id}
-                                    className="gap-2 p-2"
-                                    onClick={() => {
-                                        const { currentProject, projects } =
-                                            getSidebarProjectsData({
-                                                currentProjectID: project.id,
-                                                projects:
-                                                    SidebarHeaderData.projects,
-                                            });
-
-                                        setCurrentProject(currentProject);
-                                        setProjects(projects);
-                                    }}
+                                    to={`/dashboard/projects/${project.id}`}
                                 >
-                                    <div className="flex size-6 items-center justify-center overflow-hidden rounded-sm border">
-                                        <img
-                                            src="https://picsum.photos/32?random=4"
-                                            alt={project.projectName + " logo"}
-                                        />
-                                    </div>
-                                    {project.projectName}
-                                    <DropdownMenuShortcut>
-                                        Pro
-                                    </DropdownMenuShortcut>
-                                </DropdownMenuItem>
+                                    <DropdownMenuItem className="gap-2 p-2">
+                                        <div className="flex size-6 items-center justify-center overflow-hidden rounded-sm border">
+                                            <img
+                                                src="https://picsum.photos/32?random=4"
+                                                alt={
+                                                    project.projectName +
+                                                    " logo"
+                                                }
+                                            />
+                                        </div>
+                                        {project.projectName}
+                                        <DropdownMenuShortcut>
+                                            Pro
+                                        </DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </Link>
                             );
                         })}
                         <DropdownMenuSeparator />

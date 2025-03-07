@@ -39,3 +39,19 @@ export enum TabValues {
 }
 
 export const currentUserId: TeamMemberId = 2;
+
+export function getCookieValue(name: string): string | null {
+    const cookies = document.cookie.split(";").reduce(
+        (acc, cookie) => {
+            const [key, value] = cookie.trim().split("=");
+            acc[key] = value;
+            return acc;
+        },
+        {} as Record<string, string>,
+    );
+
+    console.log("All parsed cookies:", cookies);
+
+    // Check both the exact name and lowercase version
+    return cookies[name] || cookies[name.toLowerCase()] || null;
+}

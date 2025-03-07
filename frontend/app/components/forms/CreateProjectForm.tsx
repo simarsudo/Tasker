@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
+import { getCookieValue } from "@/common/common";
+
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -51,8 +53,12 @@ export default function CreateProjectForm({ setCurrentTab }: Props) {
             method: "POST",
             body: JSON.stringify(values),
         }).then((r) => {
-            if (r.ok) {
+            const currentProject = getCookieValue("currentProject");
+            if (r.ok && currentProject) {
+                const dashboardLink = `/dashboard/projects/${currentProject}`;
+                navigate(dashboardLink, { replace: true });
                 navigate("/dashboard");
+                // TODO: Handle null condition for currentProject
             } else {
                 toast({
                     title: "Oops!",

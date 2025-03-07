@@ -55,7 +55,7 @@ export type CompanyRegistrationFormProps = {
     setCompanyInfo: CompanyInfoDispatch;
 };
 
-export type SidebarHeaderData = {
-    currentProjectID: number;
-    projects: { id: number; projectName: string }[];
-};
+export type UserProjects = {
+    id: number;
+    projectName: string;
+}[];

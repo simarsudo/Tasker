@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { UNEXPECTED_ERROR_MESSAGE } from "@/common/ErrorMsgs";
+import { getCookieValue } from "@/common/common";
 
 import { AlertCircle, Loader } from "lucide-react";
 
@@ -49,10 +50,13 @@ export default function Page() {
     });
 
     useEffect(() => {
-        if (isAuthenticated) {
-            navigate("/dashboard");
+        const currentProject = getCookieValue("currentProject");
+        if (isAuthenticated && currentProject) {
+            const dashboardLink = `/dashboard/projects/${currentProject}`;
+            navigate(dashboardLink, { replace: true });
         }
-    }, [isAuthenticated, navigate]);
+        // TODO: Handle null condition for currentProject
+    }, []);
 
     const handleLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
         setLoading(true);
@@ -70,7 +74,9 @@ export default function Page() {
 
             if (response.ok) {
                 setIsAuthenticated(true);
-                navigate("/dashboard");
+                const currentProject = getCookieValue("currentProject");
+                const dashboardLink = `/dashboard/projects/${currentProject}`;
+                navigate(dashboardLink, { replace: true });
             } else {
                 setLoginError({
                     hasError: true,

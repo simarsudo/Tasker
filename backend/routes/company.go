@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -155,6 +156,8 @@ func CreateProject(c *gin.Context) {
 		return
 	}
 
+	utils.SetCookie(c, "currentProject", fmt.Sprintf("%d", *user.DefaultProjectID), false)
+
 	c.Status(http.StatusOK)
 }
 
@@ -209,7 +212,6 @@ func GetUserProjects(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"projects":         projects,
-		"currentProjectID": user.DefaultProjectID,
+		"projects": projects,
 	})
 }

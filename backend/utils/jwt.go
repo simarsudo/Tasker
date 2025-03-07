@@ -39,7 +39,15 @@ type CookieConfig struct {
 	HTTPOnly bool
 }
 
-func SetCookie(ctx *gin.Context, name, value string) {
+func SetCookie(ctx *gin.Context, name, value string, httpOnly ...bool) {
+	// Default to true if not specified
+	isHttpOnly := CookieHTTPOnly
+
+	// Check if the parameter was provided
+	if len(httpOnly) > 0 {
+		isHttpOnly = httpOnly[0]
+	}
+
 	config := CookieConfig{
 		Name:     name,
 		Value:    value,
@@ -47,7 +55,7 @@ func SetCookie(ctx *gin.Context, name, value string) {
 		Path:     CookiePath,
 		Domain:   CookieDomain,
 		Secure:   CookieSecure,
-		HTTPOnly: CookieHTTPOnly,
+		HTTPOnly: isHttpOnly,
 	}
 
 	// Set SameSite attribute before setting cookie

@@ -2,6 +2,7 @@ package routes
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -38,11 +39,13 @@ func Login(ctx *gin.Context) {
 	}
 
 	utils.SetCookie(ctx, "token", token)
-	ctx.JSON(http.StatusOK, gin.H{"message": "Login successful"})
+	utils.SetCookie(ctx, "currentProject", fmt.Sprintf("%d", *user.DefaultProjectID), false)
+	ctx.JSON(http.StatusOK, gin.H{"currentProject": user.DefaultProjectID})
 }
 
 func Logout(ctx *gin.Context) {
 	utils.DeleteCookie(ctx, "token")
+	utils.DeleteCookie(ctx, "currentProject")
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
 }

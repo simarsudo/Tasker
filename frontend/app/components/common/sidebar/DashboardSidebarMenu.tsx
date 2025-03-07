@@ -26,37 +26,40 @@ import {
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { NavLink, useParams } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 
-const items = [
-    {
-        title: "Dashboard",
-        url: "/dashboard",
-        icon: Home,
-    },
-    // {
-    //     title: "Reports",
-    //     url: "#",
-    //     icon: Inbox,
-    // },
-    {
-        title: "Team",
-        url: "/dashboard/team",
-        icon: Users,
-    },
-    // {
-    //     title: "Activity",
-    //     url: "#",
-    //     icon: Search,
-    // },
-    // {
-    //     title: "Settings",
-    //     url: "#",
-    //     icon: Settings,
-    // },
-];
-
 export default function DashboardSidebarMenu() {
+    const { projectId } = useParams();
+
+    const items = [
+        {
+            title: "Dashboard",
+            url: `/dashboard/projects/${projectId}`,
+            icon: Home,
+        },
+        // {
+        //     title: "Reports",
+        //     url: "#",
+        //     icon: Inbox,
+        // },
+        {
+            title: "Team",
+            url: `/dashboard/projects/${projectId}/team`,
+            icon: Users,
+        },
+        // {
+        //     title: "Activity",
+        //     url: "#",
+        //     icon: Search,
+        // },
+        // {
+        //     title: "Settings",
+        //     url: "#",
+        //     icon: Settings,
+        // },
+    ];
+
     return (
         <>
             <SidebarGroup>
@@ -68,10 +71,10 @@ export default function DashboardSidebarMenu() {
                         {items.map((item) => (
                             <SidebarMenuItem key={item.title}>
                                 <SidebarMenuButton tooltip={item.title} asChild>
-                                    <Link to={item.url}>
+                                    <NavLink to={item.url}>
                                         <item.icon />
                                         <span>{item.title}</span>
-                                    </Link>
+                                    </NavLink>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                         ))}
