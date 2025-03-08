@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 
@@ -31,6 +32,12 @@ func GenerateValidationErrors(err error, customMessages ...map[string]string) ma
 	// If custom messages are provided, use the first map
 	if len(customMessages) > 0 {
 		customMsgs = customMessages[0]
+	}
+
+	// Handle the case when no data is sent (EOF error)
+	if err == io.EOF {
+		validationErrors["error"] = "Oops! Looks like you forgot to send any data."
+		return validationErrors
 	}
 
 	// Check if the error is of type validator.ValidationErrors

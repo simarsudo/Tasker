@@ -36,7 +36,7 @@ func RegisterCompanyEmailDomain(c *gin.Context) {
 func RegisterCompany(c *gin.Context) {
 	var companyInfo models.CompanyRegistrationForm
 
-	err := c.ShouldBindBodyWithJSON(&companyInfo)
+	err := c.ShouldBindJSON(&companyInfo)
 
 	if err != nil {
 		validationErrors := utils.GenerateValidationErrors(err)
@@ -161,24 +161,6 @@ func CreateProject(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func InviteTeamMember(c *gin.Context) {
-	// TODO: fix _
-	_, ok := utils.GetUserFromContext(c)
-	if !ok {
-		return
-	}
-
-	// FIXME: IMPLEMENT it
-	var invitationDetails models.InvitationForm
-
-	if err := c.ShouldBindJSON(&invitationDetails); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, invitationDetails)
-}
-
 func GetUserProjects(c *gin.Context) {
 	user, ok := utils.GetUserFromContext(c)
 	if !ok {
@@ -214,4 +196,61 @@ func GetUserProjects(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"projects": projects,
 	})
+}
+
+func GetProjectTeamMembers(c *gin.Context) {
+	_, ok := utils.GetUserFromContext(c)
+	if !ok {
+		return
+	}
+
+	projectID := c.Query("projectID")
+	if projectID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "projectID query parameter is required"})
+		return
+	}
+
+	// Create a struct to hold only the fields we want to return
+	type TeamMemberInfo struct {
+		ID       uint   `json:"id"`
+		Email    string `json:"email"`
+		FullName string `json:"fullName"`
+		Role     string `json:"role"`
+	}
+
+	var teamMembers []TeamMemberInfo
+
+	// TODO: Make it using gorm/go syntax
+	err := db.DB.Model(&models.TeamMember{}).
+		Select("team_members.id, users.email, CONCAT(users.first_name, ' ', users.last_name) as full_name, team_members.role").
+		Joins("JOIN users ON users.id = team_members.user_id").
+		Where("team_members.project_id = ?", projectID).
+		Scan(&teamMembers).Error
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch team members"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"teamMembers": teamMembers,
+	})
+}
+
+func InviteTeamMember(c *gin.Context) {
+	// TODO: fix _
+	_, ok := utils.GetUserFromContext(c)
+	if !ok {
+		return
+	}
+
+	// FIXME: IMPLEMENT it
+	var invitationDetails models.InvitationForm
+
+	if err := c.ShouldBindJSON(&invitationDetails); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, invitationDetails)
 }

@@ -23,6 +23,9 @@ export const columns: ColumnDef<TeamMember>[] = [
     {
         accessorKey: "fullName",
         header: "Full Name",
+        cell: ({ row }) => {
+            return <div className="capitalize">{row.getValue("fullName")}</div>;
+        },
     },
     {
         accessorKey: "email",
@@ -31,6 +34,9 @@ export const columns: ColumnDef<TeamMember>[] = [
     {
         accessorKey: "role",
         header: "Role",
+        cell: ({ row }) => {
+            return <div className="capitalize">{row.getValue("role")}</div>;
+        },
     },
     {
         id: "actions",
