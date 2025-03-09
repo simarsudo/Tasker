@@ -3,7 +3,6 @@ package models
 import (
 	"strings"
 
-	"github.com/simarsudo/tasker/db"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -43,39 +42,4 @@ func (u *User) HashPassword() error {
 func (u *User) VerifyPassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 	return err == nil
-}
-
-type LoginRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
-}
-
-// GetUserByEmail fetches user from database by email
-func GetUserByEmail(email string) (*User, error) {
-	var user User
-
-	if err := db.DB.Where("email = ?", strings.ToLower(email)).First(&user).Error; err != nil {
-		return nil, err
-	}
-	return &user, nil
-}
-
-// GetUserByEmail fetches user from database by id
-func GetUserByID(id uint) (*User, error) {
-	var user User
-	user.ID = id
-	if err := db.DB.Debug().First(&user).Error; err != nil {
-		return nil, err
-	}
-
-	return &user, nil
-}
-
-type UserRegistration struct {
-	Email           string `json:"email" binding:"required,email"`
-	Password        string `json:"password" binding:"required"`
-	ConfirmPassword string `json:"confirmPassword" binding:"required,eqfield=Password"`
-	FirstName       string `json:"firstName" binding:"required"`
-	LastName        string `json:"lastName" binding:"required"`
-	ContactNumber   string `json:"contactNumber" binding:"required"`
 }

@@ -7,7 +7,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/simarsudo/tasker/db"
+	"github.com/simarsudo/tasker/forms"
 	"github.com/simarsudo/tasker/models"
+	"github.com/simarsudo/tasker/types"
 	"github.com/simarsudo/tasker/utils"
 )
 
@@ -34,7 +36,7 @@ func RegisterCompanyEmailDomain(c *gin.Context) {
 }
 
 func RegisterCompany(c *gin.Context) {
-	var companyInfo models.CompanyRegistrationForm
+	var companyInfo forms.CompanyRegistrationForm
 
 	err := c.ShouldBindJSON(&companyInfo)
 
@@ -105,7 +107,7 @@ func CreateProject(c *gin.Context) {
 	var user models.User
 	db.DB.Preload("Company").First(&user, userIDInt)
 
-	var newProject models.NewProjectForm
+	var newProject forms.NewProjectForm
 	if err := c.ShouldBindJSON(&newProject); err != nil {
 		validationErrors := utils.GenerateValidationErrors(err)
 		c.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
@@ -141,7 +143,7 @@ func CreateProject(c *gin.Context) {
 	teamMembers := models.TeamMember{
 		UserID:    user.ID,
 		ProjectID: project.ID,
-		Role:      models.AdminRole,
+		Role:      types.AdminRole,
 	}
 
 	if result := tx.Create(&teamMembers); result.Error != nil {
@@ -245,7 +247,7 @@ func InviteTeamMember(c *gin.Context) {
 	}
 
 	// FIXME: IMPLEMENT it
-	var invitationDetails models.InvitationForm
+	var invitationDetails forms.InvitationForm
 
 	if err := c.ShouldBindJSON(&invitationDetails); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

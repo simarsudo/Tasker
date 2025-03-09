@@ -2,13 +2,13 @@ package utils
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/simarsudo/tasker/models"
+	"github.com/simarsudo/tasker/types"
 )
 
 func ValidateRole(fl validator.FieldLevel) bool {
 	role := fl.Field().String()
-	switch models.Role(role) {
-	case models.OwnerRole, models.AdminRole, models.MemberRole:
+	switch types.Role(role) {
+	case types.OwnerRole, types.AdminRole, types.MemberRole:
 		return true
 	default:
 		return false

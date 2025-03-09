@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/simarsudo/tasker/db"
 	"github.com/simarsudo/tasker/models"
 )
 
@@ -69,6 +70,26 @@ func GenerateValidationErrors(err error, customMessages ...map[string]string) ma
 	return validationErrors
 }
 
+// GetUserByEmail fetches user from database by email
+func GetUserByEmail(email string) (*models.User, error) {
+	var user models.User
+
+	if err := db.DB.Where("email = ?", strings.ToLower(email)).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+// GetUserByEmail fetches user from database by id
+func GetUserByID(id uint) (*models.User, error) {
+	var user models.User
+	user.ID = id
+	if err := db.DB.Debug().First(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
 func GenerateInvitationToken() (string, error) {
 	bytes := make([]byte, 16)
 	if _, err := rand.Read(bytes); err != nil {
@@ -84,7 +105,7 @@ func GetUserFromContext(c *gin.Context) (*models.User, bool) {
 		return nil, false
 	}
 
-	user, err := models.GetUserByID(userID.(uint))
+	user, err := GetUserByID(userID.(uint))
 	if err != nil {
 		c.Status(http.StatusUnauthorized)
 		return nil, false

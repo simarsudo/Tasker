@@ -8,20 +8,21 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/simarsudo/tasker/db"
+	"github.com/simarsudo/tasker/forms"
 	"github.com/simarsudo/tasker/models"
 	"github.com/simarsudo/tasker/utils"
 	"gorm.io/gorm"
 )
 
 func Login(ctx *gin.Context) {
-	var loginReq models.LoginRequest
+	var loginReq forms.LoginRequestForm
 
 	if err := ctx.ShouldBindJSON(&loginReq); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
 
-	user, err := models.GetUserByEmail(loginReq.Email)
+	user, err := utils.GetUserByEmail(loginReq.Email)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": utils.InvalidCredentials})
 		return
@@ -43,15 +44,22 @@ func Login(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"currentProject": user.DefaultProjectID})
 }
 
-func Logout(ctx *gin.Context) {
-	utils.DeleteCookie(ctx, "token")
-	utils.DeleteCookie(ctx, "currentProject")
+func Logout(c *gin.Context) {
+	// TODO: When a cookie expires, the browser automatically deletes it. handle this case
+	_, ok := utils.GetUserFromContext(c)
+	if !ok {
+		return
+	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
+	utils.DeleteCookie(c, "token")
+	// Todo: Lets not make currentProject cookie expire
+	utils.DeleteCookie(c, "currentProject")
+
+	c.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
 }
 
 func Signup(ctx *gin.Context) {
-	var userRegistration models.UserRegistration
+	var userRegistration forms.UserRegistrationForm
 
 	err := ctx.ShouldBindJSON(&userRegistration)
 

@@ -3,22 +3,8 @@ package models
 import (
 	"strings"
 
+	"github.com/simarsudo/tasker/types"
 	"gorm.io/gorm"
-)
-
-type Role string
-
-const (
-	OwnerRole  Role = "owner"
-	AdminRole  Role = "admin"
-	MemberRole Role = "member"
-)
-
-type InvitationStatus string
-
-const (
-	PendingStatus  InvitationStatus = "pending"
-	AcceptedStatus InvitationStatus = "accepted"
 )
 
 type Company struct {
@@ -34,6 +20,11 @@ type Company struct {
 
 	// One-to-many relationship
 	Projects []CompanyProject
+}
+
+func (c *Company) BeforeCreate(*gorm.DB) error {
+	c.EmailDomain = strings.ToLower(c.EmailDomain)
+	return nil
 }
 
 type CompanyAddress struct {
@@ -56,28 +47,6 @@ type CompanyContactDetails struct {
 	CompanyID uint
 }
 
-type CompanyRegistrationForm struct {
-	CompanyName string `json:"companyName" binding:"required"`
-	Website     string `json:"website" binding:"required"`
-	EmailDomain string `json:"emailDomain"`
-	CompanySize string `json:"companySize" binding:"required"`
-
-	Address string `json:"address" binding:"required"`
-	City    string `json:"city" binding:"required"`
-	State   string `json:"state" binding:"required"`
-	ZipCode string `json:"zipCode" binding:"required"`
-
-	ContactPersonName  string `json:"contactPersonName" binding:"required"`
-	ContactPersonRole  string `json:"contactPersonRole" binding:"required"`
-	ContactPersonEmail string `json:"contactPersonEmail" binding:"required"`
-	ContactPersonPhone string `json:"contactPersonPhone" binding:"required"`
-}
-
-func (c *Company) BeforeCreate(*gorm.DB) error {
-	c.EmailDomain = strings.ToLower(c.EmailDomain)
-	return nil
-}
-
 type CompanyProject struct {
 	gorm.Model
 	ProjectName        string `gorm:"not null" binding:"required" json:"projectName"`
@@ -89,16 +58,11 @@ type CompanyProject struct {
 	CreatedBy   User `gorm:"foreignKey:CreatedByID"`
 }
 
-type NewProjectForm struct {
-	ProjectName        string `json:"projectName" binding:"required"`
-	ProjectDescription string `json:"projectDescription" binding:"required"`
-}
-
 type TeamMember struct {
 	gorm.Model
 	UserID    uint
 	ProjectID uint
-	Role      Role `gorm:"not null" binding:"required" json:"role"`
+	Role      types.Role `gorm:"not null" binding:"required" json:"role"`
 
 	User    User           `gorm:"foreignKey:UserID"`
 	Project CompanyProject `gorm:"foreignKey:ProjectID"`
@@ -106,17 +70,12 @@ type TeamMember struct {
 
 type Invitation struct {
 	gorm.Model
-	InviteeEmail string           `gorm:"not null" binding:"required" json:"inviteeEmail"`
-	Token        string           `gorm:"not null;unique" binding:"required" json:"token"`
-	Status       InvitationStatus `gorm:"not null" binding:"required" json:"status"`
-	Role         Role             `gorm:"not nll" binding:"required" json:"role"`
+	InviteeEmail string                 `gorm:"not null" binding:"required" json:"inviteeEmail"`
+	Token        string                 `gorm:"not null;unique" binding:"required" json:"token"`
+	Status       types.InvitationStatus `gorm:"not null" binding:"required" json:"status"`
+	Role         types.Role             `gorm:"not nll" binding:"required" json:"role"`
 
 	// Foreign keys
 	ProjectID uint           `gorm:"not null" binding:"required" json:"projectID"`
 	Project   CompanyProject `gorm:"foreignKey:ProjectID"`
-}
-
-type InvitationForm struct {
-	Email string `json:"email" binding:"required,email"`
-	Role  Role   `json:"role" binding:"required,validRole"`
 }
