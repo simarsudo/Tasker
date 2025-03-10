@@ -55,3 +55,5 @@ export function getCookieValue(name: string): string | null {
     // Check both the exact name and lowercase version
     return cookies[name] || cookies[name.toLowerCase()] || null;
 }
+
+export const MemberRoles = ["admin", "member"];

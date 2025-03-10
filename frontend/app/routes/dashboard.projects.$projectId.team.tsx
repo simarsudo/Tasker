@@ -3,7 +3,7 @@ import { columns } from "@/common/tableDefs";
 import { DataTable } from "@/components/common/DataTable";
 import InviteTeamMemberDialog from "@/components/dialogs/InviteTeamMemberDialog";
 import { LoaderFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useOutletContext, useParams } from "@remix-run/react";
 
 export const loader: LoaderFunction = async ({ request, params }) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -51,12 +51,13 @@ export function ErrorBoundary() {
 
 export default function DashboardTeam() {
     const { teamMembers } = useLoaderData<typeof loader>();
+    const { projectId } = useOutletContext<{ projectId: number }>();
 
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold">Your Team Details</h3>
-                <InviteTeamMemberDialog />
+                <InviteTeamMemberDialog projectID={projectId} />
             </div>
             <DataTable columns={columns} data={teamMembers} />
         </div>

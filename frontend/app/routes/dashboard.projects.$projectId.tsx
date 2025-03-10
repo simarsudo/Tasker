@@ -26,6 +26,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         if (response.ok) {
             projectData = await response.json();
         } else {
+            // FIXME: Throw error and show error page when data is not loaded properly
             console.log("Failed to fetch project data");
         }
     } catch (error) {

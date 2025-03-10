@@ -1,6 +1,12 @@
 package forms
 
-import "github.com/simarsudo/tasker/types"
+import (
+	"encoding/json"
+	"fmt"
+	"strconv"
+
+	"github.com/simarsudo/tasker/types"
+)
 
 type CompanyRegistrationForm struct {
 	CompanyName string `json:"companyName" binding:"required"`
@@ -24,8 +30,32 @@ type ProjectID struct {
 }
 
 type InvitationForm struct {
-	Email string     `json:"email" binding:"required,email"`
-	Role  types.Role `json:"role" binding:"required,validRole"`
+	Email     string     `json:"email" binding:"required,email"`
+	Role      types.Role `json:"role" binding:"required,validRole"`
+	ProjectID uint       `json:"projectID" binding:"required"`
+}
+
+// Custom UnmarshalJSON method to handle string to uint conversion
+func (i *InvitationForm) UnmarshalJSON(data []byte) error {
+	type Alias InvitationForm
+	aux := &struct {
+		ProjectID string `json:"projectID"`
+		*Alias
+	}{
+		Alias: (*Alias)(i),
+	}
+
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	parsedValue, err := strconv.ParseUint(aux.ProjectID, 10, 32)
+	if err != nil {
+		return fmt.Errorf("invalid projectID: %v", err)
+	}
+	i.ProjectID = uint(parsedValue)
+
+	return nil
 }
 
 type NewProjectForm struct {

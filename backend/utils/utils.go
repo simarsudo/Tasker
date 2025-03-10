@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"fmt"
 	"io"
 	"net/http"
@@ -89,13 +87,6 @@ func GetUserByID(id uint) (*models.User, error) {
 	}
 
 	return &user, nil
-}
-func GenerateInvitationToken() (string, error) {
-	bytes := make([]byte, 16)
-	if _, err := rand.Read(bytes); err != nil {
-		return "", fmt.Errorf("failed to generate token: %w", err)
-	}
-	return hex.EncodeToString(bytes), nil
 }
 
 func GetUserFromContext(c *gin.Context) (*models.User, bool) {

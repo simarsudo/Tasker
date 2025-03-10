@@ -1,6 +1,9 @@
 package models
 
 import (
+	"crypto/rand"
+	"encoding/hex"
+	"fmt"
 	"strings"
 
 	"github.com/simarsudo/tasker/types"
@@ -70,12 +73,36 @@ type TeamMember struct {
 
 type Invitation struct {
 	gorm.Model
-	InviteeEmail string                 `gorm:"not null" binding:"required" json:"inviteeEmail"`
-	Token        string                 `gorm:"not null;unique" binding:"required" json:"token"`
-	Status       types.InvitationStatus `gorm:"not null" binding:"required" json:"status"`
-	Role         types.Role             `gorm:"not nll" binding:"required" json:"role"`
+	Email  string                 `gorm:"not null" binding:"required" json:"email"`
+	Token  string                 `gorm:"not null;unique" json:"token"`
+	Status types.InvitationStatus `gorm:"not null" binding:"required" json:"status"`
+	Role   types.Role             `gorm:"not nll" binding:"required" json:"role"`
 
 	// Foreign keys
 	ProjectID uint           `gorm:"not null" binding:"required" json:"projectID"`
 	Project   CompanyProject `gorm:"foreignKey:ProjectID"`
+}
+
+func (invitation *Invitation) BeforeSave(tx *gorm.DB) (err error) {
+	for {
+		// Generate a random token
+		bytes := make([]byte, 16)
+		if _, err := rand.Read(bytes); err != nil {
+			return fmt.Errorf("failed to generate token: %w", err)
+		}
+		token := hex.EncodeToString(bytes)
+
+		// Check if the token already exists in the database
+		var existingInvitation Invitation
+		if err := tx.Where("token = ?", token).First(&existingInvitation).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				// Token is unique
+				invitation.Token = token
+				break
+			}
+			return err
+		}
+		// Token collision, generate a new token and try again
+	}
+	return nil
 }
