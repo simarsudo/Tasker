@@ -1,15 +1,25 @@
+import { Link } from "lucide-react";
+
 import { Separator } from "@/components/ui/separator";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 import Navbar from "@/components/common/Navbar";
 import { DashboardSidebar } from "@/components/common/sidebar/DashboardSidebar";
+import PageWithNavbarWrapper from "@/components/wrappers/PageWithNavbarWrapper";
 import { useRequireAuthentication } from "@/hooks/useRequireAuthentication";
 import { LoaderFunction } from "@remix-run/node";
-import { Outlet, useLoaderData, useParams } from "@remix-run/react";
+import { Outlet, redirect, useLoaderData, useParams } from "@remix-run/react";
+import * as cookie from "cookie";
 
 export const loader: LoaderFunction = async ({ request }) => {
     const cookieHeader = request.headers.get("Cookie");
     const sidebarState = cookieHeader?.includes("sidebar_state=true") ?? false;
+    const cookies = cookie.parse(request.headers.get("Cookie") || "");
+    const token = cookies["token"];
+
+    if (!token) {
+        return redirect("/login");
+    }
 
     let projectData = null;
 
@@ -25,9 +35,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 
         if (response.ok) {
             projectData = await response.json();
-        } else {
+        } else if (response.status === 401) {
             // FIXME: Throw error and show error page when data is not loaded properly
-            console.log("Failed to fetch project data");
+            throw new Error("There was some error");
         }
     } catch (error) {
         console.error("Error fetching project data:", error);
@@ -38,6 +48,15 @@ export const loader: LoaderFunction = async ({ request }) => {
         userProjectsData: projectData,
     });
 };
+
+export function ErrorBoundary() {
+    <PageWithNavbarWrapper className="grid place-content-center text-center">
+        <p className="text-lg font-semibold">Looks like there is some error.</p>
+        <p>
+            Please refresh the page or <Link to="/login">Login</Link> again
+        </p>
+    </PageWithNavbarWrapper>;
+}
 
 export default function DashboardLayout() {
     useRequireAuthentication();

@@ -307,3 +307,146 @@ func InviteTeamMember(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "The user is already a member of the team"})
 	}
 }
+
+func GetInvitationDetails(c *gin.Context) {
+	token := c.Query("token")
+
+	if token == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "token is required"})
+		return
+	}
+
+	var existingInvitation models.Invitation
+	err := db.DB.Select("email").Where("token = ?", token).First(&existingInvitation).Error
+
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusNotFound, gin.H{"error": "invitation token is invalid"})
+		return
+	} else if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"email": existingInvitation.Email})
+}
+
+func JoinTeamUsingInviteLink(c *gin.Context) {
+	// Define a struct to hold the registration data and token
+	var registrationData struct {
+		forms.UserRegistrationForm
+		Token string `json:"token" binding:"required"`
+	}
+
+	// Bind the JSON input to the registrationData struct
+	if err := c.ShouldBindJSON(&registrationData); err != nil {
+		validationErrors := utils.GenerateValidationErrors(err)
+
+		// Check for confirm password field error and change the message
+		if _, ok := validationErrors["confirmpassword"]; ok {
+			validationErrors["confirmpassword"] = "Passwords do not match"
+		}
+
+		// Return validation errors
+		c.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
+		return
+	}
+
+	// Check the database if the invitation token is valid
+	var existingInvitation models.Invitation
+	err := db.DB.Select("email", "project_id", "role").
+		Where("token = ?", registrationData.Token).
+		First(&existingInvitation).Error
+
+	// Handle errors for invalid or not found token
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusNotFound, gin.H{"error": "invitation token is invalid"})
+		return
+	} else if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+		return
+	}
+
+	// Start a transaction for user registration
+	tx := db.DB.Begin()
+
+	// Fetch the project associated with the invitation
+	var project models.CompanyProject
+	if err := tx.First(&project, existingInvitation.ProjectID).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+		return
+	}
+
+	// Create a new user with the registration data
+	user := models.User{
+		Email:            registrationData.Email,
+		Password:         registrationData.Password,
+		FirstName:        registrationData.FirstName,
+		LastName:         registrationData.LastName,
+		ContactNumber:    registrationData.ContactNumber,
+		DefaultProjectID: &existingInvitation.ProjectID,
+		CompanyID:        &project.CompanyID,
+	}
+
+	// Hash the user's password
+	if err := user.HashPassword(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+		return
+	}
+
+	// Save the new user to the database
+	if result := tx.Create(&user); result.Error != nil {
+		tx.Rollback()
+		// Check if the error is due to a duplicate key (user already exists)
+		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
+			c.JSON(http.StatusConflict, gin.H{"error": utils.AccountAlreadyExist})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+		}
+		return
+	}
+
+	// Add the user to the team
+	teamMembers := models.TeamMember{
+		UserID:    user.ID,
+		ProjectID: project.ID,
+		Role:      existingInvitation.Role,
+	}
+
+	// Save the team member to the database
+	if result := tx.Create(&teamMembers); result.Error != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+	}
+
+	// Update the invitation status to accepted
+	if err := tx.Model(&existingInvitation).
+		Where("token", registrationData.Token).
+		Update("status", types.AcceptedStatus).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+		return
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+		return
+	}
+
+	// Generate a token for the new user
+	token, err := utils.GenerateToken(user.Email, int64(user.ID))
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+		return
+	}
+
+	// Set cookies for the token and current project
+	utils.SetCookie(c, "token", token)
+	utils.SetCookie(c, "currentProject", fmt.Sprintf("%d", *user.DefaultProjectID), false)
+
+	// Return a success response with a redirect link
+	c.JSON(http.StatusOK, gin.H{"redirectLink": fmt.Sprintf("dashboard/projects/%d", *user.DefaultProjectID)})
+}

@@ -38,11 +38,18 @@ const formSchema = z
         path: ["confirmPassword"],
     });
 
+interface AccountInfoFormProps extends SignupFormProps {
+    cardHeader?: string;
+    cardDescription?: string;
+}
+
 function AccountInfoForm({
     setCurrentTab,
     signupData,
     setSignupData,
-}: SignupFormProps) {
+    cardHeader,
+    cardDescription,
+}: AccountInfoFormProps) {
     const form = useFormValidation(formSchema, signupData);
 
     const nextTab = (values: z.infer<typeof formSchema>) => {
@@ -57,9 +64,13 @@ function AccountInfoForm({
             <div className="flex flex-col gap-6">
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-2xl">Sign up</CardTitle>
+                        <CardTitle className="text-2xl">
+                            {cardHeader ? cardHeader : "Sign up"}
+                        </CardTitle>
                         <CardDescription>
-                            Please enter your email and password
+                            {cardDescription
+                                ? cardDescription
+                                : "Please enter your email and password"}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -74,6 +85,9 @@ function AccountInfoForm({
                                                 <FormLabel>Email</FormLabel>
                                                 <FormControl>
                                                     <Input
+                                                        disabled={
+                                                            !!signupData.email
+                                                        }
                                                         placeholder="john@Doe.com"
                                                         {...field}
                                                     />

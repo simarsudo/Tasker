@@ -9,6 +9,9 @@ func RegisterRoutes(server *gin.Engine) {
 	v1 := server.Group("/api/v1")
 
 	// Public routes
+	v1.GET("/get-invitation-details", GetInvitationDetails)
+	v1.POST("/join-team-using-invite-link", JoinTeamUsingInviteLink)
+
 	auth := v1.Group("/auth")
 	{
 		auth.POST("/login", Login)

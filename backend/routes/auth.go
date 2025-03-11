@@ -101,7 +101,7 @@ func Signup(ctx *gin.Context) {
 		}
 		return
 	}
-
+	// FIXME: Will cause type error so use uint instead of int64
 	token, err := utils.GenerateToken(user.Email, int64(user.ID))
 
 	if err != nil {
@@ -110,7 +110,7 @@ func Signup(ctx *gin.Context) {
 	}
 
 	utils.SetCookie(ctx, "token", token)
-
+	utils.SetCookie(ctx, "currentProject", fmt.Sprintf("%d", *user.DefaultProjectID), false)
 	emailParts := strings.Split(strings.ToLower(user.Email), "@")
 
 	emailDomain := emailParts[len(emailParts)-1]
@@ -122,6 +122,6 @@ func Signup(ctx *gin.Context) {
 	if errors.Is(result2.Error, gorm.ErrRecordNotFound) {
 		ctx.JSON(http.StatusOK, gin.H{"redirectLink": "register"})
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{"redirectLink": "dashboard"})
+		ctx.JSON(http.StatusOK, gin.H{"redirectLink": fmt.Sprintf("dashboard/projects/%d", *user.DefaultProjectID)})
 	}
 }

@@ -52,7 +52,7 @@ type Props = {
     projectID: number;
 };
 
-export default function InviteTeamMemberDialog({ projectID }: Props) {
+export default function InviteTeamMemberDialogForm({ projectID }: Props) {
     const [inviteURL, setInviteURL] = useState("");
     const [error, setError] = useState("");
     const [linkCopied, setLinkCopied] = useState(false);
@@ -129,7 +129,7 @@ export default function InviteTeamMemberDialog({ projectID }: Props) {
                                             value={field.value}
                                         >
                                             <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="capitalize">
                                                     <SelectValue placeholder="Select role" />
                                                 </SelectTrigger>
                                             </FormControl>

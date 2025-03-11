@@ -57,11 +57,25 @@ const formSchema = z.object({
         }),
 });
 
+interface ExtendedSignupInfoForm extends SignupFormProps {
+    requestURL?: string;
+    token?: string;
+}
+
+interface SignupDataExtended {
+    firstName: string;
+    lastName: string;
+    contactNumber: string;
+    token?: string;
+}
+
 function PersonalInfoForm({
     setCurrentTab,
     signupData,
     setSignupData,
-}: SignupFormProps) {
+    requestURL,
+    token,
+}: ExtendedSignupInfoForm) {
     const { setIsAuthenticated } = useAuth();
     const [signupError, setSignupError] = useState({
         hasError: false,
@@ -71,7 +85,9 @@ function PersonalInfoForm({
     const form = useFormValidation(formSchema, signupData);
     const navigate = useNavigate();
 
-    const handleSignupSubmit = async (values: z.infer<typeof formSchema>) => {
+    const handleSignupSubmit = async (
+        values: z.infer<typeof formSchema> & { token?: string },
+    ) => {
         setLoading(true);
         const payloadData = {
             ...signupData,
@@ -80,8 +96,12 @@ function PersonalInfoForm({
 
         setSignupData(payloadData);
 
+        if (token) {
+            payloadData["token"] = token;
+        }
+
         try {
-            const response = await makeRequest("/auth/signup", {
+            const response = await makeRequest(requestURL || "/auth/signup", {
                 method: "POST",
                 body: JSON.stringify(payloadData),
             });
@@ -90,9 +110,7 @@ function PersonalInfoForm({
 
             if (response.ok) {
                 // TODO: Add check if user is trying to go back or is closing the tab
-                // TODO: Handle successful signup
                 setIsAuthenticated(true);
-                console.log(data.redirectLink);
                 navigate("/" + data.redirectLink, {
                     replace: true,
                 });

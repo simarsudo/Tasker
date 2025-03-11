@@ -1,9 +1,9 @@
 import { columns } from "@/common/tableDefs";
 
 import { DataTable } from "@/components/common/DataTable";
-import InviteTeamMemberDialog from "@/components/dialogs/InviteTeamMemberDialog";
+import InviteTeamMemberDialogForm from "@/components/forms/InviteTeamMemberDialogForm";
 import { LoaderFunction } from "@remix-run/node";
-import { useLoaderData, useOutletContext, useParams } from "@remix-run/react";
+import { useLoaderData, useOutletContext } from "@remix-run/react";
 
 export const loader: LoaderFunction = async ({ request, params }) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -57,7 +57,7 @@ export default function DashboardTeam() {
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold">Your Team Details</h3>
-                <InviteTeamMemberDialog projectID={projectId} />
+                <InviteTeamMemberDialogForm projectID={projectId} />
             </div>
             <DataTable columns={columns} data={teamMembers} />
         </div>
