@@ -11,11 +11,12 @@ import { LoaderFunction } from "@remix-run/node";
 import { Outlet, redirect, useLoaderData, useParams } from "@remix-run/react";
 import * as cookie from "cookie";
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
     const cookieHeader = request.headers.get("Cookie");
     const sidebarState = cookieHeader?.includes("sidebar_state=true") ?? false;
     const cookies = cookie.parse(request.headers.get("Cookie") || "");
     const token = cookies["token"];
+    const projectID = params.projectId;
 
     if (!token) {
         return redirect("/login");
@@ -25,7 +26,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
     try {
         const response = await fetch(
-            `${process.env.BACKEND_URL}/api/v1/get-current-project`,
+            `${process.env.BACKEND_URL}/api/v1/get-current-project/${projectID}`,
             {
                 headers: {
                     Cookie: cookieHeader || "",
@@ -46,6 +47,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     return Response.json({
         defaultOpen: sidebarState,
         userProjectsData: projectData,
+        userData: projectData.userData,
     });
 };
 
@@ -61,9 +63,10 @@ export function ErrorBoundary() {
 export default function DashboardLayout() {
     useRequireAuthentication();
     const { projectId } = useParams();
-    const { defaultOpen, userProjectsData } = useLoaderData<typeof loader>();
-    let projectDoesNotExist = false;
+    const { defaultOpen, userProjectsData, userData } =
+        useLoaderData<typeof loader>();
 
+    let projectDoesNotExist = false;
     projectDoesNotExist = !userProjectsData.projects.some(
         (project: { id: number }) => project.id === Number(projectId),
     );
@@ -87,6 +90,7 @@ export default function DashboardLayout() {
             <DashboardSidebar
                 userProjectsData={userProjectsData.projects}
                 projectId={Number(projectId)}
+                userData={userData}
             />
             <main className="w-full">
                 <div>
@@ -95,7 +99,7 @@ export default function DashboardLayout() {
                     {/* TODO: Add breadcrumbs */}
                 </div>
                 <div className="px-4">
-                    <Outlet context={{ projectId }} />
+                    <Outlet context={{ projectId, role: userData.role }} />
                 </div>
             </main>
         </SidebarProvider>

@@ -1,4 +1,5 @@
 import { UserProjects } from "@/common/types";
+import { UserData } from "@/common/types";
 
 import {
     Sidebar,
@@ -17,9 +18,14 @@ import DashboardSidebarMenu from "./DashboardSidebarMenu";
 type Props = {
     userProjectsData: UserProjects;
     projectId: number;
+    userData: UserData;
 };
 
-export function DashboardSidebar({ userProjectsData, projectId }: Props) {
+export function DashboardSidebar({
+    userProjectsData,
+    projectId,
+    userData,
+}: Props) {
     const { isMobile } = useSidebar();
 
     return (
@@ -29,6 +35,7 @@ export function DashboardSidebar({ userProjectsData, projectId }: Props) {
                     isMobile={isMobile}
                     userProjectsData={userProjectsData}
                     projectId={projectId}
+                    userData={userData}
                 />
             </SidebarHeader>
             <SidebarSeparator />
@@ -36,7 +43,10 @@ export function DashboardSidebar({ userProjectsData, projectId }: Props) {
                 <DashboardSidebarMenu />
             </SidebarContent>
             <SidebarFooter>
-                <DashboardSidebarFooter isMobile={isMobile} />
+                <DashboardSidebarFooter
+                    userData={userData}
+                    isMobile={isMobile}
+                />
             </SidebarFooter>
             <Toaster />
         </Sidebar>

@@ -57,3 +57,8 @@ export function getCookieValue(name: string): string | null {
 }
 
 export const MemberRoles = ["admin", "member"];
+
+export enum UserRoles {
+    Admin = "admin",
+    Member = "member",
+}

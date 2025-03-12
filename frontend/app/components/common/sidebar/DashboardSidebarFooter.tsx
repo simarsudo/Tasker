@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { UserData } from "@/common/types";
+
 import {
     Bell,
     ChevronsUpDown,
@@ -31,9 +33,10 @@ import { useNavigate } from "@remix-run/react";
 
 type Props = {
     isMobile?: boolean;
+    userData: UserData;
 };
 
-export default function DashboardSidebarFooter({ isMobile }: Props) {
+export default function DashboardSidebarFooter({ isMobile, userData }: Props) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -88,10 +91,10 @@ export default function DashboardSidebarFooter({ isMobile }: Props) {
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-semibold">
-                                    Elder
+                                    {userData.fullName}
                                 </span>
                                 <span className="truncate text-xs">
-                                    Elder@scrolls.com
+                                    {userData.email}
                                 </span>
                             </div>
                             <ChevronsUpDown className="ml-auto size-4" />
@@ -116,10 +119,10 @@ export default function DashboardSidebarFooter({ isMobile }: Props) {
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">
-                                        Elder
+                                        {userData.fullName}
                                     </span>
                                     <span className="truncate text-xs">
-                                        Elder@scrolls.com
+                                        {userData.email}
                                     </span>
                                 </div>
                             </div>

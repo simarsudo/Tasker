@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { UserProjects } from "@/common/types";
+import { UserRoles } from "@/common/common";
+import { UserData, UserProjects } from "@/common/types";
 
 import { ChevronsUpDown, Plus } from "lucide-react";
 
@@ -26,6 +27,7 @@ type Props = {
     isMobile?: boolean;
     userProjectsData: UserProjects;
     projectId: number;
+    userData: UserData;
 };
 
 function getSidebarProjectsData(projectId: number, projectsData: UserProjects) {
@@ -48,6 +50,7 @@ export default function DashboardSidebarHeader({
     isMobile,
     userProjectsData,
     projectId,
+    userData,
 }: Props) {
     const [currentProject, setCurrentProject] = useState<{
         id: number;
@@ -106,44 +109,64 @@ export default function DashboardSidebarHeader({
                         sideOffset={4}
                     >
                         <DropdownMenuLabel className="text-xs text-muted-foreground">
-                            Teams
+                            Projects
                         </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
 
-                        {projects.map((project) => {
-                            return (
-                                <Link
-                                    key={project.id}
-                                    to={`/dashboard/projects/${project.id}`}
-                                >
-                                    <DropdownMenuItem className="gap-2 p-2">
-                                        <div className="flex size-6 items-center justify-center overflow-hidden rounded-sm border">
-                                            <img
-                                                src="https://picsum.photos/32?random=4"
-                                                alt={
-                                                    project.projectName +
-                                                    " logo"
-                                                }
-                                            />
-                                        </div>
-                                        {project.projectName}
-                                        <DropdownMenuShortcut>
-                                            Pro
-                                        </DropdownMenuShortcut>
+                        {projects.length > 0 ? (
+                            <>
+                                <DropdownMenuSeparator />
+                                {projects.map((project) => {
+                                    return (
+                                        <Link
+                                            key={project.id}
+                                            to={`/dashboard/projects/${project.id}`}
+                                        >
+                                            <DropdownMenuItem className="gap-2 p-2">
+                                                <div className="flex size-6 items-center justify-center overflow-hidden rounded-sm border">
+                                                    <img
+                                                        src="https://picsum.photos/32?random=4"
+                                                        alt={
+                                                            project.projectName +
+                                                            " logo"
+                                                        }
+                                                    />
+                                                </div>
+                                                {project.projectName}
+                                                <DropdownMenuShortcut>
+                                                    Pro
+                                                </DropdownMenuShortcut>
+                                            </DropdownMenuItem>
+                                        </Link>
+                                    );
+                                })}
+                            </>
+                        ) : (
+                            <>
+                                {/* Do not show this text to admin user */}
+                                {userData.role !== UserRoles.Admin ? (
+                                    <DropdownMenuItem
+                                        disabled
+                                        className="text-sm"
+                                    >
+                                        No other projects here. 📭
                                     </DropdownMenuItem>
-                                </Link>
-                            );
-                        })}
-                        <DropdownMenuSeparator />
+                                ) : null}
+                            </>
+                        )}
 
-                        <DropdownMenuItem className="gap-2 p-2">
-                            <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                                <Plus className="size-4" />
-                            </div>
-                            <div className="font-medium text-muted-foreground">
-                                Add team
-                            </div>
-                        </DropdownMenuItem>
+                        {userData.role === UserRoles.Admin ? (
+                            <>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="gap-2 p-2">
+                                    <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+                                        <Plus className="size-4" />
+                                    </div>
+                                    <div className="font-medium text-muted-foreground">
+                                        Create project
+                                    </div>
+                                </DropdownMenuItem>
+                            </>
+                        ) : null}
                     </DropdownMenuContent>
                 </DropdownMenu>
             </SidebarMenuItem>

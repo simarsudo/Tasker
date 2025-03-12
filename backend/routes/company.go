@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -166,13 +167,20 @@ func CreateProject(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func GetUserProjects(c *gin.Context) {
+func GetUserSidebarData(c *gin.Context) {
 	user, ok := utils.GetUserFromContext(c)
 	if !ok {
 		return
 	}
 
-	// Create a struct to hold only the fields we want to return
+	projectID := c.Param("projectid")
+
+	projectid, err := strconv.ParseInt(projectID, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Cannot process ID"})
+		return
+	}
+
 	type ProjectInfo struct {
 		ID          uint   `json:"id"`
 		ProjectName string `json:"projectName"`
@@ -182,13 +190,11 @@ func GetUserProjects(c *gin.Context) {
 
 	// FIXME: check if better can be implemented
 	// Query only the specific fields we need
-	err := db.DB.Table("company_projects").
+	if err := db.DB.Table("company_projects").
 		Select("company_projects.id, company_projects.project_name").
 		Joins("JOIN team_members ON team_members.project_id = company_projects.id").
 		Where("team_members.user_id = ?", user.ID).
-		Find(&projects).Error
-
-	if err != nil {
+		Find(&projects).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch projects"})
 		return
 	}
@@ -198,8 +204,25 @@ func GetUserProjects(c *gin.Context) {
 		return
 	}
 
+	teamMember := models.TeamMember{
+		UserID:    user.ID,
+		ProjectID: uint(projectid),
+	}
+
+	if result := db.DB.Select("role").
+		Where("user_id = ? AND project_id = ?", user.ID, uint(projectid)).
+		First(&teamMember); result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found in team"})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"projects": projects,
+		"userData": map[string]any{
+			"fullName": user.FirstName + " " + user.LastName,
+			"email":    user.Email,
+			"role":     teamMember.Role,
+		},
 	})
 }
 

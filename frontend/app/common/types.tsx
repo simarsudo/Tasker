@@ -59,3 +59,9 @@ export type UserProjects = {
     id: number;
     projectName: string;
 }[];
+
+export type UserData = {
+    fullName: string;
+    email: string;
+    role: string;
+};
