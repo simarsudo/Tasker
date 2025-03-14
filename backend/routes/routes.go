@@ -29,4 +29,5 @@ func RegisterRoutes(server *gin.Engine) {
 	protected.GET("/get-current-project/:projectid", GetUserSidebarData)
 	protected.GET("/get-project-team-members", GetProjectTeamMembers)
 	protected.POST("/invite-team-member", InviteTeamMember)
+	protected.POST("/change-user-role", ChangeUserRole)
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
+
 import {
     Table,
     TableBody,
@@ -23,12 +25,37 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({
     columns,
-    data,
+    data: initialData,
 }: DataTableProps<TData, TValue>) {
+    const [data, setData] = useState(initialData);
+
+    // Update the table with new data when initialData changes
+    useEffect(() => {
+        setData(initialData);
+    }, [initialData]);
+
+    // Function to update row data
+    const updateData = (rowId: string, columnId: string, value: unknown) => {
+        setData((oldData) => {
+            return oldData.map((row: any) => {
+                if (row.id === rowId) {
+                    return {
+                        ...row,
+                        [columnId]: value,
+                    };
+                }
+                return row;
+            });
+        });
+    };
+
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        meta: {
+            updateData,
+        },
     });
 
     return (

@@ -82,7 +82,7 @@ func GetUserByEmail(email string) (*models.User, error) {
 func GetUserByID(id uint) (*models.User, error) {
 	var user models.User
 	user.ID = id
-	if err := db.DB.Debug().First(&user).Error; err != nil {
+	if err := db.DB.First(&user).Error; err != nil {
 		return nil, err
 	}
 

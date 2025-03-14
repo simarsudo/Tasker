@@ -99,7 +99,13 @@ export default function DashboardLayout() {
                     {/* TODO: Add breadcrumbs */}
                 </div>
                 <div className="px-4">
-                    <Outlet context={{ projectId, role: userData.role }} />
+                    <Outlet
+                        context={{
+                            projectId,
+                            role: userData.role,
+                            userEmail: userData.email,
+                        }}
+                    />
                 </div>
             </main>
         </SidebarProvider>

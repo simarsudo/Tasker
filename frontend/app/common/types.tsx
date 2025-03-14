@@ -5,7 +5,7 @@ import {
     SetStateAction,
 } from "react";
 
-import { SignupTabValues, TabValues } from "@/common/common";
+import { SignupTabValues, TabValues, UserRoles } from "@/common/common";
 
 import { LucideProps } from "lucide-react";
 
@@ -64,4 +64,9 @@ export type UserData = {
     fullName: string;
     email: string;
     role: string;
+};
+
+export type DashboardOutlet = {
+    userEmail: string;
+    userRole: UserRoles;
 };

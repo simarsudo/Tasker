@@ -241,6 +241,7 @@ func GetProjectTeamMembers(c *gin.Context) {
 	// Create a struct to hold only the fields we want to return
 	type TeamMemberInfo struct {
 		ID       uint   `json:"id"`
+		UserID   uint   `json:"userID"`
 		Email    string `json:"email"`
 		FullName string `json:"fullName"`
 		Role     string `json:"role"`
@@ -250,7 +251,7 @@ func GetProjectTeamMembers(c *gin.Context) {
 
 	// TODO: Make it using gorm/go syntax
 	err := db.DB.Model(&models.TeamMember{}).
-		Select("team_members.id, users.email, CONCAT(users.first_name, ' ', users.last_name) as full_name, team_members.role").
+		Select("team_members.id, user_id, users.email, CONCAT(users.first_name, ' ', users.last_name) as full_name, team_members.role").
 		Joins("JOIN users ON users.id = team_members.user_id").
 		Where("team_members.project_id = ?", projectID).
 		Scan(&teamMembers).Error
@@ -472,4 +473,54 @@ func JoinTeamUsingInviteLink(c *gin.Context) {
 
 	// Return a success response with a redirect link
 	c.JSON(http.StatusOK, gin.H{"redirectLink": fmt.Sprintf("dashboard/projects/%d", *user.DefaultProjectID)})
+}
+
+func ChangeUserRole(c *gin.Context) {
+	_, ok := utils.GetUserFromContext(c)
+	if !ok {
+		return
+	}
+	// FIXME: Implement Role check
+
+	type PayloadDetails struct {
+		UserID    uint
+		ProjectID uint
+		Role      types.Role
+	}
+
+	var payload PayloadDetails
+
+	if err := c.ShouldBindJSON(&payload); err != nil {
+		validationErrors := utils.GenerateValidationErrors(err)
+		c.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
+		return
+	}
+
+	var teamMember models.TeamMember
+
+	if err := db.DB.Select("id", "user_id", "role", "project_id").
+		Where("user_id = ? AND project_id = ?", payload.UserID, payload.ProjectID).
+		First(&teamMember).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	teamMember.Role = payload.Role
+
+	if err := db.DB.Save(&teamMember).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"sucess": gin.H{
+			"userID":    teamMember.UserID,
+			"projectID": teamMember.ProjectID,
+			"role":      teamMember.Role,
+		},
+	})
 }

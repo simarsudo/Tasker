@@ -1,4 +1,5 @@
-import { columns } from "@/common/tableDefs";
+import { columns, createColumns } from "@/common/tableDefs";
+import { DashboardOutlet } from "@/common/types";
 
 import { DataTable } from "@/components/common/DataTable";
 import InviteTeamMemberDialogForm from "@/components/forms/InviteTeamMemberDialogForm";
@@ -52,6 +53,9 @@ export function ErrorBoundary() {
 export default function DashboardTeam() {
     const { teamMembers } = useLoaderData<typeof loader>();
     const { projectId } = useOutletContext<{ projectId: number }>();
+    const outlet = useOutletContext<DashboardOutlet>();
+
+    const columns = createColumns(outlet.userEmail);
 
     return (
         <div className="space-y-4">
