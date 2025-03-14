@@ -29,7 +29,12 @@ import useFormValidation from "@/hooks/use-form-validation";
 import { format } from "date-fns";
 import { z } from "zod";
 
-type Props = {};
+type Props = {
+    teamMembers: {
+        id: number;
+        fullName: string;
+    }[];
+};
 
 const formSchema = z.object({
     taskName: z.string().min(5, "Task name must be at least 5 characters."),
@@ -40,7 +45,7 @@ const formSchema = z.object({
     lastDate: z.date({ required_error: "A last date is required." }),
 });
 
-export default function AddTaskForm({}: Props) {
+export default function AddTaskForm({ teamMembers }: Props) {
     const form = useFormValidation(formSchema, {
         taskName: "",
         taskDescription: "",
@@ -86,10 +91,16 @@ export default function AddTaskForm({}: Props) {
                                         <SelectValue placeholder="Choose team member" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="MVJ">MVJ</SelectItem>
-                                        <SelectItem value="Elder">
-                                            Elder
-                                        </SelectItem>
+                                        {teamMembers.map((teamMember) => {
+                                            return (
+                                                <SelectItem
+                                                    key={teamMember.id}
+                                                    value={`${teamMember.id}`}
+                                                >
+                                                    {teamMember.fullName}
+                                                </SelectItem>
+                                            );
+                                        })}
                                     </SelectContent>
                                 </Select>
                             </FormControl>

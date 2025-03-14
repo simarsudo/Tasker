@@ -238,23 +238,30 @@ func GetProjectTeamMembers(c *gin.Context) {
 		return
 	}
 
+	onlyNames := c.Query("onlyNames")
+
 	// Create a struct to hold only the fields we want to return
 	type TeamMemberInfo struct {
 		ID       uint   `json:"id"`
-		UserID   uint   `json:"userID"`
-		Email    string `json:"email"`
+		UserID   uint   `json:"userID,omitempty"`
+		Email    string `json:"email,omitempty"`
 		FullName string `json:"fullName"`
-		Role     string `json:"role"`
+		Role     string `json:"role,omitempty"`
 	}
 
 	var teamMembers []TeamMemberInfo
 
-	// TODO: Make it using gorm/go syntax
-	err := db.DB.Model(&models.TeamMember{}).
-		Select("team_members.id, user_id, users.email, CONCAT(users.first_name, ' ', users.last_name) as full_name, team_members.role").
+	query := db.DB.Model(&models.TeamMember{}).
 		Joins("JOIN users ON users.id = team_members.user_id").
-		Where("team_members.project_id = ?", projectID).
-		Scan(&teamMembers).Error
+		Where("team_members.project_id = ?", projectID)
+
+	if onlyNames == "1" {
+		query = query.Select("team_members.id, CONCAT(users.first_name, ' ', users.last_name) as full_name")
+	} else {
+		query = query.Select("team_members.id, user_id, users.email, CONCAT(users.first_name, ' ', users.last_name) as full_name, team_members.role")
+	}
+
+	err := query.Scan(&teamMembers).Error
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch team members"})

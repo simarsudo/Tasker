@@ -11,9 +11,14 @@ import { Separator } from "@/components/ui/separator";
 
 import AddTaskForm from "@/components/forms/AddTaskForm";
 
-type Props = {};
+type Props = {
+    teamMembers: {
+        id: number;
+        fullName: string;
+    }[];
+};
 
-export default function AddTaskDialog({}: Props) {
+export default function AddTaskDialog({ teamMembers }: Props) {
     return (
         <div>
             <Dialog>
@@ -30,7 +35,7 @@ export default function AddTaskDialog({}: Props) {
                             <Separator className="my-1" />
                         </div>
                         <div>
-                            <AddTaskForm />
+                            <AddTaskForm teamMembers={teamMembers} />
                         </div>
                     </DialogHeader>
                 </DialogContent>
