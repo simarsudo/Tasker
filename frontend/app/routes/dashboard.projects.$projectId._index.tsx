@@ -1,12 +1,17 @@
+import { DashboardOutlet } from "@/common/types";
+
+import AddTaskDialog from "@/components/dialogs/AddTaskDialog";
 import { useOutletContext } from "react-router-dom";
 
-type ProjectContextType = {
-    // Define the type of your context value here
-    projectId: string;
-};
-
 export default function Project() {
-    const context = useOutletContext<ProjectContextType>();
+    const context = useOutletContext<DashboardOutlet>();
 
-    return <div>Dashboard Project: {context.projectId}</div>;
+    return (
+        <div>
+            <div className="flex items-center justify-between">
+                <p>Project Name</p>
+                <AddTaskDialog />
+            </div>
+        </div>
+    );
 }

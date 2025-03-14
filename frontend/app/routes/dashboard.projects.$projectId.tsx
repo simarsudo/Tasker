@@ -95,10 +95,9 @@ export default function DashboardLayout() {
             <main className="w-full">
                 <div>
                     <Navbar showSidebarTrigger={true} />
-                    <Separator orientation="vertical" className="h-5" />
                     {/* TODO: Add breadcrumbs */}
                 </div>
-                <div className="px-4">
+                <div className="p-4">
                     <Outlet
                         context={{
                             projectId,

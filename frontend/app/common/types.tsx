@@ -69,4 +69,5 @@ export type UserData = {
 export type DashboardOutlet = {
     userEmail: string;
     userRole: UserRoles;
+    projectId: number;
 };

@@ -34,7 +34,7 @@ export default function DashboardSidebarMenu() {
 
     const items = [
         {
-            title: "Dashboard",
+            title: "Board",
             url: `/dashboard/projects/${projectId}`,
             icon: Home,
         },
