@@ -53,6 +53,7 @@ func main() {
 		&models.CompanyProject{},
 		&models.TeamMember{},
 		&models.Invitation{},
+		&models.Task{},
 	)
 
 	if err != nil {

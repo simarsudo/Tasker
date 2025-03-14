@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/simarsudo/tasker/types"
 	"gorm.io/gorm"
@@ -103,6 +104,32 @@ func (invitation *Invitation) BeforeSave(tx *gorm.DB) (err error) {
 			return err
 		}
 		// Token collision, generate a new token and try again
+	}
+	return nil
+}
+
+type Task struct {
+	gorm.Model
+	TaskName        string              `gorm:"not null" binding:"required" json:"taskName"`
+	TaskDescription string              `gorm:"not null" binding:"required" json:"taskDescription"`
+	DueDate         time.Time           `gorm:"not null" binding:"required" json:"lastDate"`
+	Priority        types.PriorityLevel `gorm:"not null" binding:"required" json:"priority"`
+	Status          types.TaskStatus    `gorm:"not null" binding:"required" json:"status"`
+	CompletionDate  *time.Time          `json:"completionDate"`
+
+	AssignedToID uint `gorm:"not null"`
+	AssignedTo   User `gorm:"foreignKey:AssignedToID"`
+
+	CreatedByID uint `gorm:"not null"`
+	CreatedBy   User `gorm:"foreignKey:CreatedByID"`
+
+	ProjectID uint           `gorm:"not null" binding:"required" json:"projectID"`
+	Project   CompanyProject `gorm:"foreignKey:ProjectID"`
+}
+
+func (task *Task) BeforeCreate(tx *gorm.DB) (err error) {
+	if task.Status == "" {
+		task.Status = types.NotStarted
 	}
 	return nil
 }

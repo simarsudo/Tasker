@@ -1,11 +1,13 @@
 package routes
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/simarsudo/tasker/common"
@@ -243,7 +245,7 @@ func GetProjectTeamMembers(c *gin.Context) {
 	// Create a struct to hold only the fields we want to return
 	type TeamMemberInfo struct {
 		ID       uint   `json:"id"`
-		UserID   uint   `json:"userID,omitempty"`
+		UserID   uint   `json:"userID"`
 		Email    string `json:"email,omitempty"`
 		FullName string `json:"fullName"`
 		Role     string `json:"role,omitempty"`
@@ -256,7 +258,7 @@ func GetProjectTeamMembers(c *gin.Context) {
 		Where("team_members.project_id = ?", projectID)
 
 	if onlyNames == "1" {
-		query = query.Select("team_members.id, CONCAT(users.first_name, ' ', users.last_name) as full_name")
+		query = query.Select("team_members.id, user_id, CONCAT(users.first_name, ' ', users.last_name) as full_name")
 	} else {
 		query = query.Select("team_members.id, user_id, users.email, CONCAT(users.first_name, ' ', users.last_name) as full_name, team_members.role")
 	}
@@ -530,4 +532,63 @@ func ChangeUserRole(c *gin.Context) {
 			"role":      teamMember.Role,
 		},
 	})
+}
+
+func createNewTask(c *gin.Context) {
+	user, ok := utils.GetUserFromContext(c)
+	if !ok {
+		return
+	}
+
+	type Task struct {
+		TaskName        string              `json:"taskName" binding:"required"`
+		TaskDescription string              `json:"taskDescription" binding:"required"`
+		AssignedTo      json.Number         `json:"assignedTo" binding:"required"`
+		DueDate         time.Time           `json:"dueDate" binding:"required"`
+		Priority        types.PriorityLevel `json:"priority" binding:"required"`
+		ProjectID       json.Number         `json:"projectID" binding:"required"`
+	}
+
+	var newTask Task
+
+	if err := c.ShouldBindJSON(&newTask); err != nil {
+		validationErrors := utils.GenerateValidationErrors(err)
+		c.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
+		return
+	}
+
+	assignedToID, err := newTask.AssignedTo.Int64()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid assignedTo ID"})
+		return
+	}
+
+	projectID, err := newTask.ProjectID.Int64()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid projectID"})
+		return
+	}
+
+	var assignedToUser models.User
+	if result := db.DB.First(&assignedToUser, assignedToID); result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Assigned user not found"})
+		return
+	}
+
+	task := models.Task{
+		TaskName:        newTask.TaskName,
+		TaskDescription: newTask.TaskDescription,
+		AssignedTo:      assignedToUser,
+		DueDate:         newTask.DueDate,
+		Priority:        newTask.Priority,
+		ProjectID:       uint(projectID),
+		CreatedByID:     user.ID,
+	}
+
+	if result := db.DB.Create(&task); result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": utils.UnknownError})
+		return
+	}
+
+	c.Status(http.StatusOK)
 }
