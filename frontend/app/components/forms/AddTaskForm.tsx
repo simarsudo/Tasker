@@ -71,7 +71,7 @@ export default function AddTaskForm({ teamMembers, projectID }: Props) {
             body: JSON.stringify({ ...values, projectID }),
         }).then(async (r) => {
             if (r.ok) {
-                navigate(`/dashboard/projects/${projectID}`);
+                navigate(`/dashboard/projects/${projectID}/tasks`);
             } else {
                 // FIXME: Add error handling on all make requests
                 console.log("WTF Bro");

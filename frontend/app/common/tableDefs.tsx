@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { EllipsisVertical } from "lucide-react";
+import { ArrowUpDown, EllipsisVertical, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { UserRoles } from "./common";
+import { TaskRow } from "./types";
 
 import ChangeRoleDialogForm from "@/components/forms/ChangeRoleDialogForm";
 import { ColumnDef, TableMeta } from "@tanstack/react-table";
@@ -175,3 +176,65 @@ export const createColumns = (
 
 // Keep the original columns definition for backwards compatibility
 export const columns: ColumnDef<TeamMember>[] = createColumns("");
+
+export const taskColumnDisplayNames: Record<string, string> = {
+    taskName: "Task Name",
+    priority: "Priority",
+    assignedToName: "Assigned To",
+    dueDate: "Due Date",
+    status: "Status",
+    createdByName: "Created By",
+    actions: "Actions",
+};
+
+export const TasksColumns: ColumnDef<TaskRow>[] = [
+    {
+        accessorKey: "taskName",
+        header: taskColumnDisplayNames["taskName"],
+    },
+    {
+        accessorKey: "priority",
+        header: taskColumnDisplayNames["priority"],
+    },
+    {
+        accessorKey: "assignedToName",
+        header: taskColumnDisplayNames["assignedToName"],
+        cell: ({ row }) => (
+            <div className="capitalize">{row.getValue("assignedToName")}</div>
+        ),
+    },
+    {
+        accessorKey: "dueDate",
+        header: taskColumnDisplayNames["dueDate"],
+    },
+    {
+        accessorKey: "status",
+        header: "Status",
+    },
+    {
+        accessorKey: "createdByName",
+        header: taskColumnDisplayNames["createdByName"],
+    },
+    {
+        id: "actions",
+        enableHiding: false,
+        cell: ({}) => {
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>View task</DropdownMenuItem>
+                        <DropdownMenuItem>Edit task</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            );
+        },
+    },
+];

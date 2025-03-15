@@ -534,7 +534,7 @@ func ChangeUserRole(c *gin.Context) {
 	})
 }
 
-func createNewTask(c *gin.Context) {
+func CreateNewTask(c *gin.Context) {
 	user, ok := utils.GetUserFromContext(c)
 	if !ok {
 		return
@@ -591,4 +591,46 @@ func createNewTask(c *gin.Context) {
 	}
 
 	c.Status(http.StatusOK)
+}
+
+func GetProjectTasks(c *gin.Context) {
+	projectID := c.Query("projectID")
+
+	if projectID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing projectID."})
+	}
+
+	type TaskResponse struct {
+		ID              uint                `json:"id"`
+		TaskName        string              `json:"taskName"`
+		TaskDescription string              `json:"taskDescription"`
+		AssignedName    string              `json:"assignedToName"`
+		CreatedByName   string              `json:"createdByName"`
+		DueDate         types.FormattedTime `json:"dueDate"`
+		CreatedAt       types.FormattedTime `json:"createdAt"`
+		Priority        types.PriorityLevel `json:"priority"`
+		Status          types.TaskStatus    `json:"status"`
+	}
+
+	var tasks []TaskResponse
+
+	if err := db.DB.Table("tasks").
+		Select(`tasks.id, 
+                tasks.task_name, 
+                tasks.task_description,
+                CONCAT(assigned.first_name, ' ', assigned.last_name) as assigned_name, 
+                CONCAT(creator.first_name, ' ', creator.last_name) as created_by_name,
+                tasks.due_date,
+				tasks.created_at,
+                tasks.priority,
+                tasks.status`).
+		Joins("LEFT JOIN users AS assigned ON assigned.id = tasks.assigned_to_id").
+		Joins("LEFT JOIN users AS creator ON creator.id = tasks.created_by_id").
+		Where("tasks.project_id = ?", projectID).
+		Scan(&tasks).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch tasks"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"tasks": tasks})
 }

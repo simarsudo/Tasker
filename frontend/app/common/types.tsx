@@ -71,3 +71,19 @@ export type DashboardOutlet = {
     userRole: UserRoles;
     projectId: number;
 };
+
+export type TaskStatus = "Not Started" | "In progress" | "Finished";
+
+export type TaskPriority = "High" | "Medium" | "Low";
+
+export type TaskRow = {
+    id: number;
+    taskName: string;
+    taskDescription: string;
+    assignedToName: string;
+    createdAt: string;
+    dueDate: string;
+    createdByName: string;
+    status: TaskStatus;
+    priority: TaskPriority;
+};

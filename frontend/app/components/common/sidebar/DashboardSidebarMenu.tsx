@@ -1,4 +1,10 @@
-import { ChevronRight, Home, MoreHorizontal, Users } from "lucide-react";
+import {
+    ChevronRight,
+    FileCheck2,
+    Home,
+    MoreHorizontal,
+    Users,
+} from "lucide-react";
 
 import {
     Collapsible,
@@ -38,11 +44,11 @@ export default function DashboardSidebarMenu() {
             url: `/dashboard/projects/${projectId}`,
             icon: Home,
         },
-        // {
-        //     title: "Reports",
-        //     url: "#",
-        //     icon: Inbox,
-        // },
+        {
+            title: "Tasks",
+            url: `/dashboard/projects/${projectId}/tasks`,
+            icon: FileCheck2,
+        },
         {
             title: "Team",
             url: `/dashboard/projects/${projectId}/team`,

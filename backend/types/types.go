@@ -1,5 +1,10 @@
 package types
 
+import (
+	"fmt"
+	"time"
+)
+
 type Role string
 
 const (
@@ -31,3 +36,13 @@ const (
 	Completed  TaskStatus = "Completed"
 	Blocked    TaskStatus = "Blocked"
 )
+
+// FormattedTime is a wrapper around time.Time that formats dates consistently
+type FormattedTime time.Time
+
+// MarshalJSON implements the json.Marshaler interface
+func (ft FormattedTime) MarshalJSON() ([]byte, error) {
+	t := time.Time(ft)
+	formatted := fmt.Sprintf("\"%s\"", t.Format("01/02/2006")) // MM/DD/YYYY
+	return []byte(formatted), nil
+}
