@@ -1,30 +1,8 @@
-import { DashboardOutlet, TaskRow } from "@/common/types";
+import { DashboardOutlet } from "@/common/types";
 
-import { BookType, CalendarClock, Info } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import {
-    HoverCard,
-    HoverCardContent,
-    HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-
-import TaskHoverCard from "@/components/cards/TaskHoverCard";
 import { TaskTable } from "@/components/tables/TaskTable";
 import { LoaderFunction } from "@remix-run/node";
-import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
+import { useLoaderData, useOutletContext } from "@remix-run/react";
 
 export const loader: LoaderFunction = async ({ request, params }) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -73,7 +51,6 @@ export function ErrorBoundary() {
 export default function DashboardTasks() {
     const { tasks } = useLoaderData<typeof loader>();
     const context = useOutletContext<DashboardOutlet>();
-    console.log(tasks);
 
     return (
         <div className="space-y-2">
