@@ -17,16 +17,6 @@ export const PriorityBadgeMap: { [key: number]: JSX.Element } = {
     2: <Badge className="bg-neutral-500">Low</Badge>,
 };
 
-// TODO: Remove
-export const TeamData = {
-    0: "Jack The Ripper",
-    1: "Jack The Begger",
-    2: "Jack the Nigger",
-    3: "Jack the Cotton Picker",
-};
-
-export type TeamMemberId = keyof typeof TeamData;
-
 export enum SignupTabValues {
     AccountInfo = "AccountInfo",
     PersonalInfo = "PersonalInfo",
@@ -37,8 +27,6 @@ export enum TabValues {
     Address = "Address",
     Details = "Details",
 }
-
-export const currentUserId: TeamMemberId = 2;
 
 export function getCookieValue(name: string): string | null {
     const cookies = document.cookie.split(";").reduce(

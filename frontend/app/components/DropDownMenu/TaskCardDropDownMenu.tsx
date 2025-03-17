@@ -1,17 +1,9 @@
 import { useState } from "react";
 
-import { TeamData, TeamMemberId, currentUserId } from "@/common/common";
-import { columnType } from "@/common/types";
+import { TaskRow, TaskStatus, TeamMemberDetails } from "@/common/types";
 
-import {
-    ArrowRightLeft,
-    EllipsisVertical,
-    Pencil,
-    UserPen,
-} from "lucide-react";
+import { ArrowRightLeft, Ellipsis, UserPen } from "lucide-react";
 
-import { DeleteTaskModal } from "../modals/DeleteTaskModal";
-import { Button } from "../ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -24,35 +16,22 @@ import {
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
+
+import { Button } from "../ui/button";
 
 type Props = {
-    columnData: columnType;
-    taskId: number;
-    statusId: number;
+    task: TaskRow;
+    teamMemberDetails: TeamMemberDetails[];
 };
 
-export function TaskCardDropDownMenu({ columnData, taskId, statusId }: Props) {
-    const [openDropDownMenu, setOpenDropDownMenu] = useState(false);
-    const [openDeleteAlertModel, setOpenDeleteAlertModel] = useState(false);
-
+export function TaskCardDropDownMenu({ task, teamMemberDetails }: Props) {
     const moveToColumn = (columnId: number) => {
         console.log(columnId);
     };
 
-    const assignToUser = (assignToId: TeamMemberId) => {
+    const assignToUser = (assignToId: number) => {
         console.log(assignToId);
-    };
-
-    const closeDeleteTaskModal = () => {
-        // Close the menu and alert dialog
-        setOpenDeleteAlertModel(false);
-        setOpenDropDownMenu(false);
-    };
-
-    const handleAction = () => {
-        // TODO: Add fetching logic here
-        closeDeleteTaskModal();
     };
 
     return (
@@ -60,18 +39,10 @@ export function TaskCardDropDownMenu({ columnData, taskId, statusId }: Props) {
             // Need to stop propogation to DnD so onClick events can fire
             onPointerDown={(e) => e.stopPropagation()}
         >
-            <DropdownMenu
-                open={openDropDownMenu}
-                onOpenChange={(isOpen) => {
-                    // Only close the menu if delete dialog box is not open
-                    if (!openDeleteAlertModel) {
-                        setOpenDropDownMenu(isOpen);
-                    }
-                }}
-            >
+            <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button size="icon">
-                        <EllipsisVertical />
+                    <Button variant="outline" size="icon">
+                        <Ellipsis />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-48">
@@ -89,25 +60,22 @@ export function TaskCardDropDownMenu({ columnData, taskId, statusId }: Props) {
                                         Select the column:
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    {columnData &&
-                                        columnData.map((col) => {
-                                            return (
-                                                statusId !== col.columnId && (
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            moveToColumn(
-                                                                col.columnId,
-                                                            )
-                                                        }
-                                                        key={col.columnId}
-                                                    >
-                                                        <span>
-                                                            {col.columnName}
-                                                        </span>
-                                                    </DropdownMenuItem>
-                                                )
-                                            );
-                                        })}
+                                    {Object.values(TaskStatus).map((col) => {
+                                        return (
+                                            task.status !== col && (
+                                                <DropdownMenuItem
+                                                    // onClick={() =>
+                                                    //     moveToColumn(
+                                                    //         col.columnId,
+                                                    //     )
+                                                    // }
+                                                    key={col}
+                                                >
+                                                    <span>{col}</span>
+                                                </DropdownMenuItem>
+                                            )
+                                        );
+                                    })}
                                 </DropdownMenuSubContent>
                             </DropdownMenuPortal>
                         </DropdownMenuSub>
@@ -124,39 +92,26 @@ export function TaskCardDropDownMenu({ columnData, taskId, statusId }: Props) {
                                         Select team member:
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    {Object.entries(TeamData).map(
-                                        ([id, name]) => {
-                                            const userId = Number(
-                                                id,
-                                            ) as TeamMemberId;
-                                            return (
-                                                userId !== currentUserId && (
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            assignToUser(userId)
-                                                        }
-                                                        key={userId}
-                                                    >
-                                                        <span>{name}</span>
-                                                    </DropdownMenuItem>
-                                                )
-                                            );
-                                        },
-                                    )}
+                                    {teamMemberDetails.map((teamMember) => {
+                                        return (
+                                            teamMember.userID !==
+                                                task.assignedToID && (
+                                                <DropdownMenuItem
+                                                    // onClick={() =>
+                                                    //     assignToUser(teamMember.userID)
+                                                    // }
+                                                    key={teamMember.userID}
+                                                >
+                                                    <span>
+                                                        {teamMember.fullName}
+                                                    </span>
+                                                </DropdownMenuItem>
+                                            )
+                                        );
+                                    })}
                                 </DropdownMenuSubContent>
                             </DropdownMenuPortal>
                         </DropdownMenuSub>
-                        {/* Delete menu item option */}
-                        <DeleteTaskModal
-                            closeDeleteTaskModal={closeDeleteTaskModal}
-                            handleAction={handleAction}
-                            openDeleteAlertModel={openDeleteAlertModel}
-                            setOpenDeleteAlertModel={setOpenDeleteAlertModel}
-                        />
-                        <DropdownMenuItem>
-                            <Pencil />
-                            <span>Edit</span>
-                        </DropdownMenuItem>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>

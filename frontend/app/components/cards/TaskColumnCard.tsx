@@ -1,27 +1,22 @@
 import { FC } from "react";
 
-import { ColumnProperties, priorityColorClasses } from "@/common/common";
-import { TaskRow } from "@/common/types";
+import { priorityColorClasses } from "@/common/common";
+import { TaskRow, TeamMemberDetails } from "@/common/types";
 
 import { UserPen } from "lucide-react";
 
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 
+import { TaskCardDropDownMenu } from "@/components/DropDownMenu/TaskCardDropDownMenu";
 import { cn } from "@/lib/utils";
 
 type Props = {
     task: TaskRow;
     className?: string;
+    teamMemberDetails: TeamMemberDetails[];
 };
 
-const TaskColumnCard: FC<Props> = ({ task, className }) => {
+const TaskColumnCard: FC<Props> = ({ task, className, teamMemberDetails }) => {
     // Get the appropriate color class based on task priority
     const beforeColorClass =
         priorityColorClasses[
@@ -31,23 +26,25 @@ const TaskColumnCard: FC<Props> = ({ task, className }) => {
     return (
         <Card
             className={cn(
-                "relative w-80 overflow-hidden",
-                "before:absolute before:left-0 before:top-0 before:block before:h-full before:w-1",
+                "relative space-y-3 overflow-hidden p-5",
+                "before:absolute before:left-0 before:top-0 before:block before:h-1 before:w-full",
                 beforeColorClass,
                 className,
             )}
         >
-            <CardHeader>
-                <CardTitle>{task.taskName}</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <p className="line-clamp-2">{task.taskDescription}</p>
-            </CardContent>
-            <CardFooter>
-                <CardDescription className="flex items-center gap-2">
+            <CardTitle>{task.taskName}</CardTitle>
+            <CardDescription>
+                <p className="line-clamp-3">{task.taskDescription}</p>
+            </CardDescription>
+            <div className="flex items-center justify-between">
+                <span className="flex items-center gap-2 text-sm">
                     <UserPen className="size-4" /> {task.assignedToName}
-                </CardDescription>
-            </CardFooter>
+                </span>
+                <TaskCardDropDownMenu
+                    teamMemberDetails={teamMemberDetails}
+                    task={task}
+                />
+            </div>
         </Card>
     );
 };

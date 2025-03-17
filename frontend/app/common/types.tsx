@@ -61,14 +61,14 @@ export type UserProjects = {
 }[];
 
 export type UserData = {
+    id: number;
     fullName: string;
     email: string;
     role: string;
 };
 
 export type DashboardOutlet = {
-    userEmail: string;
-    userRole: UserRoles;
+    userDetails: UserData;
     projectId: number;
 };
 
@@ -89,9 +89,16 @@ export type TaskRow = {
     taskName: string;
     taskDescription: string;
     assignedToName: string;
+    assignedToID: number;
     createdAt: string;
     dueDate: string;
     createdByName: string;
     status: TaskStatus;
     priority: TaskPriority;
+};
+
+export type TeamMemberDetails = {
+    id: number;
+    userID: number;
+    fullName: string;
 };

@@ -1,3 +1,5 @@
+import { DashboardOutlet } from "@/common/types";
+
 import { Link } from "lucide-react";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -95,11 +97,12 @@ export default function DashboardLayout() {
             <main className="w-full">
                 <DashboardContent>
                     <Outlet
-                        context={{
-                            projectId,
-                            role: userData.role,
-                            userEmail: userData.email,
-                        }}
+                        context={
+                            {
+                                userDetails: userData,
+                                projectId: Number(projectId),
+                            } as DashboardOutlet
+                        }
                     />
                 </DashboardContent>
             </main>

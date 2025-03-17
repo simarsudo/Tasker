@@ -55,7 +55,7 @@ export default function DashboardTeam() {
     const { projectId } = useOutletContext<{ projectId: number }>();
     const outlet = useOutletContext<DashboardOutlet>();
 
-    const columns = createColumns(outlet.userEmail);
+    const columns = createColumns(outlet.userDetails.email);
 
     return (
         <div className="space-y-4">

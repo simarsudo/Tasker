@@ -221,6 +221,7 @@ func GetUserSidebarData(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"projects": projects,
 		"userData": map[string]any{
+			"id":       user.ID,
 			"fullName": user.FirstName + " " + user.LastName,
 			"email":    user.Email,
 			"role":     teamMember.Role,
@@ -605,6 +606,7 @@ func GetProjectTasks(c *gin.Context) {
 		TaskName        string              `json:"taskName"`
 		TaskDescription string              `json:"taskDescription"`
 		AssignedName    string              `json:"assignedToName"`
+		AssignedToID    uint                `json:"assignedToID"`
 		CreatedByName   string              `json:"createdByName"`
 		DueDate         types.FormattedTime `json:"dueDate"`
 		CreatedAt       types.FormattedTime `json:"createdAt"`
@@ -618,12 +620,13 @@ func GetProjectTasks(c *gin.Context) {
 		Select(`tasks.id, 
                 tasks.task_name, 
                 tasks.task_description,
-                CONCAT(assigned.first_name, ' ', assigned.last_name) as assigned_name, 
-                CONCAT(creator.first_name, ' ', creator.last_name) as created_by_name,
-                tasks.due_date,
+				tasks.assigned_to_id,
+				tasks.due_date,
 				tasks.created_at,
                 tasks.priority,
-                tasks.status`).
+                tasks.status,
+                CONCAT(assigned.first_name, ' ', assigned.last_name) as assigned_name, 
+                CONCAT(creator.first_name, ' ', creator.last_name) as created_by_name`).
 		Joins("LEFT JOIN users AS assigned ON assigned.id = tasks.assigned_to_id").
 		Joins("LEFT JOIN users AS creator ON creator.id = tasks.created_by_id").
 		Where("tasks.project_id = ?", projectID).
