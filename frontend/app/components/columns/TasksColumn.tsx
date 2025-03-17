@@ -25,7 +25,7 @@ export default function TasksColumn({
     return (
         <div
             className={cn(
-                "flex h-full w-80 flex-col gap-2 rounded-md px-1 transition-shadow 2xl:w-96",
+                "flex min-h-full w-80 flex-col gap-2 rounded-md px-1 transition-shadow 2xl:w-96",
                 isOver ? "shadow-xl" : "",
             )}
             ref={setNodeRef}

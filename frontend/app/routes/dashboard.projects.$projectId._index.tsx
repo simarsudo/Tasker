@@ -133,13 +133,13 @@ export default function Project() {
     }
 
     return (
-        <div className="flex h-full w-full flex-col items-center pb-4">
+        <div className="flex min-h-full w-full flex-col items-center pb-4">
             <DndContext
                 modifiers={[restrictToWindowEdges]}
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
             >
-                <div className="flex h-full w-min grow flex-col justify-around gap-2 rounded-lg border bg-neutral-50 p-4 md:flex-row">
+                <div className="flex min-h-full w-min flex-col justify-around gap-2 rounded-lg border bg-neutral-50 p-4 md:flex-row">
                     {Object.values(TaskStatus).map((status) => {
                         return (
                             <TasksColumn
