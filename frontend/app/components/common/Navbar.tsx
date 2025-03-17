@@ -1,14 +1,12 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
-type Props = {
-    showSidebarTrigger?: boolean;
-};
+type Props = {};
 
-export default function Navbar({ showSidebarTrigger = false }: Props) {
+export default function Navbar({}: Props) {
     return (
-        <div className="h-10 w-full border-b-2 flex items-center px-4">
-            {showSidebarTrigger && <SidebarTrigger />}
-            <span className="text-right ml-auto italic text-lg font-semibold">
+        <div className="flex h-10 w-full items-center border-b-2 px-4">
+            <SidebarTrigger />
+            <span className="ml-auto text-right text-lg font-semibold italic">
                 Tasker
             </span>
         </div>

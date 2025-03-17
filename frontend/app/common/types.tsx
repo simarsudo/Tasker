@@ -72,9 +72,17 @@ export type DashboardOutlet = {
     projectId: number;
 };
 
-export type TaskStatus = "Not Started" | "In progress" | "Finished";
+export enum TaskStatus {
+    NotStarted = "Not Started",
+    InProgress = "In Progress",
+    Completed = "Completed",
+}
 
-export type TaskPriority = "High" | "Medium" | "Low";
+export enum TaskPriority {
+    High = "High",
+    Medium = "Medium",
+    Low = "Low",
+}
 
 export type TaskRow = {
     id: number;

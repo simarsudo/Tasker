@@ -2,7 +2,7 @@ import { CircleCheckBig, CircleGauge, Shapes } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 
-import { lucidIconType } from "./types";
+import { TaskPriority, TaskStatus, lucidIconType } from "./types";
 
 export const StatusIconMap: { [key: number]: lucidIconType } = {
     0: Shapes,
@@ -62,3 +62,28 @@ export enum UserRoles {
     Admin = "admin",
     Member = "member",
 }
+
+export enum ColumnNames {
+    NotStarted = TaskStatus.NotStarted,
+    InProgress = TaskStatus.InProgress,
+    Completed = TaskStatus.Completed,
+}
+
+// Map priority to specific predefined classes
+export const priorityColorClasses: Record<TaskPriority, string> = {
+    [TaskPriority.High]: "before:bg-red-500",
+    [TaskPriority.Medium]: "before:bg-yellow-500",
+    [TaskPriority.Low]: "before:bg-green-500",
+};
+
+export const ColumnProperties: Record<TaskPriority, { color: string }> = {
+    [TaskPriority.High]: {
+        color: "bg-rose-500",
+    },
+    [TaskPriority.Medium]: {
+        color: "bg-yellow-500",
+    },
+    [TaskPriority.Low]: {
+        color: "bg-gray-500",
+    },
+};

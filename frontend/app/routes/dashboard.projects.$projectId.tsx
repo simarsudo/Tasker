@@ -1,10 +1,10 @@
 import { Link } from "lucide-react";
 
-import { Separator } from "@/components/ui/separator";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 import Navbar from "@/components/common/Navbar";
 import { DashboardSidebar } from "@/components/common/sidebar/DashboardSidebar";
+import DashboardContent from "@/components/wrappers/DashboardContent";
 import PageWithNavbarWrapper from "@/components/wrappers/PageWithNavbarWrapper";
 import { useRequireAuthentication } from "@/hooks/useRequireAuthentication";
 import { LoaderFunction } from "@remix-run/node";
@@ -93,11 +93,7 @@ export default function DashboardLayout() {
                 userData={userData}
             />
             <main className="w-full">
-                <div>
-                    <Navbar showSidebarTrigger={true} />
-                    {/* TODO: Add breadcrumbs */}
-                </div>
-                <div className="p-4">
+                <DashboardContent>
                     <Outlet
                         context={{
                             projectId,
@@ -105,7 +101,7 @@ export default function DashboardLayout() {
                             userEmail: userData.email,
                         }}
                     />
-                </div>
+                </DashboardContent>
             </main>
         </SidebarProvider>
     );
