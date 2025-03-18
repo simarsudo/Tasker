@@ -59,9 +59,9 @@ export enum ColumnNames {
 
 // Map priority to specific predefined classes
 export const priorityColorClasses: Record<TaskPriority, string> = {
-    [TaskPriority.High]: "before:bg-red-500",
-    [TaskPriority.Medium]: "before:bg-yellow-500",
-    [TaskPriority.Low]: "before:bg-green-500",
+    [TaskPriority.High]: "bg-red-500",
+    [TaskPriority.Medium]: "bg-yellow-500",
+    [TaskPriority.Low]: "bg-green-500",
 };
 
 export const ColumnProperties: Record<TaskPriority, { color: string }> = {

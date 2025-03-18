@@ -29,7 +29,7 @@ export default function TasksColumn({
     return (
         <div
             className={cn(
-                "flex min-h-full w-80 flex-col gap-2 rounded-md px-1 transition-shadow 2xl:w-96",
+                "flex min-h-full w-80 flex-col gap-2 rounded-md px-1 transition-shadow duration-300 2xl:w-96",
                 isOver ? "shadow-lg shadow-primary" : "",
             )}
             ref={setNodeRef}
@@ -38,7 +38,7 @@ export default function TasksColumn({
                 {columnId}
             </h2>
             <Separator className="mb-2 mt-1 rounded bg-gray-500" />
-            <div className="space-y-4">
+            <div className="space-y-9 pt-4">
                 {tasks.map((task) => {
                     return (
                         <DraggableWrapper id={task.id} key={task.id}>
