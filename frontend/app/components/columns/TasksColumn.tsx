@@ -30,11 +30,11 @@ export default function TasksColumn({
         <div
             className={cn(
                 "flex min-h-full w-80 flex-col gap-2 rounded-md px-1 transition-shadow 2xl:w-96",
-                isOver ? "shadow-xl" : "",
+                isOver ? "shadow-lg shadow-primary" : "",
             )}
             ref={setNodeRef}
         >
-            <h2 className="w-min text-nowrap rounded-2xl bg-violet-700 px-2 py-1 text-sm font-semibold text-white">
+            <h2 className="w-min -skew-x-6 text-nowrap bg-violet-700 px-2 py-1 font-semibold tracking-wide text-white">
                 {columnId}
             </h2>
             <Separator className="mb-2 mt-1 rounded bg-gray-500" />
