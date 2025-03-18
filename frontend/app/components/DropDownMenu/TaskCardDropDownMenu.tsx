@@ -23,9 +23,14 @@ import { Button } from "../ui/button";
 type Props = {
     task: TaskRow;
     teamMemberDetails: TeamMemberDetails[];
+    updateTaskStatus: (taskId: number, newStatus: TaskStatus) => void;
 };
 
-export function TaskCardDropDownMenu({ task, teamMemberDetails }: Props) {
+export function TaskCardDropDownMenu({
+    task,
+    teamMemberDetails,
+    updateTaskStatus,
+}: Props) {
     const moveToColumn = (columnId: number) => {
         console.log(columnId);
     };
@@ -64,11 +69,12 @@ export function TaskCardDropDownMenu({ task, teamMemberDetails }: Props) {
                                         return (
                                             task.status !== col && (
                                                 <DropdownMenuItem
-                                                    // onClick={() =>
-                                                    //     moveToColumn(
-                                                    //         col.columnId,
-                                                    //     )
-                                                    // }
+                                                    onClick={() =>
+                                                        updateTaskStatus(
+                                                            task.id,
+                                                            col,
+                                                        )
+                                                    }
                                                     key={col}
                                                 >
                                                     <span>{col}</span>

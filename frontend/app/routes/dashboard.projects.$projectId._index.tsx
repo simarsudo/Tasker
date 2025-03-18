@@ -92,11 +92,36 @@ export default function Project() {
     const [activeId, setActiveId] = useState<number | null>(null);
     const [activeTask, setActiveTask] = useState<TaskRow | null>(null);
 
+    function updateTaskStatus(taskId: number, newStatus: TaskStatus) {
+        // Update state locally
+        setTasks((currentTasks) =>
+            currentTasks.map((task) =>
+                task.id === taskId
+                    ? { ...task, status: newStatus as any }
+                    : task,
+            ),
+        );
+
+        // Updating state on server
+        makeRequest("/update-task-status", {
+            method: "POST",
+            body: JSON.stringify({
+                id: taskId,
+                status: newStatus,
+            }),
+        }).then(async (r) => {
+            if (r.ok) {
+                toast.success(`Status updated to ${newStatus}.`);
+            } else {
+                toast.error("Failed to update task status. Please try again.");
+            }
+        });
+    }
+
     function handleDragStart(event: DragStartEvent) {
         const { active } = event;
         setActiveId(active.id as number);
 
-        // Find the task that's being dragged
         const taskBeingDragged = tasks.find((task) => task.id === active.id);
         setActiveTask(taskBeingDragged || null);
     }
@@ -117,34 +142,11 @@ export default function Project() {
         }
 
         if (Object.values(ColumnNames).includes(destinationColumn as any)) {
-            // Update the task status when dropped in a new column
-            setTasks((currentTasks) =>
-                currentTasks.map((task) =>
-                    task.id === taskId
-                        ? { ...task, status: destinationColumn as any }
-                        : task,
-                ),
-            );
+            updateTaskStatus(taskId as number, destinationColumn as TaskStatus);
 
-            // Clear the active states
+            // Clear drag state
             setActiveId(null);
             setActiveTask(null);
-
-            makeRequest("/update-task-status", {
-                method: "POST",
-                body: JSON.stringify({
-                    id: taskId,
-                    status: destinationColumn,
-                }),
-            }).then(async (r) => {
-                if (r.ok) {
-                    toast.success(`Status updated to ${destinationColumn}.`);
-                } else {
-                    toast.error(
-                        "Failed to update task status. Please try again.",
-                    );
-                }
-            });
         }
     }
 
@@ -174,6 +176,7 @@ export default function Project() {
                                 tasks={tasks.filter(
                                     (task: TaskRow) => task.status === status,
                                 )}
+                                updateTaskStatus={updateTaskStatus}
                             />
                         );
                     })}
@@ -184,6 +187,7 @@ export default function Project() {
                             teamMemberDetails={teamMembers}
                             className="cursor-grabbing"
                             task={activeTask}
+                            updateTaskStatus={updateTaskStatus}
                         />
                     ) : null}
                 </DragOverlay>

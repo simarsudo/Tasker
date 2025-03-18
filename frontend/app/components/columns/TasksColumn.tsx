@@ -1,4 +1,4 @@
-import { TaskRow, TeamMemberDetails } from "@/common/types";
+import { TaskRow, TaskStatus, TeamMemberDetails } from "@/common/types";
 
 import { Separator } from "@/components/ui/separator";
 
@@ -11,12 +11,14 @@ type Props = {
     columnId: string;
     tasks: TaskRow[];
     teamMemberDetails: TeamMemberDetails[];
+    updateTaskStatus: (taskId: number, newStatus: TaskStatus) => void;
 };
 
 export default function TasksColumn({
     columnId,
     tasks,
     teamMemberDetails,
+    updateTaskStatus,
 }: Props) {
     const { isOver, setNodeRef } = useDroppable({
         id: columnId,
@@ -41,6 +43,7 @@ export default function TasksColumn({
                             <TaskColumnCard
                                 teamMemberDetails={teamMemberDetails}
                                 task={task}
+                                updateTaskStatus={updateTaskStatus}
                             />
                         </DraggableWrapper>
                     );

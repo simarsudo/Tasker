@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import { priorityColorClasses } from "@/common/common";
-import { TaskRow, TeamMemberDetails } from "@/common/types";
+import { TaskRow, TaskStatus, TeamMemberDetails } from "@/common/types";
 
 import { UserPen } from "lucide-react";
 
@@ -14,9 +14,15 @@ type Props = {
     task: TaskRow;
     className?: string;
     teamMemberDetails: TeamMemberDetails[];
+    updateTaskStatus: (taskId: number, newStatus: TaskStatus) => void;
 };
 
-const TaskColumnCard: FC<Props> = ({ task, className, teamMemberDetails }) => {
+const TaskColumnCard: FC<Props> = ({
+    task,
+    className,
+    teamMemberDetails,
+    updateTaskStatus,
+}) => {
     // Get the appropriate color class based on task priority
     const beforeColorClass =
         priorityColorClasses[
@@ -43,6 +49,7 @@ const TaskColumnCard: FC<Props> = ({ task, className, teamMemberDetails }) => {
                 <TaskCardDropDownMenu
                     teamMemberDetails={teamMemberDetails}
                     task={task}
+                    updateTaskStatus={updateTaskStatus}
                 />
             </div>
         </Card>
