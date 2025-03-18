@@ -637,3 +637,36 @@ func GetProjectTasks(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"tasks": tasks})
 }
+
+func UpdateTaskStatus(c *gin.Context) {
+	_, ok := utils.GetUserFromContext(c)
+	if !ok {
+		return
+	}
+
+	type Task struct {
+		ID     json.Number      `json:"id" binding:"required"`
+		Status types.TaskStatus `json:"status" binding:"required"`
+	}
+
+	var task Task
+
+	if err := c.ShouldBindJSON(&task); err != nil {
+		validationErrors := utils.GenerateValidationErrors(err)
+		c.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
+		return
+	}
+
+	var taskToUpdate models.Task
+
+	if result := db.DB.First(&taskToUpdate, task.ID); result.Error != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	taskToUpdate.Status = task.Status
+
+	db.DB.Save(&taskToUpdate)
+
+	c.Status(http.StatusOK)
+}

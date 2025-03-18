@@ -32,4 +32,5 @@ func RegisterRoutes(server *gin.Engine) {
 	protected.POST("/change-user-role", ChangeUserRole)
 	protected.POST("/create-new-task", CreateNewTask)
 	protected.GET("/get-project-tasks", GetProjectTasks)
+	protected.POST("/update-task-status", UpdateTaskStatus)
 }

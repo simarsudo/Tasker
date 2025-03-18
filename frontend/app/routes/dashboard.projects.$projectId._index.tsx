@@ -3,8 +3,11 @@ import { useState } from "react";
 import { ColumnNames } from "@/common/common";
 import { DashboardOutlet, TaskRow, TaskStatus } from "@/common/types";
 
+import { Toaster } from "@/components/ui/sonner";
+
 import TaskColumnCard from "@/components/cards/TaskColumnCard";
 import TasksColumn from "@/components/columns/TasksColumn";
+import { makeRequest } from "@/lib/utils";
 import {
     DndContext,
     DragEndEvent,
@@ -14,6 +17,7 @@ import {
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
+import { toast } from "sonner";
 
 export const loader: LoaderFunction = async ({ request, params }) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -105,6 +109,13 @@ export default function Project() {
         const taskId = active.id;
         const destinationColumn = over.id;
 
+        const existingTask = tasks.find((task) => task.id === taskId);
+
+        // If the task is dropped in the same column
+        if (existingTask && existingTask.status === destinationColumn) {
+            return;
+        }
+
         if (Object.values(ColumnNames).includes(destinationColumn as any)) {
             // Update the task status when dropped in a new column
             setTasks((currentTasks) =>
@@ -119,7 +130,21 @@ export default function Project() {
             setActiveId(null);
             setActiveTask(null);
 
-            console.log(`Moved task ${taskId} to ${destinationColumn}`);
+            makeRequest("/update-task-status", {
+                method: "POST",
+                body: JSON.stringify({
+                    id: taskId,
+                    status: destinationColumn,
+                }),
+            }).then(async (r) => {
+                if (r.ok) {
+                    toast.success(`Status updated to ${destinationColumn}.`);
+                } else {
+                    toast.error(
+                        "Failed to update task status. Please try again.",
+                    );
+                }
+            });
         }
     }
 
@@ -163,6 +188,7 @@ export default function Project() {
                     ) : null}
                 </DragOverlay>
             </DndContext>
+            <Toaster />
         </div>
     );
 }
