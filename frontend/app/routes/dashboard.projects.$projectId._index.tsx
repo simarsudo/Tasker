@@ -118,6 +118,35 @@ export default function Project() {
         });
     }
 
+    function reassignTask(taskID: number, teammemberID: number) {
+        makeRequest("/reassign-task", {
+            method: "POST",
+            body: JSON.stringify({
+                id: taskID,
+                assignToID: teammemberID,
+            }),
+        }).then(async (r) => {
+            if (r.ok) {
+                const data = await r.json();
+
+                setTasks((currentTasks) =>
+                    currentTasks.map((task) =>
+                        task.id === taskID
+                            ? {
+                                  ...task,
+                                  assignedToName: data.assignedToName,
+                                  assignedToID: data.assignedToID,
+                              }
+                            : task,
+                    ),
+                );
+                toast.success(`Task successfully reassigned.`);
+            } else {
+                toast.error("Failed to reassign task. Please try again.");
+            }
+        });
+    }
+
     function handleDragStart(event: DragStartEvent) {
         const { active } = event;
         setActiveId(active.id as number);
@@ -177,6 +206,7 @@ export default function Project() {
                                     (task: TaskRow) => task.status === status,
                                 )}
                                 updateTaskStatus={updateTaskStatus}
+                                reassignTask={reassignTask}
                             />
                         );
                     })}
@@ -188,6 +218,7 @@ export default function Project() {
                             className="cursor-grabbing"
                             task={activeTask}
                             updateTaskStatus={updateTaskStatus}
+                            reassignTask={reassignTask}
                         />
                     ) : null}
                 </DragOverlay>

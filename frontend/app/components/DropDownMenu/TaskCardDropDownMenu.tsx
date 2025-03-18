@@ -24,21 +24,15 @@ type Props = {
     task: TaskRow;
     teamMemberDetails: TeamMemberDetails[];
     updateTaskStatus: (taskId: number, newStatus: TaskStatus) => void;
+    reassignTask: (taskID: number, teammemberID: number) => void;
 };
 
 export function TaskCardDropDownMenu({
     task,
     teamMemberDetails,
     updateTaskStatus,
+    reassignTask,
 }: Props) {
-    const moveToColumn = (columnId: number) => {
-        console.log(columnId);
-    };
-
-    const assignToUser = (assignToId: number) => {
-        console.log(assignToId);
-    };
-
     return (
         <div
             // Need to stop propogation to DnD so onClick events can fire
@@ -103,9 +97,12 @@ export function TaskCardDropDownMenu({
                                             teamMember.userID !==
                                                 task.assignedToID && (
                                                 <DropdownMenuItem
-                                                    // onClick={() =>
-                                                    //     assignToUser(teamMember.userID)
-                                                    // }
+                                                    onClick={() =>
+                                                        reassignTask(
+                                                            task.id,
+                                                            teamMember.userID,
+                                                        )
+                                                    }
                                                     key={teamMember.userID}
                                                 >
                                                     <span>

@@ -670,3 +670,51 @@ func UpdateTaskStatus(c *gin.Context) {
 
 	c.Status(http.StatusOK)
 }
+
+func ReassignTask(c *gin.Context) {
+	_, ok := utils.GetUserFromContext(c)
+	if !ok {
+		return
+	}
+
+	type Task struct {
+		ID         json.Number `json:"id" binding:"required"`
+		AssignToID json.Number `json:"assignToID" binding:"required"`
+	}
+
+	var task Task
+
+	if err := c.ShouldBindJSON(&task); err != nil {
+		validationErrors := utils.GenerateValidationErrors(err)
+		c.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
+		return
+	}
+
+	taskID, err := task.ID.Int64()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid task ID"})
+		return
+	}
+
+	assignedToID, err := task.AssignToID.Int64()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid assignedTo ID"})
+		return
+	}
+
+	// Update the task and preload the assigned user in a single query
+	var taskToUpdate models.Task
+	if err := db.DB.Preload("AssignedTo").
+		Where("id = ?", taskID).
+		Updates(models.Task{AssignedToID: uint(assignedToID)}).
+		First(&taskToUpdate).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update task"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"taskID":         taskToUpdate.ID,
+		"assignedToID":   taskToUpdate.AssignedTo.ID,
+		"assignedToName": fmt.Sprintf("%s %s", taskToUpdate.AssignedTo.FirstName, taskToUpdate.AssignedTo.LastName),
+	})
+}

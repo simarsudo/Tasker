@@ -12,6 +12,7 @@ type Props = {
     tasks: TaskRow[];
     teamMemberDetails: TeamMemberDetails[];
     updateTaskStatus: (taskId: number, newStatus: TaskStatus) => void;
+    reassignTask: (taskID: number, teammemberID: number) => void;
 };
 
 export default function TasksColumn({
@@ -19,6 +20,7 @@ export default function TasksColumn({
     tasks,
     teamMemberDetails,
     updateTaskStatus,
+    reassignTask,
 }: Props) {
     const { isOver, setNodeRef } = useDroppable({
         id: columnId,
@@ -44,6 +46,7 @@ export default function TasksColumn({
                                 teamMemberDetails={teamMemberDetails}
                                 task={task}
                                 updateTaskStatus={updateTaskStatus}
+                                reassignTask={reassignTask}
                             />
                         </DraggableWrapper>
                     );

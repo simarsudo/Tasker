@@ -15,6 +15,7 @@ type Props = {
     className?: string;
     teamMemberDetails: TeamMemberDetails[];
     updateTaskStatus: (taskId: number, newStatus: TaskStatus) => void;
+    reassignTask: (taskID: number, teammemberID: number) => void;
 };
 
 const TaskColumnCard: FC<Props> = ({
@@ -22,6 +23,7 @@ const TaskColumnCard: FC<Props> = ({
     className,
     teamMemberDetails,
     updateTaskStatus,
+    reassignTask,
 }) => {
     // Get the appropriate color class based on task priority
     const beforeColorClass =
@@ -50,6 +52,7 @@ const TaskColumnCard: FC<Props> = ({
                     teamMemberDetails={teamMemberDetails}
                     task={task}
                     updateTaskStatus={updateTaskStatus}
+                    reassignTask={reassignTask}
                 />
             </div>
         </Card>
