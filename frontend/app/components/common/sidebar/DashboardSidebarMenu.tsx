@@ -47,12 +47,6 @@ export default function DashboardSidebarMenu() {
             end: true,
         },
         {
-            title: "Tasks",
-            url: `/dashboard/projects/${projectId}/tasks`,
-            icon: FileCheck2,
-            end: false,
-        },
-        {
             title: "Team",
             url: `/dashboard/projects/${projectId}/team`,
             icon: Users,

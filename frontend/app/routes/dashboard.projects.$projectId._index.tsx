@@ -1,20 +1,16 @@
 import { useState } from "react";
 
-import { ColumnNames } from "@/common/common";
+import { ColumnNames, TasksViewMode } from "@/common/common";
 import { DashboardOutlet, TaskRow, TaskStatus } from "@/common/types";
 
-import { Toaster } from "@/components/ui/sonner";
+import { FolderKanban, Table2 } from "lucide-react";
 
-import TaskColumnCard from "@/components/cards/TaskColumnCard";
-import TasksColumn from "@/components/columns/TasksColumn";
+import { Button } from "@/components/ui/button";
+
+import BoardMode from "@/components/views/BoardMode";
+import TaskTableMode from "@/components/views/TaskTableMode";
 import { makeRequest } from "@/lib/utils";
-import {
-    DndContext,
-    DragEndEvent,
-    DragOverlay,
-    DragStartEvent,
-} from "@dnd-kit/core";
-import { restrictToWindowEdges } from "@dnd-kit/modifiers";
+import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
 import { toast } from "sonner";
@@ -88,9 +84,11 @@ export function ErrorBoundary() {
 
 export default function Project() {
     const { data, teamMembers } = useLoaderData<typeof loader>();
+    const [taskViewMode, setTaskViewMode] = useState(TasksViewMode.TableMode);
     const [tasks, setTasks] = useState<TaskRow[]>(data?.tasks || []);
     const [activeId, setActiveId] = useState<number | null>(null);
     const [activeTask, setActiveTask] = useState<TaskRow | null>(null);
+    const context = useOutletContext<DashboardOutlet>();
 
     function updateTaskStatus(taskId: number, newStatus: TaskStatus) {
         // Update state locally
@@ -189,41 +187,43 @@ export default function Project() {
     }
 
     return (
-        <div className="flex min-h-full w-full flex-col items-center pb-4">
-            <DndContext
-                modifiers={[restrictToWindowEdges]}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-            >
-                <div className="flex min-h-full w-min flex-col justify-around gap-2 rounded-lg border bg-sidebar p-4 md:flex-row">
-                    {Object.values(TaskStatus).map((status) => {
-                        return (
-                            <TasksColumn
-                                teamMemberDetails={teamMembers}
-                                key={status}
-                                columnId={status}
-                                tasks={tasks.filter(
-                                    (task: TaskRow) => task.status === status,
-                                )}
-                                updateTaskStatus={updateTaskStatus}
-                                reassignTask={reassignTask}
-                            />
-                        );
-                    })}
-                </div>
-                <DragOverlay>
-                    {activeTask && activeId !== null ? (
-                        <TaskColumnCard
-                            teamMemberDetails={teamMembers}
-                            className="cursor-grabbing"
-                            task={activeTask}
-                            updateTaskStatus={updateTaskStatus}
-                            reassignTask={reassignTask}
-                        />
-                    ) : null}
-                </DragOverlay>
-            </DndContext>
-            <Toaster />
+        <div className="flex min-h-full flex-col gap-2">
+            <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold">
+                    Tasks Assigned to Team Members
+                </h2>
+                <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() =>
+                        setTaskViewMode(
+                            taskViewMode === TasksViewMode.TableMode
+                                ? TasksViewMode.BoardMode
+                                : TasksViewMode.TableMode,
+                        )
+                    }
+                >
+                    {taskViewMode === TasksViewMode.TableMode ? (
+                        <FolderKanban />
+                    ) : (
+                        <Table2 />
+                    )}
+                </Button>
+            </div>
+            {taskViewMode === TasksViewMode.TableMode ? (
+                <TaskTableMode projectId={context.projectId} tasks={tasks} />
+            ) : (
+                <BoardMode
+                    activeId={activeId}
+                    activeTask={activeTask}
+                    handleDragEnd={handleDragEnd}
+                    handleDragStart={handleDragStart}
+                    reassignTask={reassignTask}
+                    tasks={tasks}
+                    teamMembers={teamMembers}
+                    updateTaskStatus={updateTaskStatus}
+                />
+            )}
         </div>
     );
 }

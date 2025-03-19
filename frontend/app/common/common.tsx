@@ -75,3 +75,8 @@ export const ColumnProperties: Record<TaskPriority, { color: string }> = {
         color: "bg-gray-500",
     },
 };
+
+export enum TasksViewMode {
+    BoardMode = "Board mode",
+    TableMode = "Table mode",
+}
