@@ -87,7 +87,7 @@ export default function DashboardSidebarMenu() {
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton
                                         className={cn(
-                                            "gap-3 text-base [&>svg]:size-5",
+                                            "gap-3 text-base",
                                             isActive
                                                 ? "data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground"
                                                 : "",
