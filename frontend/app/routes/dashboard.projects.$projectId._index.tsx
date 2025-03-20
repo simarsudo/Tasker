@@ -195,6 +195,7 @@ export default function Project() {
                 <Button
                     size="icon"
                     variant="ghost"
+                    className="[&_svg]:size-5"
                     onClick={() =>
                         setTaskViewMode(
                             taskViewMode === TasksViewMode.TableMode
