@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 
 import BoardMode from "@/components/views/BoardMode";
 import TaskTableMode from "@/components/views/TaskTableMode";
+import DashboardWrapper from "@/components/wrappers/DashboardWrapper";
 import { makeRequest } from "@/lib/utils";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { LoaderFunction } from "@remix-run/node";
@@ -187,7 +188,7 @@ export default function Project() {
     }
 
     return (
-        <div className="flex min-h-full flex-col gap-2">
+        <DashboardWrapper>
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold">
                     Tasks Assigned to Team Members
@@ -225,6 +226,6 @@ export default function Project() {
                     updateTaskStatus={updateTaskStatus}
                 />
             )}
-        </div>
+        </DashboardWrapper>
     );
 }

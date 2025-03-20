@@ -3,12 +3,7 @@ import { useState } from "react";
 import { TasksColumns, taskColumnDisplayNames } from "@/common/tableDefs";
 import { TaskRow } from "@/common/types";
 
-import {
-    ArrowUpDown,
-    ChevronDown,
-    MoreHorizontal,
-    SquarePlus,
-} from "lucide-react";
+import { ChevronDown, SquarePlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 // import { Checkbox } from "@/components/ui/checkbox";
@@ -16,9 +11,6 @@ import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -97,7 +89,7 @@ export function TaskTable({ data, projectId }: Props) {
                             .getColumn("assignedToName")
                             ?.setFilterValue(event.target.value)
                     }
-                    className="max-w-sm"
+                    className="md:max-w-sm"
                 />
                 <div className="flex w-full items-center gap-2 md:w-auto">
                     <Button size="sm" className="w-full md:w-auto" asChild>

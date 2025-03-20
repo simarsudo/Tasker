@@ -3,6 +3,7 @@ import { DashboardOutlet } from "@/common/types";
 
 import { DataTable } from "@/components/common/DataTable";
 import InviteTeamMemberDialogForm from "@/components/forms/InviteTeamMemberDialogForm";
+import DashboardWrapper from "@/components/wrappers/DashboardWrapper";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
 
@@ -58,12 +59,12 @@ export default function DashboardTeam() {
     const columns = createColumns(outlet.userDetails.email);
 
     return (
-        <div className="space-y-4">
+        <DashboardWrapper className="space-y-4">
             <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold">Your Team Details</h3>
                 <InviteTeamMemberDialogForm projectID={projectId} />
             </div>
             <DataTable columns={columns} data={teamMembers} />
-        </div>
+        </DashboardWrapper>
     );
 }

@@ -29,7 +29,7 @@ export default function TasksColumn({
     return (
         <div
             className={cn(
-                "flex min-h-full w-80 flex-col gap-2 rounded-md px-1 transition-shadow duration-300 2xl:w-96",
+                "flex min-h-full w-full flex-col gap-2 rounded-md px-1 transition-shadow duration-300",
                 isOver ? "shadow-lg shadow-primary" : "",
             )}
             ref={setNodeRef}

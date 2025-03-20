@@ -32,7 +32,7 @@ const TaskColumnCard: FC<Props> = ({
     const baseColorClass = priorityColorClasses[priorityKey] || "bg-gray-300";
 
     return (
-        <div className="group relative">
+        <div className="group relative min-w-72">
             {/* Priority badge */}
             <span
                 className={cn(

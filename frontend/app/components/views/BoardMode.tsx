@@ -54,7 +54,7 @@ export default function BoardMode({
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                     >
-                        <div className="flex min-h-full w-min flex-col justify-around gap-2 rounded-lg border bg-sidebar p-4 md:flex-row">
+                        <div className="flex min-h-full w-full flex-nowrap justify-around gap-2 overflow-x-auto rounded-lg border bg-sidebar p-4 md:flex-row">
                             {Object.values(TaskStatus).map((status) => {
                                 return (
                                     <TasksColumn

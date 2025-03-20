@@ -94,7 +94,7 @@ export default function DashboardLayout() {
                 projectId={Number(projectId)}
                 userData={userData}
             />
-            <main className="w-full">
+            <main className="w-full overflow-x-hidden">
                 <DashboardContent>
                     <Outlet
                         context={
