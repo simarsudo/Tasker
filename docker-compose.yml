@@ -16,6 +16,7 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: tasker
+      MODE: "d"
       POSTGRES_CONN_STR: postgres://postgres:postgres@db:5432/tasker?sslmode=disable
       SECRET_KEY: 79fa9a4ba8daf195c69f5daf5bb4a4e8a1241383c01ed12fa183400302a42829
 

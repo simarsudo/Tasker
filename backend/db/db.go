@@ -19,7 +19,9 @@ func InitDB() error {
 
 	// TranslateError enables more descriptive error messages from the database and if checks
 	// Eg: if errors.Is(result.Error, gorm.ErrDuplicatedKey)
-	gormDB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{TranslateError: true})
+	gormDB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		TranslateError: true, DisableForeignKeyConstraintWhenMigrating: true,
+	})
 	if err != nil {
 		return fmt.Errorf("could not connect to database: %v", err)
 	}

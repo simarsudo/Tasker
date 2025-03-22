@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/go-playground/validator/v10"
 
@@ -68,6 +69,25 @@ func main() {
 	// Set up router
 	r := setupRouter()
 
-	// Run server
-	r.Run("0.0.0.0:8000")
+	mode, exists := os.LookupEnv("MODE")
+	if !exists {
+		mode = "d"
+		fmt.Println("Is_Prod environment variable not set, defaulting to 'dev'")
+	}
+
+	var port int16
+
+	if mode == "p" {
+		port = 8080
+		gin.SetMode(gin.ReleaseMode)
+		fmt.Println("Running in production mode on port 8080")
+	} else {
+		port = 8000
+		fmt.Println("Running in development mode on port 8000")
+	}
+
+	err = r.Run(fmt.Sprintf("0.0.0.0:%d", port))
+	if err != nil {
+		panic(fmt.Sprintf("Failed to start server: %v", err))
+	}
 }
