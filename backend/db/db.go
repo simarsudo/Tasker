@@ -17,9 +17,11 @@ func InitDB() error {
 
 	var dsn string
 	if instanceUnixSocket != "" {
+		log.Printf("Cloud SQL mode: Using instance socket: %s", instanceUnixSocket)
 		// We're on Cloud Run - use Unix Socket connection
 		dsn = buildCloudSQLConnectionString(instanceUnixSocket)
 	} else {
+		log.Printf("Local mode: Using TCP connection")
 		// We're in local/dev - use standard connection string
 		var ok bool
 		dsn, ok = os.LookupEnv("POSTGRES_CONN_STR")
