@@ -18,7 +18,7 @@ export interface RequestOptions extends RequestInit {
  * @returns A promise resolving to the response.
  */
 export function makeRequest(endpoint: string, options?: RequestOptions): Promise<Response> {
-  const BASE_URL = "http://127.0.0.1:8000/api/v1";
+  const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000/api/v1";
   const normalizedEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   const URL = `${BASE_URL}${normalizedEndpoint}`;
 
