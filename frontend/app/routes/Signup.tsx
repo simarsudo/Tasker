@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import AccountInfoForm from "@/components/forms/AccountInfoForm";
 import PersonalInfoForm from "@/components/forms/PersonalInfoForm";
+import MouseFollowAnimationWrapper from "@/components/wrappers/MouseFollowAnimationWrapper";
+import PageWithNavbarWrapper from "@/components/wrappers/PageWithNavbarWrapper";
 import { useAuth } from "@/context/auth";
 import { useNavigate } from "@remix-run/react";
 
@@ -33,39 +35,43 @@ export default function Signup() {
     }, []);
 
     return (
-        <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-            <Tabs value={currentTab} className="w-96">
-                <div className="flex justify-center">
-                    <TabsList>
-                        <TabsTrigger
-                            className="cursor-default"
-                            value={SignupTabValues.AccountInfo}
-                        >
-                            Account Information
-                        </TabsTrigger>
-                        <TabsTrigger
-                            className="cursor-default"
-                            value={SignupTabValues.PersonalInfo}
-                        >
-                            Personal Information
-                        </TabsTrigger>
-                    </TabsList>
+        <MouseFollowAnimationWrapper className="h-full w-full">
+            <PageWithNavbarWrapper className="grid place-content-center">
+                <div>
+                    <Tabs value={currentTab} className="w-96">
+                        <div className="flex justify-center">
+                            <TabsList>
+                                <TabsTrigger
+                                    className="cursor-default"
+                                    value={SignupTabValues.AccountInfo}
+                                >
+                                    Account Information
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    className="cursor-default"
+                                    value={SignupTabValues.PersonalInfo}
+                                >
+                                    Personal Information
+                                </TabsTrigger>
+                            </TabsList>
+                        </div>
+                        <TabsContent value={SignupTabValues.AccountInfo}>
+                            <AccountInfoForm
+                                signupData={signupData}
+                                setSignupData={setSignupData}
+                                setCurrentTab={setCurrentTab}
+                            />
+                        </TabsContent>
+                        <TabsContent value={SignupTabValues.PersonalInfo}>
+                            <PersonalInfoForm
+                                setCurrentTab={setCurrentTab}
+                                signupData={signupData}
+                                setSignupData={setSignupData}
+                            />
+                        </TabsContent>
+                    </Tabs>
                 </div>
-                <TabsContent value={SignupTabValues.AccountInfo}>
-                    <AccountInfoForm
-                        signupData={signupData}
-                        setSignupData={setSignupData}
-                        setCurrentTab={setCurrentTab}
-                    />
-                </TabsContent>
-                <TabsContent value={SignupTabValues.PersonalInfo}>
-                    <PersonalInfoForm
-                        setCurrentTab={setCurrentTab}
-                        signupData={signupData}
-                        setSignupData={setSignupData}
-                    />
-                </TabsContent>
-            </Tabs>
-        </div>
+            </PageWithNavbarWrapper>
+        </MouseFollowAnimationWrapper>
     );
 }
