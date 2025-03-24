@@ -9,6 +9,7 @@ import { DashboardSidebar } from "@/components/common/sidebar/DashboardSidebar";
 import DashboardContent from "@/components/wrappers/DashboardContent";
 import PageWithNavbarWrapper from "@/components/wrappers/PageWithNavbarWrapper";
 import { useRequireAuthentication } from "@/hooks/useRequireAuthentication";
+import { RequestOptions, makeRequest } from "@/lib/utils";
 import { LoaderFunction } from "@remix-run/node";
 import { Outlet, redirect, useLoaderData, useParams } from "@remix-run/react";
 import * as cookie from "cookie";
@@ -24,42 +25,49 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         return redirect("/login");
     }
 
-    let projectData = null;
+    const options: RequestOptions = {
+        headers: {
+            Cookie: cookieHeader || "",
+        },
+    };
 
-    try {
-        const response = await fetch(
-            `${process.env.BACKEND_URL}/api/v1/get-current-project/${projectID}`,
+    const response = await makeRequest(
+        `/get-current-project/${projectID}`,
+        options,
+    );
+
+    if (!response.ok) {
+        if (response.status === 401) {
+            throw new Response("Unauthorized", { status: 401 });
+        }
+        throw new Response(
+            `Error fetching project data: ${response.statusText}`,
             {
-                headers: {
-                    Cookie: cookieHeader || "",
-                },
+                status: response.status || 500,
             },
         );
-
-        if (response.ok) {
-            projectData = await response.json();
-        } else if (response.status === 401) {
-            // FIXME: Throw error and show error page when data is not loaded properly
-            throw new Error("There was some error");
-        }
-    } catch (error) {
-        console.error("Error fetching project data:", error);
     }
 
-    return Response.json({
+    const projectData = await response.json();
+
+    return {
         defaultOpen: sidebarState,
         userProjectsData: projectData,
         userData: projectData.userData,
-    });
+    };
 };
 
 export function ErrorBoundary() {
-    <PageWithNavbarWrapper className="grid place-content-center text-center">
-        <p className="text-lg font-semibold">Looks like there is some error.</p>
-        <p>
-            Please refresh the page or <Link to="/login">Login</Link> again
-        </p>
-    </PageWithNavbarWrapper>;
+    return (
+        <PageWithNavbarWrapper className="grid place-content-center text-center">
+            <p className="text-lg font-semibold">
+                Looks like there is some error.
+            </p>
+            <p>
+                Please refresh the page or <Link to="/login">Login</Link> again
+            </p>
+        </PageWithNavbarWrapper>
+    );
 }
 
 export default function DashboardLayout() {

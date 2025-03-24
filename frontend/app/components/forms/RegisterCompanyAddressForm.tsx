@@ -37,7 +37,6 @@ export default function RegisterCompanyAddressForm({
     const form = useFormValidation(formSchema, companyInfo);
 
     function handleSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
         setCurrentTab(TabValues.Details);
         setCompanyInfo({ ...companyInfo, ...values });
     }

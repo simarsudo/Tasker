@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import BoardMode from "@/components/views/BoardMode";
 import TaskTableMode from "@/components/views/TaskTableMode";
 import DashboardWrapper from "@/components/wrappers/DashboardWrapper";
-import { makeRequest } from "@/lib/utils";
+import { RequestOptions, makeRequest } from "@/lib/utils";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
@@ -20,53 +20,55 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     const cookieHeader = request.headers.get("Cookie");
     const projectID = params.projectId;
 
-    let data = null;
+    const options: RequestOptions = {
+        headers: {
+            Cookie: cookieHeader || "",
+        },
+    };
 
-    try {
-        const response = await fetch(
-            `${process.env.BACKEND_URL}/api/v1/get-project-tasks?projectID=${projectID}`,
+    // Make parallel requests
+    const [tasksResponse, teamMembersResponse] = await Promise.all([
+        makeRequest(`/get-project-tasks?projectID=${projectID}`, options),
+        makeRequest(
+            `/get-project-team-members?projectID=${projectID}&onlyNames=1`,
+            options,
+        ),
+    ]);
+
+    // Check task response
+    if (!tasksResponse.ok) {
+        if (tasksResponse.status === 401) {
+            throw new Response("Unauthorized", { status: 401 });
+        }
+        throw new Response(
+            `Error fetching project data: ${tasksResponse.statusText}`,
             {
-                headers: {
-                    Cookie: cookieHeader || "",
-                },
+                status: tasksResponse.status,
             },
         );
-
-        if (response.ok) {
-            data = await response.json();
-        } else {
-            throw new Error(
-                `Error fetching project data: ${response.statusText}`,
-            );
-        }
-    } catch (error) {
-        throw new Response("Failed to load team members", { status: 500 });
     }
 
-    let teamMembers = null;
-
-    try {
-        const response = await fetch(
-            `${process.env.BACKEND_URL}/api/v1/get-project-team-members?projectID=${projectID}&onlyNames=1`,
+    // Check team members response
+    if (!teamMembersResponse.ok) {
+        if (teamMembersResponse.status === 401) {
+            throw new Response("Unauthorized", { status: 401 });
+        }
+        throw new Response(
+            `Error fetching team members: ${teamMembersResponse.statusText}`,
             {
-                headers: {
-                    Cookie: cookieHeader || "",
-                },
+                status: teamMembersResponse.status,
             },
         );
-
-        if (response.ok) {
-            teamMembers = await response.json();
-        } else {
-            throw new Error(
-                `Error fetching project data: ${response.statusText}`,
-            );
-        }
-    } catch (error) {
-        throw new Response("Failed to load team members", { status: 500 });
     }
 
-    return { data, teamMembers: teamMembers.teamMembers };
+    // Parse both responses
+    const data = await tasksResponse.json();
+    const teamMembersData = await teamMembersResponse.json();
+
+    return {
+        data,
+        teamMembers: teamMembersData.teamMembers,
+    };
 };
 
 export function ErrorBoundary() {

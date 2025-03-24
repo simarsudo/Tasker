@@ -4,6 +4,7 @@ import { DashboardOutlet } from "@/common/types";
 import { DataTable } from "@/components/common/DataTable";
 import InviteTeamMemberDialogForm from "@/components/forms/InviteTeamMemberDialogForm";
 import DashboardWrapper from "@/components/wrappers/DashboardWrapper";
+import { RequestOptions, makeRequest } from "@/lib/utils";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
 
@@ -11,30 +12,28 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     const cookieHeader = request.headers.get("Cookie");
     const projectID = params.projectId;
 
-    let data = null;
+    const options: RequestOptions = {
+        headers: {
+            Cookie: cookieHeader || "",
+        },
+    };
 
-    try {
-        const response = await fetch(
-            `${process.env.BACKEND_URL}/api/v1/get-project-team-members?projectID=${projectID}`,
-            {
-                headers: {
-                    Cookie: cookieHeader || "",
-                },
-            },
-        );
+    const response = await makeRequest(
+        `/get-project-team-members?projectID=${projectID}`,
+        options,
+    );
 
-        if (response.ok) {
-            data = await response.json();
-        } else {
-            throw new Error(
-                `Error fetching project data: ${response.statusText}`,
-            );
+    if (!response.ok) {
+        if (response.status === 401) {
+            throw new Response("Unauthorized", { status: 401 });
         }
-    } catch (error) {
-        throw new Response("Failed to load team members", { status: 500 });
+        throw new Response(
+            `Error fetching project data: ${response.statusText}`,
+            { status: response.status },
+        );
     }
 
-    return data;
+    return response.json();
 };
 
 export function ErrorBoundary() {

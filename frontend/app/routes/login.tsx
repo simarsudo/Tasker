@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { useAuth } from "@/context/auth";
+import useFormValidation from "@/hooks/use-form-validation";
 import { makeRequest } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "@remix-run/react";
@@ -45,8 +46,9 @@ export default function Page() {
         message: "",
     });
     const navigate = useNavigate();
-    const form = useForm<z.infer<typeof loginSchema>>({
-        resolver: zodResolver(loginSchema),
+    const form = useFormValidation(loginSchema, {
+        email: "",
+        password: "",
     });
 
     useEffect(() => {

@@ -38,8 +38,6 @@ export function getCookieValue(name: string): string | null {
         {} as Record<string, string>,
     );
 
-    console.log("All parsed cookies:", cookies);
-
     // Check both the exact name and lowercase version
     return cookies[name] || cookies[name.toLowerCase()] || null;
 }

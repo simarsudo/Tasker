@@ -43,7 +43,6 @@ export default function ChangeRoleDialogForm({
             if (r.ok) {
                 // Call onRoleChange when the request is successful
                 if (onRoleChange) {
-                    console.log("Called");
                     onRoleChange();
                 }
                 setDialogOpen(false);
