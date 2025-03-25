@@ -26,7 +26,7 @@ export const FollowerPointerBG = ({
 }: {
     children: React.ReactNode;
     className?: string;
-    title?: string | React.ReactNode;
+    title: string | React.ReactNode;
     bgClassName: string;
     pointerClassName?: string;
 }) => {
@@ -103,7 +103,7 @@ export const FollowPointer = ({
 }: {
     x: any;
     y: any;
-    title?: string | React.ReactNode;
+    title: string | React.ReactNode;
     bgClassName: string;
     pointerClassName: string;
 }) => {
@@ -161,7 +161,7 @@ export const FollowPointer = ({
                     bgClassName,
                 )}
             >
-                {title || `William Shakespeare`}
+                {title}
             </motion.div>
         </motion.div>
     );
