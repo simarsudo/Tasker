@@ -38,14 +38,14 @@ export default function BenifitsCard({
         >
             <Card
                 className={cn(
-                    "w-56 p-4 shadow-sm transition-all hover:scale-110 hover:shadow-lg 2xl:w-64",
+                    "flex w-56 flex-col p-4 shadow-sm transition-all hover:scale-110 hover:shadow-lg 2xl:w-64",
                     hoverShadowClassName,
                     hoverOutlineClassName,
                 )}
             >
                 <CardHeader>
-                    <CardTitle className="grid place-content-center">
-                        <Icon className="size-10" />
+                    <CardTitle className="mx-auto">
+                        <Icon className="size-9" />
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="grid h-full place-content-center px-2 text-center text-sm font-semibold italic tracking-wider">

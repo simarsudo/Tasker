@@ -1,4 +1,4 @@
-import { NotebookTabs, Target, Workflow } from "lucide-react";
+import { CalendarCheck, ClipboardList, Users } from "lucide-react";
 
 import BenifitsCard from "../cards/BenifitsCard";
 
@@ -15,7 +15,7 @@ export default function IntroSection() {
                 </p>
                 <div className="flex w-full flex-col items-center justify-center gap-8 text-center md:flex-row md:items-start lg:gap-16">
                     <BenifitsCard
-                        Icon={NotebookTabs}
+                        Icon={ClipboardList}
                         description={"Organize tasks and projects with ease."}
                         pointerTitle="Efficient Organization"
                         pointerBGClassName="bg-pink-500"
@@ -25,7 +25,7 @@ export default function IntroSection() {
                     />
 
                     <BenifitsCard
-                        Icon={Target}
+                        Icon={Users}
                         description={"Collaborate with your team in real-time."}
                         pointerTitle="Seamless Collaboration"
                         pointerBGClassName="bg-purple-500"
@@ -35,7 +35,7 @@ export default function IntroSection() {
                     />
 
                     <BenifitsCard
-                        Icon={Workflow}
+                        Icon={CalendarCheck}
                         description={"Stay on top of deadlines effortlessly."}
                         pointerTitle="Timely Deadlines"
                         pointerBGClassName="bg-emerald-500"
