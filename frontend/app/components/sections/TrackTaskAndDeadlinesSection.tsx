@@ -1,20 +1,24 @@
 import { CheckCircle } from "lucide-react";
 
-import ExampleTeamTable from "@/examples/ExampleTeamTable";
+import KanbanBoardExample from "@/examples/KanbanBoardExample";
 
-export default function InviteTeamSection() {
+type Props = {};
+
+export default function TrackTaskAndDeadlinesSection({}: Props) {
     return (
-        <div className="mt-8 select-none px-2 lg:px-16">
-            <h2 className="mb-16 text-center text-5xl font-bold text-pink-500">
-                Seamless Team Collaboration
+        <div className="mt-8 select-none px-2 sm:my-28 lg:px-16">
+            <h2 className="mb-16 text-center text-5xl font-bold text-cyan-500">
+                Stay on Top of Tasks and Deadlines
             </h2>
 
-            <div className="flex flex-col items-center justify-center gap-8 md:flex-row">
-                <div className="grid auto-rows-auto gap-6 sm:w-1/2">
+            <div className="flex flex-col gap-8 md:flex-row">
+                <KanbanBoardExample />
+
+                <div className="grid auto-rows-auto sm:w-1/2">
                     <p className="text-lg font-semibold italic">
-                        Transform how your team works together. Our platform
-                        connects teams of any size with powerful collaboration
-                        tools that streamline workflows and boost productivity.
+                        Never miss a deadline again. Our platform helps you
+                        track tasks, set priorities, and stay organized, so you
+                        can focus on what matters most.
                     </p>
 
                     <ul className="space-y-3">
@@ -23,8 +27,9 @@ export default function InviteTeamSection() {
                                 <CheckCircle className="size-5 text-emerald-500" />
                             </div>
                             <span>
-                                Effortless onboarding with one-click email
-                                invitations and secure authentication
+                                Create and assign tasks with due dates,
+                                reminders, and priority levels to keep your team
+                                aligned.
                             </span>
                         </li>
                         <li className="flex items-start gap-2">
@@ -32,8 +37,8 @@ export default function InviteTeamSection() {
                                 <CheckCircle className="size-5 text-emerald-500" />
                             </div>
                             <span>
-                                Customizable role-based permissions that protect
-                                sensitive project data
+                                Visualize deadlines with calendar and timeline
+                                views to plan ahead effortlessly.
                             </span>
                         </li>
                         <li className="flex items-start gap-2">
@@ -41,8 +46,8 @@ export default function InviteTeamSection() {
                                 <CheckCircle className="size-5 text-emerald-500" />
                             </div>
                             <span>
-                                Real-time notifications and detailed activity
-                                feeds to keep everyone aligned
+                                Get notifications for upcoming deadlines and
+                                task updates to stay on track.
                             </span>
                         </li>
                         <li className="flex items-start gap-2">
@@ -50,13 +55,12 @@ export default function InviteTeamSection() {
                                 <CheckCircle className="size-5 text-emerald-500" />
                             </div>
                             <span>
-                                Enhanced visibility with team dashboards,
-                                progress tracking, and performance metrics
+                                Track progress with task completion metrics and
+                                performance insights for better decisions.
                             </span>
                         </li>
                     </ul>
                 </div>
-                <ExampleTeamTable />
             </div>
         </div>
     );

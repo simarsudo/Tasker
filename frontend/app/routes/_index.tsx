@@ -1,5 +1,6 @@
 import IntroSection from "@/components/sections/IntroSection";
 import InviteTeamSection from "@/components/sections/InviteTeamSection";
+import TrackTaskAndDeadlinesSection from "@/components/sections/TrackTaskAndDeadlinesSection";
 import MouseFollowAnimationWrapper from "@/components/wrappers/MouseFollowAnimationWrapper";
 import PageWithNavbarWrapper from "@/components/wrappers/PageWithNavbarWrapper";
 
@@ -10,6 +11,7 @@ export default function Index() {
                 <div className="flex max-w-7xl flex-col gap-12 sm:gap-0">
                     <IntroSection />
                     <InviteTeamSection />
+                    <TrackTaskAndDeadlinesSection />
                 </div>
                 <div className="relative z-10 mt-16 grid gap-8 px-4 sm:px-16">
                     {/* <div className="text-center">

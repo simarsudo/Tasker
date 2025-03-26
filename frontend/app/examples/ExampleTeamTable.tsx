@@ -1,4 +1,4 @@
-import { CheckCircle, Frame } from "lucide-react";
+import { Frame } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -18,7 +18,7 @@ export default function ExampleTeamTable() {
         <div className="h-min rounded-md bg-neutral-950 pb-2 shadow-md shadow-violet-500 outline outline-violet-500 sm:w-1/2">
             <FollowerPointerBG
                 bgClassName="bg-cyan-500"
-                pointerClassName="stroke-cyan-600 text-sky-500"
+                pointerClassName="stroke-white text-cyan-500"
                 title="Easy Task Tracking"
             >
                 <h4 className="flex items-center gap-2 px-2 py-2 text-lg font-semibold">
