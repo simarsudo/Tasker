@@ -3,10 +3,10 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toaster } from "@/components/ui/toaster";
 
-import Navbar from "@/components/common/Navbar";
 import CreateProjectForm from "@/components/forms/CreateProjectForm";
 import InviteMembers from "@/components/forms/InviteMembers";
 import FormWrapper from "@/components/wrappers/FormWrapper";
+import PageWithNavbarWrapper from "@/components/wrappers/PageWithNavbarWrapper";
 
 export const enum selectedTab {
     CreateProject = "create-project",
@@ -17,15 +17,14 @@ export default function CreateProject() {
     const [currentTab, setCurrentTab] = useState(selectedTab.CreateProject);
 
     return (
-        <div>
-            <Navbar />
+        <PageWithNavbarWrapper>
             <div className="flex h-full w-full justify-center p-4">
                 <FormWrapper>
                     <CreateProjectForm setCurrentTab={setCurrentTab} />
                 </FormWrapper>
             </div>
             <Toaster />
-        </div>
+        </PageWithNavbarWrapper>
     );
 }
 

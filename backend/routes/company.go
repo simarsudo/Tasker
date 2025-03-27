@@ -20,14 +20,8 @@ import (
 )
 
 func RegisterCompanyEmailDomain(c *gin.Context) {
-	userID, exist := c.Get("userID")
-	if !exist {
-		c.Status(http.StatusUnauthorized)
-		return
-	}
-
-	var user models.User
-	if result2 := db.DB.First(&user, userID.(int64)); result2.Error != nil {
+	user, ok := utils.GetUserFromContext(c)
+	if !ok {
 		c.Status(http.StatusUnauthorized)
 		return
 	}
@@ -42,6 +36,12 @@ func RegisterCompanyEmailDomain(c *gin.Context) {
 }
 
 func RegisterCompany(c *gin.Context) {
+	user, ok := utils.GetUserFromContext(c)
+	if !ok {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+
 	var companyInfo forms.CompanyRegistrationForm
 
 	err := c.ShouldBindJSON(&companyInfo)
@@ -50,18 +50,6 @@ func RegisterCompany(c *gin.Context) {
 		validationErrors := utils.GenerateValidationErrors(err)
 
 		c.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
-		return
-	}
-
-	userID, exist := c.Get("userID")
-	if !exist {
-		c.Status(http.StatusUnauthorized)
-		return
-	}
-
-	var user models.User
-	if result2 := db.DB.First(&user, userID.(int64)); result2.Error != nil {
-		c.Status(http.StatusUnauthorized)
 		return
 	}
 
@@ -172,6 +160,7 @@ func CreateProject(c *gin.Context) {
 func GetUserSidebarData(c *gin.Context) {
 	user, ok := utils.GetUserFromContext(c)
 	if !ok {
+		c.Status(http.StatusUnauthorized)
 		return
 	}
 
@@ -232,6 +221,7 @@ func GetUserSidebarData(c *gin.Context) {
 func GetProjectTeamMembers(c *gin.Context) {
 	_, ok := utils.GetUserFromContext(c)
 	if !ok {
+		c.Status(http.StatusUnauthorized)
 		return
 	}
 
@@ -279,6 +269,7 @@ func GetProjectTeamMembers(c *gin.Context) {
 func InviteTeamMember(c *gin.Context) {
 	_, ok := utils.GetUserFromContext(c)
 	if !ok {
+		c.Status(http.StatusUnauthorized)
 		return
 	}
 
@@ -488,6 +479,7 @@ func JoinTeamUsingInviteLink(c *gin.Context) {
 func ChangeUserRole(c *gin.Context) {
 	_, ok := utils.GetUserFromContext(c)
 	if !ok {
+		c.Status(http.StatusUnauthorized)
 		return
 	}
 	// FIXME: Implement Role check
@@ -538,9 +530,9 @@ func ChangeUserRole(c *gin.Context) {
 func CreateNewTask(c *gin.Context) {
 	user, ok := utils.GetUserFromContext(c)
 	if !ok {
+		c.Status(http.StatusUnauthorized)
 		return
 	}
-
 	type Task struct {
 		TaskName        string              `json:"taskName" binding:"required"`
 		TaskDescription string              `json:"taskDescription" binding:"required"`
@@ -595,6 +587,11 @@ func CreateNewTask(c *gin.Context) {
 }
 
 func GetProjectTasks(c *gin.Context) {
+	_, ok := utils.GetUserFromContext(c)
+	if !ok {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
 	projectID := c.Query("projectID")
 
 	if projectID == "" {
@@ -641,6 +638,7 @@ func GetProjectTasks(c *gin.Context) {
 func UpdateTaskStatus(c *gin.Context) {
 	_, ok := utils.GetUserFromContext(c)
 	if !ok {
+		c.Status(http.StatusUnauthorized)
 		return
 	}
 
@@ -674,6 +672,7 @@ func UpdateTaskStatus(c *gin.Context) {
 func ReassignTask(c *gin.Context) {
 	_, ok := utils.GetUserFromContext(c)
 	if !ok {
+		c.Status(http.StatusUnauthorized)
 		return
 	}
 

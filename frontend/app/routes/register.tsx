@@ -5,10 +5,10 @@ import { CompanyInfo } from "@/common/types";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import Navbar from "@/components/common/Navbar";
 import RegisterCompanyAddressForm from "@/components/forms/RegisterCompanyAddressForm";
 import RegisterCompanyDetailsForm from "@/components/forms/RegisterCompanyDetailsForm";
 import RegisterCompanyForm from "@/components/forms/RegisterCompanyForm";
+import PageWithNavbarWrapper from "@/components/wrappers/PageWithNavbarWrapper";
 import { makeRequest } from "@/lib/utils";
 
 const initialCompanyInfo = (): CompanyInfo => ({
@@ -57,8 +57,7 @@ export default function Register() {
     }, []);
 
     return (
-        <div className="flex min-h-screen flex-col">
-            <Navbar />
+        <PageWithNavbarWrapper>
             <div className="mx-4 mt-4 grid h-full grow place-content-center">
                 {loading ? (
                     // TODO: Add loading icon
@@ -113,6 +112,6 @@ export default function Register() {
                     </div>
                 )}
             </div>
-        </div>
+        </PageWithNavbarWrapper>
     );
 }

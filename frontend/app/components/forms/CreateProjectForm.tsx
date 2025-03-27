@@ -57,7 +57,6 @@ export default function CreateProjectForm({ setCurrentTab }: Props) {
             if (r.ok && currentProject) {
                 const dashboardLink = `/dashboard/projects/${currentProject}`;
                 navigate(dashboardLink, { replace: true });
-                navigate("/dashboard");
                 // TODO: Handle null condition for currentProject
             } else {
                 toast({

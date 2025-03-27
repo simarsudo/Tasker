@@ -110,7 +110,7 @@ func Signup(ctx *gin.Context) {
 	}
 
 	utils.SetCookie(ctx, "token", token)
-	utils.SetCookie(ctx, "currentProject", fmt.Sprintf("%d", *user.DefaultProjectID), false)
+	// utils.SetCookie(ctx, "currentProject", fmt.Sprintf("%d", *user.DefaultProjectID), false)
 	emailParts := strings.Split(strings.ToLower(user.Email), "@")
 
 	emailDomain := emailParts[len(emailParts)-1]
